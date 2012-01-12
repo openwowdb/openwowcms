@@ -1,0 +1,27 @@
+GENERAL INSTALLATION INFORMATION
+
+
+
+=Requirements=
+
+Make sure you have your PHP interpreter built with the following modules before you proceed with the installation:
+
+1. Sockets
+2. Sessions
+3. mysql
+
+
+=Installation=
+
+Copy all files to the document root of your vhost and point your browser to the index without. Example: http://www.openwow.com/. Installation process will being instantly. 
+You will be guided through a a number of self-explanatory steps to finish the installation. Make sure you satisfy all what is required during the process. After the installation script is finished
+you will be forwarded to your fresh main page where you can start your customizations.
+
+
+
+
+=TODO=
+This document needs more content especially about customization of your installation and installation troubleshooting information. Feel free to update it.
+
+
+(c) www.openwow.com, 2012

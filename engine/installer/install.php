@@ -2,12 +2,11 @@
 /***************************************************************************
 *                               install.php
 *                            -------------------
-*   Project          : Web-WoW
-*   Begin            : Friday, August 6, 2010
-*   Copyright        : (C) 2010 AXE (creator)        ( zg_2010@hotmail.com ),
-*                               Maverfax (debugger)  ( maverfax@gmail.com )
+*   Project          : OpenWoW
+*   Copyright        : (c) www.openwow.com, 2010
+*   Credits:         : AXE, Maverfax 
 *
-*      Do not redistribute this file without permission from AXE.
+*      Do not redistribute this file without permission from www.openwow.com
 *
 ***************************************************************************/
 
@@ -777,7 +776,7 @@ mysql_query("INSERT INTO `wwc2_config` VALUES ('module_userpanel','loginout.php|
 mysql_query("INSERT INTO `wwc2_config` VALUES ('footer_detail','0','Footer Credits: <small>0 = simplified; 1 = full detail; 2 = full for admins only</small>','1','0|1|2')") or die (mysql_error());
 
 mysql_query("INSERT INTO `wwc2_news` (title,content,timepost,author) VALUES ('Welcome',
-'Thank you for using WebWoW CMS v2.
+'Thank you for using OpenWoW CMS v2.
 
 If your administrator double click here to edit news.
 Go to [b]administration panel[/b] to manage CMS.','".date("U")."','WebWoWCMSv2')") or die (mysql_error());
@@ -1130,7 +1129,7 @@ $Install = new Install;
 <td width="200px" valign="top">
 <h1><img src="engine/installer/res/logo.png"><span><strong><?php echo $installer_lang["WebWoW CMS v2 Install Script"]; ?></strong></span></h1>
 </td>
-<td><div id = "footer">WebWoW CMS v2 &copy; 2010<br/>Powered by <a href = "http://www.web-wow.net" title="WebWoW Creator">WebWoW</a></div>
+<td><div id = "footer">OpenWoW CMS v2 &copy; 2012<br/>Powered by <a href = "http://www.openwow.net" title="OpenWoW CMS">OpenWoW</a></div>
 </td></tr>
 </table>
 </div>
