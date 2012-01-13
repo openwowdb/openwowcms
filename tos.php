@@ -1,7 +1,14 @@
 <?php
-/**********************************************************************************
-* tos.php is part of WebWoW CMS v2
-* www.web-wow.net by Axe
+/***************************************************************************
+*                               index.php
+*                            -------------------
+*   Project Owner    : OpenWoW CMS (www.openwow.com)
+*   Copyright        : (c) www.openwow.com, 2010
+*   Credits          : Based on work done by AXE and Maverfax
+*   License          : GPLv3
+*****************************************************************************/
+
+/*
 * You can copy this ToS page, only if you don't remove small "WEBWOW"
 * logo in textbox.
 * All images from Blizzard Ent.

@@ -1,4 +1,13 @@
 <?php
+###################################################################
+# This file is a part of OpenWoW CMS by www.openwow.com
+#
+#   Project Owner    : OpenWoW CMS (http://www.openwow.com)
+#   Copyright        : (c) www.openwow.com, 2010
+#   Credits          : Based on work done by AXE and Maverfax
+#   License          : GPLv3
+##################################################################
+
 define('PATHROOT', '../../');
 include (PATHROOT.'engine/init.php');
 include_once(PATHROOT."engine/func/parser.php");

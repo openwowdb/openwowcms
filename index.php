@@ -1,15 +1,13 @@
 <?php
 /***************************************************************************
- *                                index.php
- *                            -------------------
- *   Project                 : Web-WoW
- *   Begin                   : Friday, August 6, 2010
- *   Copyright               : (C) 2010 AXE       ( zg_20102@hotmail.com ),
- *   Small contribution from : Maverfax  		  ( maverfax@gmail.com )
- *
- *      Do not redistribute this file without permission from AXE.
- *
- ***************************************************************************/
+*                               index.php
+*                            -------------------
+*   Project Owner    : OpenWoW CMS (www.openwow.com)
+*   Copyright        : (c) www.openwow.com, 2010
+*   Credits          : Based on work done by AXE and Maverfax
+*   License          : GPLv3
+*****************************************************************************/
+
 
 /*
 |---------------------------------------------------------------

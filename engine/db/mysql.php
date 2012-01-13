@@ -1,4 +1,13 @@
 <?php
+###################################################################
+# This file is a part of OpenWoW CMS by www.openwow.com
+#
+#   Project Owner    : OpenWoW CMS (http://www.openwow.com)
+#   Copyright        : (c) www.openwow.com, 2010
+#   Credits          : Based on work done by AXE and Maverfax
+#   License          : GPLv3
+##################################################################
+
 // Make sure we have built in support for MySQL
 if (!function_exists('mysql_connect'))
 	exit('This PHP environment doesn\'t have MySQL support built in. MySQL support is required if you want to use a MySQL database to run this site. Consult the PHP documentation for further assistance.');

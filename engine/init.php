@@ -1,15 +1,15 @@
 <?php
-/***************************************************************************
- *                                index.php
- *                            -------------------
- *   Project              : Web-WoW
- *   Begin                : Friday, August 6, 2010
- *   Copyright            : (C) 2010 AXE       ( zg_2010@hotmail.com ),
- *                                   Maverfax  ( maverfax@gmail.com )
- *
- *      Do not redistribute this file without permission from AXE.
- *
- ***************************************************************************/
+###################################################################
+# This file is a part of OpenWoW CMS by www.openwow.com
+#                                init.php
+#                            -------------------
+#
+#   Project Owner    : OpenWoW CMS (http://www.openwow.com)
+#   Copyright        : (c) www.openwow.com, 2010
+#   Credits          : Based on work done by AXE and Maverfax
+#   License          : GPLv3
+##################################################################
+
 
 if (!defined('PATHROOT'))
 {

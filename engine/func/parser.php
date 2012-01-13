@@ -1,5 +1,15 @@
 <?php
 
+###################################################################
+# This file is a part of OpenWoW CMS by www.openwow.com
+#
+#   Project Owner    : OpenWoW CMS (http://www.openwow.com)
+#   Copyright        : (c) www.openwow.com, 2010
+#   Credits          : Based on work done by AXE and Maverfax
+#   License          : GPLv3
+##################################################################
+
+
 
 // Make sure no one attempts to run this script "directly"
 if (!defined('AXE'))

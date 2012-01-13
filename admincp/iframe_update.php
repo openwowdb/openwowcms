@@ -1,12 +1,16 @@
 <?php
-############################################################
-# This file is part of Web-WoW CMS V2 @ web-wow.net
-# Do not redistribute it without premission from AXE.
-# Copyright (c) AXE, zg_20102 at hotmail dot com
+###################################################################
+# This file is a part of OpenWoW CMS by www.openwow.com
 #
+#   Project Owner    : OpenWoW CMS (http://www.openwow.com)
+#   Copyright        : (c) www.openwow.com, 2010
+#   Credits          : Based on work done by AXE and Maverfax
+#   License          : GPLv3
+##################################################################
+
 # INCLUDES:
 # - initialization script
-############################################################
+
 require("defines.php");
 @set_time_limit(0);
 
