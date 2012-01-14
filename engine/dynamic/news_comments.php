@@ -1,12 +1,12 @@
 <?php
-###################################################################
-# This file is a part of OpenWoW CMS by www.openwow.com
-#
-#   Project Owner    : OpenWoW CMS (http://www.openwow.com)
-#   Copyright        : (c) www.openwow.com, 2010
-#   Credits          : Based on work done by AXE and Maverfax
-#   License          : GPLv3
 ##################################################################
+# This file is a part of OpenWoW CMS by www.openwow.co
+
+#   Project Owner    : OpenWoW CMS (http://www.openwow.com
+#   Copyright        : (c) www.openwow.com, 201
+#   Credits          : Based on work done by AXE and Maverfa
+#   License          : GPLv
+#################################################################
 
 /**
 * Configuration:
@@ -107,4 +107,4 @@ echo '<div id="comments_more'.$newsid.'_'.$start.'">
 		<div class="more_comments">
 			<a href="#" onclick="ajax_loadContent(\'comments_more'.$newsid.'_'.$start.'\',\'./engine/dynamic/news_comments.php?newsid='.$newsid.'&start='.$start.'&nobox\',\'false\');return false;">'.$lang['More comments'].'</a>
 		</div>
-	</div>';
+	</div>'
