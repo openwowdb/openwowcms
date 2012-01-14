@@ -1,36 +1,36 @@
 <?php
+###################################################################
+# This file is a part of OpenWoW CMS by www.openwow.com
+#
+#   Project Owner    : OpenWoW CMS (http://www.openwow.com)
+#   Copyright        : (c) www.openwow.com, 2010
+#   Credits          : Based on work done by AXE and Maverfax
+#   License          : GPLv3
 ##################################################################
-# This file is a pat of OpeWoW CMS by www.opewow.co
-
-#   Poject Owe    : OpeWoW CMS (http://www.opewow.com
-#   Copyight        : (c) www.opewow.com, 201
-#   Cedits          : Based o wok doe by AXE ad Mavefa
-#   Licese          : GPLv
-#################################################################
 
 
-if (!defied('INSTALL_AXE')) die();
+if (!defined('INSTALL_AXE')) die();
 
-eo_epotig(0);
+error_reporting(0);
 
 /*******************************************************************************
 *                              PRELIMINARY LOADING
 *******************************************************************************/
 
-@sessio_stat();
+@session_start();
 
-// Iclude commo fuctios
-equie_oce ("./egie/fuc/equied.php");
+// Include common functions
+require_once ("./engine/func/required.php");
 
 /**
-* Removes all chaactes that ae ot alphabetical o umeical
+* Removes all characters that are not alphabetical nor numerical
 *
-* @paam stig
-* @etu stig
+* @param string
+* @return string
 */
-fuctio saitize($stig = '')
+function sanitize($string = '')
 {
-etu peg_eplace('/[^a-zA-Z0-9]/', '', $stig);
+return preg_replace('/[^a-zA-Z0-9]/', '', $string);
 }
 
 /*******************************************************************************
@@ -38,93 +38,93 @@ etu peg_eplace('/[^a-zA-Z0-9]/', '', $stig);
 *******************************************************************************/
 
 /**
-* Detemies wethe a laguage is valid o ot
+* Determines wether a language is valid or not
 *
-* @paam stig
-* @etu boolea
+* @param string
+* @return boolean
 */
-fuctio is_valid_lag($laguage = '')
+function is_valid_lang($language = '')
 {
-if(!empty($laguage))
+if(!empty($language))
 {
-if(file_exists('./egie/lag/' . $laguage . '/istalle.php'))
+if(file_exists('./engine/lang/' . $language . '/installer.php'))
 {
-etu TRUE;
+return TRUE;
 }
 }
 
-etu FALSE;
+return FALSE;
 }
 
-// By default, Web-WoW will u usig Eglish
-$lag = 'Eglish';
+// By default, Web-WoW will run using English
+$lang = 'English';
 
-// Do we have a equested laguage though the URL?
-if(isset($_GET['lag']))
+// Do we have a requested language through the URL?
+if(isset($_GET['lang']))
 {
-$equested_lag = saitize($_GET['lag']);
+$requested_lang = sanitize($_GET['lang']);
 
-if (is_valid_lag($equested_lag))
+if (is_valid_lang($requested_lang))
 {
-$lag = $equested_lag;
+$lang = $requested_lang;
 }
 }
 
-// Do we have a equested laguage though a post?
-if(isset($_POST['lag']))
+// Do we have a requested language through a post?
+if(isset($_POST['lang']))
 {
-$equested_lag = saitize($_POST['lag']);
+$requested_lang = sanitize($_POST['lang']);
 
-if (is_valid_lag($equested_lag))
+if (is_valid_lang($requested_lang))
 {
-$lag = $equested_lag;
+$lang = $requested_lang;
 }
 }
 
-// Load the laguage file
-equie ('./egie/lag/' . sttolowe($lag) . '/istalle.php');
+// Load the language file
+require ('./engine/lang/' . strtolower($lang) . '/installer.php');
 
 /*******************************************************************************
 *                               INSTALLER
 *******************************************************************************/
 
 /**
-* Istall
+* Install
 *
 * @package		Web-WoW
-* @autho		AXE (ceato), mavefax (debugge)
+* @author		AXE (creator), maverfax (debugger)
 */
-class Istall {
+class Install {
 
 /**
-* Lie
+* Line
 *
 * @access	public
-* @etu	stig
+* @return	string
 */
-fuctio l() #etus
+function ln() #returns
 {
-$etu = "\";
+$return = "\n";
 
 if(isset($_SERVER['OS']))
 {
-$system = sttolowe( $_SERVER['OS'] );
+$system = strtolower( $_SERVER['OS'] );
 
-if (stst( $system, 'widows'))
+if (strstr( $system, 'windows'))
 {
-$etu = "\\";
+$return = "\r\n";
 }
 
 else
 {
-if(stst($system, 'mac'))
+if(strstr($system, 'mac'))
 {
-$etu = "\";
+$return = "\r";
 }
 }
 }
 
-etu $etu;
+return $return;
 }
 
 // --------------------------------------------------------------------
@@ -133,33 +133,33 @@ etu $etu;
 * Go
 *
 * @access	public
-* @etu	void
+* @return	void
 */
-fuctio Go()
+function Go()
 {
-global $Html, $lag, $istalle_lag;
+global $Html, $lang, $installer_lang;
 
-# Stoe data to sessio
+# Store data to session
 if ( isset( $_POST ) ) {
-foeach ( $_POST as $a => $a2 )
-$_SESSION['wwcmsv2istall'][$a] = $a2;
+foreach ( $_POST as $a => $a2 )
+$_SESSION['wwcmsv2install'][$a] = $a2;
 }
 
-# liebeak
-$l = $this->l();
+# linebreak
+$ln = $this->ln();
 
-#othe vas
+#other vars
 $stop=false;
 
-if(isset($_SESSION['wwcmsv2istall']['coe']))
+if(isset($_SESSION['wwcmsv2install']['core']))
 {
-if ($_SESSION['wwcmsv2istall']['coe']=='AcEmu') $p_db=aay(0=>"accouts",1=>"accouts",2=>"chaactes",3=>"mailbox_iset_queue");
-elseif($_SESSION['wwcmsv2istall']['coe']=='MaNGOS') $p_db=aay(0=>"accout",1=>"accout",2=>"chaactes",3=>"chaactes");
-elseif($_SESSION['wwcmsv2istall']['coe']=='Tiity') $p_db=aay(0=>"accout",1=>"accout_access",2=>"chaactes",3=>"chaacte_ivetoy");
-elseif($_SESSION['wwcmsv2istall']['coe']=='Tiitysoap') $p_db=aay(0=>"accout",1=>"accout_access",2=>"chaactes",3=>"chaacte_ivetoy");
+if ($_SESSION['wwcmsv2install']['core']=='ArcEmu') $p_db=array(0=>"accounts",1=>"accounts",2=>"characters",3=>"mailbox_insert_queue");
+elseif($_SESSION['wwcmsv2install']['core']=='MaNGOS') $p_db=array(0=>"account",1=>"account",2=>"characters",3=>"characters");
+elseif($_SESSION['wwcmsv2install']['core']=='Trinity') $p_db=array(0=>"account",1=>"account_access",2=>"characters",3=>"character_inventory");
+elseif($_SESSION['wwcmsv2install']['core']=='Trinitysoap') $p_db=array(0=>"account",1=>"account_access",2=>"characters",3=>"character_inventory");
 }
 else
-$p_db=aay(0=>"ukow_coe",1=>"ukow_coe",2=>"ukow_coe",3=>"ukow_coe");
+$p_db=array(0=>"unknown_core",1=>"unknown_core",2=>"unknown_core",3=>"unknown_core");
 
 //
 //
@@ -167,282 +167,282 @@ $p_db=aay(0=>"ukow_coe",1=>"ukow_coe",2=>"ukow_coe",3=>"ukow_coe");
 $step = '';
 if(isset($_GET['step']))
 {
-$step = peg_eplace( "/[^0-9]/", "", $_GET['step'] ); //oly lettes ad umbes
+$step = preg_replace( "/[^0-9]/", "", $_GET['step'] ); //only letters and numbers
 }
 
 if ($step == '')
 {
 $step='1';
-$_SESSION['wwcmsv2istall'] = aay();
+$_SESSION['wwcmsv2install'] = array();
 }
 
 
-echo '<fom actio="./?step='.($step+1).'&lag='.$lag.'" method="post">';
-if ($step=='1' o $step=='')
+echo '<form action="./?step='.($step+1).'&lang='.$lang.'" method="post">';
+if ($step=='1' or $step=='')
 {
 //
-// Laguage selectio
+// Language selection
 //
-echo $Html->lag_selectio('Eglish');
+echo $Html->lang_selection('English');
 }
 elseif ($step=='2')
 {
 //
-// Check fo file chmod pemissios etc
+// Check for file chmod premissions etc
 //
 
-echo $istalle_lag['Files ad Diectoies'].':';
+echo $installer_lang['Files and Directories'].':';
 
 
-$chmod = subst( spitf( '%o', filepems( "./egie/_cache/" ) ), -4 );
-if ($chmod != '0777')//ot chmodded
+$chmod = substr( sprintf( '%o', fileperms( "./engine/_cache/" ) ), -4 );
+if ($chmod != '0777')//not chmodded
 {
-//tyig to chmod _cache:
-if ( !@chmod( "./egie/_cache/", 0777 ) )
+//trying to chmod _cache:
+if ( !@chmod( "./engine/_cache/", 0777 ) )
 {
-echo '<div id="twoows"><spa style="colo:ed">'.$istalle_lag['Not Witable'].'</spa>./egie/_cache/</div>';
+echo '<div id="tworows"><span style="color:red">'.$installer_lang['Not Writable'].'</span>./engine/_cache/</div>';
 }
 else
-echo '<div id="twoows"><spa style="colo:gee">'.$istalle_lag['Witable'].'</spa>./egie/_cache/</div>';
+echo '<div id="tworows"><span style="color:green">'.$installer_lang['Writable'].'</span>./engine/_cache/</div>';
 }
 else
-echo '<div id="twoows"><spa style="colo:gee">'.$istalle_lag['Witable'].'</spa>./egie/_cache/</div>';
+echo '<div id="tworows"><span style="color:green">'.$installer_lang['Writable'].'</span>./engine/_cache/</div>';
 
-//tyig to chmod cofig.php:
-if ( !is_witable( "./cofig/cofig.php" ) )
+//trying to chmod config.php:
+if ( !is_writable( "./config/config.php" ) )
 {
-if ( !file_exists("./cofig/cofig.php" ) )
+if ( !file_exists("./config/config.php" ) )
 {
-$fh = fope( "./cofig/cofig.php", "w" );
-fwite( $fh, '<?php'.$l.'?>');
+$fh = fopen( "./config/config.php", "w" );
+fwrite( $fh, '<?php'.$ln.'?>');
 fclose( $fh );
-@chmod( "./cofig/cofig.php", 0777 );
+@chmod( "./config/config.php", 0777 );
 
 }
-if ( !is_witable( "./cofig/cofig.php" ) )
+if ( !is_writable( "./config/config.php" ) )
 {
-echo '<div id="twoows"><spa style="colo:ed">'.$istalle_lag['Not Witable'].' ('.$istalle_lag['please chmod this file to 777'].')</spa>./cofig/cofig.php</div>';
-$stop=tue;
+echo '<div id="tworows"><span style="color:red">'.$installer_lang['Not Writable'].' ('.$installer_lang['please chmod this file to 777'].')</span>./config/config.php</div>';
+$stop=true;
 }
 else
 {
-echo '<div id="twoows"><spa style="colo:gee">'.$istalle_lag['Witable'].'</spa>./cofig/cofig.php</div>';
+echo '<div id="tworows"><span style="color:green">'.$installer_lang['Writable'].'</span>./config/config.php</div>';
 }
 }
 else
-echo '<div id="twoows"><spa style="colo:gee">'.$istalle_lag['Witable'].'</spa>./cofig/cofig.php</div>';
+echo '<div id="tworows"><span style="color:green">'.$installer_lang['Writable'].'</span>./config/config.php</div>';
 
-//tyig to chmod cofig_db.php:
-if ( !is_witable( "./cofig/cofig_db.php" ) )
+//trying to chmod config_db.php:
+if ( !is_writable( "./config/config_db.php" ) )
 {
-if ( !file_exists("./cofig/cofig_db.php" ) )
+if ( !file_exists("./config/config_db.php" ) )
 {
-$fh = fope( "./cofig/cofig_db.php", "w" );
-fwite( $fh, '<?php'.$l.'?>');
+$fh = fopen( "./config/config_db.php", "w" );
+fwrite( $fh, '<?php'.$ln.'?>');
 fclose( $fh );
-@chmod( "./cofig/cofig_db.php", 0777 );
+@chmod( "./config/config_db.php", 0777 );
 
 }
-if ( !is_witable( "./cofig/cofig_db.php" ) )
+if ( !is_writable( "./config/config_db.php" ) )
 {
-echo '<div id="twoows"><spa style="colo:ed">'.$istalle_lag['Not Witable'].' ('.$istalle_lag['please chmod this file to 777'].')</spa>./cofig/cofig_db.php test</div>';
-$stop=tue;
+echo '<div id="tworows"><span style="color:red">'.$installer_lang['Not Writable'].' ('.$installer_lang['please chmod this file to 777'].')</span>./config/config_db.php test</div>';
+$stop=true;
 }
 else
 {
-echo '<div id="twoows"><spa style="colo:gee">'.$istalle_lag['Witable'].'</spa>./cofig/cofig_db.php</div>';
+echo '<div id="tworows"><span style="color:green">'.$installer_lang['Writable'].'</span>./config/config_db.php</div>';
 }
 }
 else
-echo '<div id="twoows"><spa style="colo:gee">'.$istalle_lag['Witable'].'</spa>./cofig/cofig_db.php</div>';
+echo '<div id="tworows"><span style="color:green">'.$installer_lang['Writable'].'</span>./config/config_db.php</div>';
 
-echo "<b>".$istalle_lag['Fuctios'].":";
-if(fuctio_exists("fsockope"))
-echo '<div id="twoows"><spa style="colo:gee">'.ucwods($istalle_lag['eabled']).'</spa> fshockope()</div>';
+echo "<br>".$installer_lang['Functions'].":";
+if(function_exists("fsockopen"))
+echo '<div id="tworows"><span style="color:green">'.ucwords($installer_lang['enabled']).'</span> fshockopen()</div>';
 else
-echo '<div id="twoows"><spa style="colo:ed">'.ucwods($istalle_lag['disabled']).'</spa> fshockope()</div>';
+echo '<div id="tworows"><span style="color:red">'.ucwords($installer_lang['disabled']).'</span> fshockopen()</div>';
 
 }
 elseif ($step=='3')
 {
-if(!isset($_SESSION['wwcmsv2istall']['coe']))
+if(!isset($_SESSION['wwcmsv2install']['core']))
 {
-$_SESSION['wwcmsv2istall']['coe'] = 'AcEmu';
+$_SESSION['wwcmsv2install']['core'] = 'ArcEmu';
 }
 
-echo $istalle_lag['WoW Seve Coe'].":<b>";
-echo "<select id='coe' ame='coe'>
-<optio value='AcEmu'";
-if ($_SESSION['wwcmsv2istall']['coe']=='AcEmu') echo "selected='selected'";
-echo ">AcEmu</optio>
-<optio value='MaNGOS'";
-if ($_SESSION['wwcmsv2istall']['coe']=='MaNGOS') echo "selected='selected'";
-echo ">MaNGOS</optio>
-<optio value='Tiity'";
-if ($_SESSION['wwcmsv2istall']['coe']=='Tiity') echo "selected='selected'";
-echo ">Tiity</optio>";
-//echo "	<optio value='Tiitysoap'";
-//if ($_SESSION['wwcmsv2istall']['coe']=='Tiitysoap') echo "selected='selected'";
-//echo ">Tiity (SOAP) &ge; 3.3.5a</optio>";
+echo $installer_lang['WoW Server Core'].":<br>";
+echo "<select id='core' name='core'>
+<option value='ArcEmu'";
+if ($_SESSION['wwcmsv2install']['core']=='ArcEmu') echo "selected='selected'";
+echo ">ArcEmu</option>
+<option value='MaNGOS'";
+if ($_SESSION['wwcmsv2install']['core']=='MaNGOS') echo "selected='selected'";
+echo ">MaNGOS</option>
+<option value='Trinity'";
+if ($_SESSION['wwcmsv2install']['core']=='Trinity') echo "selected='selected'";
+echo ">Trinity</option>";
+//echo "	<option value='Trinitysoap'";
+//if ($_SESSION['wwcmsv2install']['core']=='Trinitysoap') echo "selected='selected'";
+//echo ">Trinity (SOAP) &ge; 3.3.5a</option>";
 
 echo "</select>";
 }
 elseif ($step=='4')
 {
 //
-// Database coectio
+// Database connection
 //
 ?>
-<scipt type="text/javascipt">
-fuctio db_co()
+<script type="text/javascript">
+function db_con()
 {
-va host = documet.getElemetById("db_host").value;
-va use = documet.getElemetById("db_use").value;
-va pass = documet.getElemetById("db_pass").value;
-$('#db_co').fadeI('slow', fuctio() {});
-documet.getElemetById("db_co").ieHTML="<?php echo $istalle_lag['Coectig']; ?>...";
-$.post("./egie/istalle/dyamic/db_co.php?l=<?php echo $istalle_lag['Next Step']; ?>&f=<?php echo $istalle_lag['Coectio Failed']; ?>&s=<?php echo $istalle_lag['Coectio Successful']; ?>", {host:host, use: use,pass: pass },fuctio(data)
+var host = document.getElementById("db_host").value;
+var user = document.getElementById("db_user").value;
+var pass = document.getElementById("db_pass").value;
+$('#db_con').fadeIn('slow', function() {});
+document.getElementById("db_con").innerHTML="<?php echo $installer_lang['Connecting']; ?>...";
+$.post("./engine/installer/dynamic/db_con.php?l=<?php echo $installer_lang['Next Step']; ?>&f=<?php echo $installer_lang['Connection Failed']; ?>&s=<?php echo $installer_lang['Connection Successful']; ?>", {host:host, user: user,pass: pass },function(data)
 {
-documet.getElemetById("db_co").ieHTML="" + data;
+document.getElementById("db_con").innerHTML="" + data;
 }
 );
 }
-</scipt>
+</script>
 <?php
-echo $istalle_lag['Database Host'].":";
-$this->Iput("db_host",'localhost');echo '<b>';
-echo $istalle_lag['Database Useame'].":";
-$this->Iput("db_use",'oot');echo '<b>';
-echo $istalle_lag['Database Passwod'].":";
-$this->Iput("db_pass");echo '<b>';
-echo "<b><spa class='ieliks'><a hef='#' oclick='javascipt:db_co();etu false' >".$istalle_lag['Click Hee to Test Coectio']."</a></spa><spa id='db_co'></spa>";
-$stop=tue;
+echo $installer_lang['Database Host'].":";
+$this->Input("db_host",'localhost');echo '<br>';
+echo $installer_lang['Database Username'].":";
+$this->Input("db_user",'root');echo '<br>';
+echo $installer_lang['Database Password'].":";
+$this->Input("db_pass");echo '<br>';
+echo "<br><span class='innerlinks'><a href='#' onclick='javascript:db_con();return false' >".$installer_lang['Click Here to Test Connection']."</a></span><span id='db_con'></span>";
+$stop=true;
 
 }
 elseif ($step=='5')
 {
 ?>
-<scipt type="text/javascipt">
-fuctio pastetext(text,whee)
+<script type="text/javascript">
+function pastetext(text,where)
 {
-documet.getElemetById(whee).value=text;
-documet.getElemetById('chacotet'+whee).style.display="oe";
+document.getElementById(where).value=text;
+document.getElementById('charcontent'+where).style.display="none";
 
 }
-fuctio addmoe(id)
+function addmore(id)
 {
 id2=id+1;
-documet.getElemetById('addmoe'+id).ieHTML='<b><?php echo $istalle_lag['No.']; ?>'+id+'</b> <iput ame="cha_db[]" id="cha_db'+id+'" value="" style="width: 250px;" type="text" okeypess="javascipt:documet.getElemetById(\'chacotetcha_db'+id+'\').style.display=\'block\'"> <a hef="#" oclick="javascipt:pastetext(\'\',\'cha_db'+id+'\')">[-<?php echo $istalle_lag['emove']; ?>]</a><div id="chacotetcha_db'+id+'">&bsp;&bsp;&bsp;<stog><?php echo $istalle_lag['Pot']; ?></stog>: <iput ame="cha_pot[]" id="cha_pot'+id+'" value="1234" style="width: 250px;" type="text"> (<?php echo $istalle_lag['equied']; ?>)<b>&bsp;&bsp;&bsp;<?php echo $istalle_lag['Host']; ?>: <iput ame="cha_host[]" id="cha_host'+id+'" value="" style="width: 250px;" type="text"> (<?php echo $istalle_lag['optioal']; ?>)<b>&bsp;&bsp;&bsp;<?php echo $istalle_lag['DB use']; ?>: <iput ame="cha_dbuse[]" id="cha_dbuse'+id+'" value="" style="width: 250px;" type="text"> (<?php echo $istalle_lag['optioal']; ?>)<b>&bsp;&bsp;&bsp;<?php echo $istalle_lag['DB pass']; ?>: <iput ame="cha_dbpass[]" id="cha_dbpass'+id+'" value="" style="width: 250px;" type="text"> (<?php echo $istalle_lag['optioal']; ?>)<b>&bsp;&bsp;&bsp;<?php
+document.getElementById('addmore'+id).innerHTML='<b><?php echo $installer_lang['No.']; ?>'+id+'</b> <input name="char_db[]" id="char_db'+id+'" value="" style="width: 250px;" type="text" onkeypress="javascript:document.getElementById(\'charcontentchar_db'+id+'\').style.display=\'block\'"> <a href="#" onclick="javascript:pastetext(\'\',\'char_db'+id+'\')">[-<?php echo $installer_lang['remove']; ?>]</a><div id="charcontentchar_db'+id+'">&nbsp;&nbsp;&nbsp;<strong><?php echo $installer_lang['Port']; ?></strong>: <input name="char_port[]" id="char_port'+id+'" value="1234" style="width: 250px;" type="text"> (<?php echo $installer_lang['required']; ?>)<br>&nbsp;&nbsp;&nbsp;<?php echo $installer_lang['Host']; ?>: <input name="char_host[]" id="char_host'+id+'" value="" style="width: 250px;" type="text"> (<?php echo $installer_lang['optional']; ?>)<br>&nbsp;&nbsp;&nbsp;<?php echo $installer_lang['DB user']; ?>: <input name="char_dbuser[]" id="char_dbuser'+id+'" value="" style="width: 250px;" type="text"> (<?php echo $installer_lang['optional']; ?>)<br>&nbsp;&nbsp;&nbsp;<?php echo $installer_lang['DB pass']; ?>: <input name="char_dbpass[]" id="char_dbpass'+id+'" value="" style="width: 250px;" type="text"> (<?php echo $installer_lang['optional']; ?>)<br>&nbsp;&nbsp;&nbsp;<?php
 
-if ($_SESSION['wwcmsv2istall']['coe']=='Tiity'){
-echo $istalle_lag['Remote Access Pot']; ?>: <iput ame="cha_asoap[]" id="cha_asoap'+id+'" value="" style="width: 250px;" type="text"> (<?php echo $istalle_lag['optioal']; ?>)<b>&bsp;&bsp;&bsp;<?php
-
-}
-else if ($_SESSION['wwcmsv2istall']['coe']=='MaNGOS' o $_SESSION['wwcmsv2istall']['coe']=='Tiitysoap'){
-echo $istalle_lag['SOAP Pot']; ?>: <iput ame="cha_asoap[]" id="cha_asoap'+id+'" value="" style="width: 250px;" type="text"> (<?php echo $istalle_lag['optioal']; ?>)<b>&bsp;&bsp;&bsp;<?php
+if ($_SESSION['wwcmsv2install']['core']=='Trinity'){
+echo $installer_lang['Remote Access Port']; ?>: <input name="char_rasoap[]" id="char_rasoap'+id+'" value="" style="width: 250px;" type="text"> (<?php echo $installer_lang['optional']; ?>)<br>&nbsp;&nbsp;&nbsp;<?php
 
 }
+else if ($_SESSION['wwcmsv2install']['core']=='MaNGOS' or $_SESSION['wwcmsv2install']['core']=='Trinitysoap'){
+echo $installer_lang['SOAP Port']; ?>: <input name="char_rasoap[]" id="char_rasoap'+id+'" value="" style="width: 250px;" type="text"> (<?php echo $installer_lang['optional']; ?>)<br>&nbsp;&nbsp;&nbsp;<?php
 
-
-?><stog><?php echo $istalle_lag['Name']; ?></stog>: <iput ame="cha_ames[]" id="cha_ames'+id+'" value="<?php echo $istalle_lag['Realm'].' '.$istalle_lag['Name']; ?>" style="width: 250px;" type="text"> (<?php echo $istalle_lag['equied']; ?>)</div><div id="addmoe'+id2+'"><a hef="#" oclick="javascipt:addmoe('+id2+');etu false;">[+<?php echo $istalle_lag['add moe']; ?>]</a>';
 }
-</scipt>
+
+
+?><strong><?php echo $installer_lang['Name']; ?></strong>: <input name="char_names[]" id="char_names'+id+'" value="<?php echo $installer_lang['Realm'].' '.$installer_lang['Name']; ?>" style="width: 250px;" type="text"> (<?php echo $installer_lang['required']; ?>)</div><div id="addmore'+id2+'"><a href="#" onclick="javascript:addmore('+id2+');return false;">[+<?php echo $installer_lang['add more']; ?>]</a>';
+}
+</script>
 <?php
-$coected=tue;
-$coect = @mysql_coect($_SESSION['wwcmsv2istall']['db_host'], $_SESSION['wwcmsv2istall']['db_use'], $_SESSION['wwcmsv2istall']['db_pass']) o $coected=false;
-if ($coected)
+$connected=true;
+$connect = @mysql_connect($_SESSION['wwcmsv2install']['db_host'], $_SESSION['wwcmsv2install']['db_user'], $_SESSION['wwcmsv2install']['db_pass']) or $connected=false;
+if ($connected)
 {
 //
-// accouts database
+// accounts database
 //
-echo '<div id="twoows"><spa style="magi-left:80px; fot-weight:omal">'.$istalle_lag['Accouts database'].':<b>';
+echo '<div id="tworows"><span style="margin-left:80px; font-weight:normal">'.$installer_lang['Accounts database'].':<br>';
 
 #
 #ACC DB DETECTION:
 #
-$dbquey = mysql_quey("SHOW DATABASES");
+$dbquery = mysql_query("SHOW DATABASES");
 
-#some vas:
+#some vars:
 $i = 0;$j=0;
 
 #do loop:
-while ($ow = mysql_fetch_assoc($dbquey)) {
-$a[$i] = $ow['Database'];
+while ($row = mysql_fetch_assoc($dbquery)) {
+$arr[$i] = $row['Database'];
 
-if ($this->checkTable($a[$i].'.'.$p_db[0]) && $this->checkTable($a[$i].'.'.$p_db[1]))
+if ($this->checkTable($arr[$i].'.'.$p_db[0]) && $this->checkTable($arr[$i].'.'.$p_db[1]))
 {
 
-$j++;$cu_db=$a[$i];
+$j++;$curr_db=$arr[$i];
 
 }
 $i++;
 }
-$this->Iput("logo_db",(isset($cu_db) ? $cu_db : ''));
+$this->Input("logon_db",(isset($curr_db) ? $curr_db : ''));
 
 
 
 #
 #
 #
-echo '<small style=" fot-size:10px; colo:gay">('.$istalle_lag['Compatible Database is Autodetected'].', '.$j.' '.$istalle_lag['foud'].')</small>';
+echo '<small style=" font-size:10px; color:gray">('.$installer_lang['Compatible Database is Autodetected'].', '.$j.' '.$installer_lang['found'].')</small>';
 
 echo '
-</spa><img sc="egie/istalle/es/db.pg"></div><b>';
+</span><img src="engine/installer/res/db.png"></div><br>';
 
 
 
 //
 // REALM DATABASE X
 //
-#this is RA o SOAP ifo:
-echo '<div id="twoows2"><div id="twoows3">
+#this is RA or SOAP info:
+echo '<div id="tworows2"><div id="tworows3">
 ';
-/*pit soap ad a iput foms:*/
-if ($_SESSION['wwcmsv2istall']['coe']=='Tiity'){
-echo $istalle_lag['Mail sedig'].':<b>';
-$this->Iput("cha_asoap_use",'"',"&bsp;&bsp;&bsp;".$istalle_lag['Remote Access Use'].": ",' ('.$istalle_lag['equied'].')','cha_asoap_use'.$i);
-$this->Iput("cha_asoap_pass",'',"&bsp;&bsp;&bsp;".$istalle_lag['Remote Access Pass'].": ",' ('.$istalle_lag['equied'].')','cha_asoap_pass'.$i);
+/*print soap and ra input forms:*/
+if ($_SESSION['wwcmsv2install']['core']=='Trinity'){
+echo $installer_lang['Mail sending'].':<br>';
+$this->Input("char_rasoap_user",'"',"&nbsp;&nbsp;&nbsp;".$installer_lang['Remote Access User'].": ",' ('.$installer_lang['required'].')','char_rasoap_user'.$i);
+$this->Input("char_rasoap_pass",'',"&nbsp;&nbsp;&nbsp;".$installer_lang['Remote Access Pass'].": ",' ('.$installer_lang['required'].')','char_rasoap_pass'.$i);
 }
-else if ($_SESSION['wwcmsv2istall']['coe']=='MaNGOS' o $_SESSION['wwcmsv2istall']['coe']=='Tiitysoap'){
-echo $istalle_lag['Mail sedig'].':<b>';
-$this->Iput("cha_asoap_use",'',"&bsp;&bsp;&bsp;".$istalle_lag['SOAP Use'].": ",' ('.$istalle_lag['equied'].')','cha_asoap_use'.$i);
-$this->Iput("cha_asoap_pass",'',"&bsp;&bsp;&bsp;".$istalle_lag['SOAP Pass'].": ",' ('.$istalle_lag['equied'].')','cha_asoap_pass'.$i);
+else if ($_SESSION['wwcmsv2install']['core']=='MaNGOS' or $_SESSION['wwcmsv2install']['core']=='Trinitysoap'){
+echo $installer_lang['Mail sending'].':<br>';
+$this->Input("char_rasoap_user",'',"&nbsp;&nbsp;&nbsp;".$installer_lang['SOAP User'].": ",' ('.$installer_lang['required'].')','char_rasoap_user'.$i);
+$this->Input("char_rasoap_pass",'',"&nbsp;&nbsp;&nbsp;".$installer_lang['SOAP Pass'].": ",' ('.$installer_lang['required'].')','char_rasoap_pass'.$i);
 }
 
-echo $istalle_lag['Realm database(s)'].':<b>';
+echo $installer_lang['Realm database(s)'].':<br>';
 #
 #REALM DB DETECTION:
 #
-$dbquey = mysql_quey("SHOW DATABASES");
+$dbquery = mysql_query("SHOW DATABASES");
 
-#some vas:
-$i = 0;$j=1;$cu_db=false;
+#some vars:
+$i = 0;$j=1;$curr_db=false;
 
 #do loop:
-while ($ow = mysql_fetch_assoc($dbquey)) {
-$a[$i] = $ow['Database'];
+while ($row = mysql_fetch_assoc($dbquery)) {
+$arr[$i] = $row['Database'];
 
 
-if ($this->checkTable($a[$i].'.'.$p_db[2]) && $this->checkTable($a[$i].'.'.$p_db[3]))
+if ($this->checkTable($arr[$i].'.'.$p_db[2]) && $this->checkTable($arr[$i].'.'.$p_db[3]))
 {
 
-$cu_db=$a[$i];
-$this->Iput("cha_db[]",$cu_db.'',"<stog>".$istalle_lag['No.'].$j."</stog> ",' <a hef="#" oclick="javascipt:pastetext(\'\',\'cha_db'.$i.'\')">[-'.$istalle_lag['emove'].']</a>','cha_db'.$i,'okeydow="javascipt:documet.getElemetById(\'chacotetcha_db'.$i.'\').style.display=\'block\';"');
-echo "<div id='chacotetcha_db".$i."'>";
-$this->Iput("cha_pot[]",'1234',"&bsp;&bsp;&bsp;<stog>".$istalle_lag['Pot']."</stog>: ",' ('.$istalle_lag['equied'].')','cha_pot'.$i);
-$this->Iput("cha_host[]",'',"&bsp;&bsp;&bsp;".$istalle_lag['Host'].": ",' ('.$istalle_lag['optioal'].')','cha_host'.$i);
-$this->Iput("cha_dbuse[]",'',"&bsp;&bsp;&bsp;".$istalle_lag['DB use'].": ",' ('.$istalle_lag['optioal'].')','cha_dbuse'.$i);
-$this->Iput("cha_dbpass[]",'',"&bsp;&bsp;&bsp;".$istalle_lag['DB pass'].": ",' ('.$istalle_lag['optioal'].')','cha_dbpass'.$i);
-if ($_SESSION['wwcmsv2istall']['coe']=='Tiity'){
-$this->Iput("cha_asoap[]",'',"&bsp;&bsp;&bsp;".$istalle_lag['Remote Access Pot'].": ",' ('.$istalle_lag['equied'].')','cha_asoap'.$i);
+$curr_db=$arr[$i];
+$this->Input("char_db[]",$curr_db.'',"<strong>".$installer_lang['No.'].$j."</strong> ",' <a href="#" onclick="javascript:pastetext(\'\',\'char_db'.$i.'\')">[-'.$installer_lang['remove'].']</a>','char_db'.$i,'onkeydown="javascript:document.getElementById(\'charcontentchar_db'.$i.'\').style.display=\'block\';"');
+echo "<div id='charcontentchar_db".$i."'>";
+$this->Input("char_port[]",'1234',"&nbsp;&nbsp;&nbsp;<strong>".$installer_lang['Port']."</strong>: ",' ('.$installer_lang['required'].')','char_port'.$i);
+$this->Input("char_host[]",'',"&nbsp;&nbsp;&nbsp;".$installer_lang['Host'].": ",' ('.$installer_lang['optional'].')','char_host'.$i);
+$this->Input("char_dbuser[]",'',"&nbsp;&nbsp;&nbsp;".$installer_lang['DB user'].": ",' ('.$installer_lang['optional'].')','char_dbuser'.$i);
+$this->Input("char_dbpass[]",'',"&nbsp;&nbsp;&nbsp;".$installer_lang['DB pass'].": ",' ('.$installer_lang['optional'].')','char_dbpass'.$i);
+if ($_SESSION['wwcmsv2install']['core']=='Trinity'){
+$this->Input("char_rasoap[]",'',"&nbsp;&nbsp;&nbsp;".$installer_lang['Remote Access Port'].": ",' ('.$installer_lang['required'].')','char_rasoap'.$i);
 
 }
-else if ($_SESSION['wwcmsv2istall']['coe']=='MaNGOS' o $_SESSION['wwcmsv2istall']['coe']=='Tiitysoap'){
+else if ($_SESSION['wwcmsv2install']['core']=='MaNGOS' or $_SESSION['wwcmsv2install']['core']=='Trinitysoap'){
 
-$this->Iput("cha_asoap[]",'',"&bsp;&bsp;&bsp;".$istalle_lag['SOAP Pot'].": ",' ('.$istalle_lag['equied'].')','cha_asoap'.$i);
+$this->Input("char_rasoap[]",'',"&nbsp;&nbsp;&nbsp;".$installer_lang['SOAP Port'].": ",' ('.$installer_lang['required'].')','char_rasoap'.$i);
 
 }
-$this->Iput("cha_ames[]",'',"&bsp;&bsp;&bsp;<stog>".$istalle_lag['Name']."</stog>: ",' ('.$istalle_lag['equied'].')','cha_ames'.$i);
+$this->Input("char_names[]",'',"&nbsp;&nbsp;&nbsp;<strong>".$installer_lang['Name']."</strong>: ",' ('.$installer_lang['required'].')','char_names'.$i);
 
 echo "</div>";
 $j++;
@@ -451,15 +451,15 @@ $j++;
 $i++;
 }
 //if ($j=='1')
-//$this->Iput("cha_db[]",$cu_db);
-echo '<div id="addmoe'.$j.'"><a hef="#" oclick="javascipt:addmoe('.$j.');etu false;">[+'.$istalle_lag['add moe'].']</a></div>';
+//$this->Input("char_db[]",$curr_db);
+echo '<div id="addmore'.$j.'"><a href="#" onclick="javascript:addmore('.$j.');return false;">[+'.$installer_lang['add more'].']</a></div>';
 
 #
 #
 #
-echo '<small style=" fot-size:10px; colo:gay">('.$istalle_lag['Compatible Database is Autodetected'].', '.($j-1).' '.$istalle_lag['foud'].')</small>';
+echo '<small style=" font-size:10px; color:gray">('.$installer_lang['Compatible Database is Autodetected'].', '.($j-1).' '.$installer_lang['found'].')</small>';
 
-echo '</div></div><b>';
+echo '</div></div><br>';
 
 
 
@@ -467,392 +467,392 @@ echo '</div></div><b>';
 //
 //  WEBSITE DATABASE
 //
-echo '<div id="twoows2" ><div id="twoows3">'.$istalle_lag['Website database'].':<b>
+echo '<div id="tworows2" ><div id="tworows3">'.$installer_lang['Website database'].':<br>
 ';
 #
 #EMPTY DB DETECTION:
 #
-$dbquey = mysql_quey("SHOW DATABASES");
+$dbquery = mysql_query("SHOW DATABASES");
 
-#some vas:
-$i = 0;$j=0;$cu_db=false;
+#some vars:
+$i = 0;$j=0;$curr_db=false;
 
 #do loop:
-while ($ow = mysql_fetch_assoc($dbquey)) {
-$a[$i] = $ow['Database'];
+while ($row = mysql_fetch_assoc($dbquery)) {
+$arr[$i] = $row['Database'];
 
 
-if ($this->checkFoEmptyDB($a[$i]))
+if ($this->checkForEmptyDB($arr[$i]))
 {
-$j++;$cu_db=$a[$i];
-//echo $a[$i];
+$j++;$curr_db=$arr[$i];
+//echo $arr[$i];
 
 }
 $i++;
 }
-$this->Iput("web_db",$cu_db,false,' '.$istalle_lag['If DB does ot exists, it will be ceated']);
+$this->Input("web_db",$curr_db,false,' '.$installer_lang['If DB does not exists, it will be created']);
 
 
 
 #
 #
 #
-echo '<small style="fot-size:10px; colo:gay">('.$istalle_lag['Compatible Database is Autodetected'].', '.$j.' '.$istalle_lag['foud'].')</small>';
+echo '<small style="font-size:10px; color:gray">('.$installer_lang['Compatible Database is Autodetected'].', '.$j.' '.$installer_lang['found'].')</small>';
 
 echo '
-</div></div><b><b>';
+</div></div><br><br>';
 
-mysql_close( $coect );
+mysql_close( $connect );
 }
 else
 {
-echo $istalle_lag['Coectio Failed'].' ('.mysql_eo().')';
-$stop=tue;
+echo $installer_lang['Connection Failed'].' ('.mysql_error().')';
+$stop=true;
 }
 }
 elseif ($step=='6')
 {
-if ($_SESSION['wwcmsv2istall']['web_db']=='')
+if ($_SESSION['wwcmsv2install']['web_db']=='')
 {
-echo $istalle_lag['You did ot ete website database, please go step back.'];etu;
+echo $installer_lang['You did not enter website database, please go step back.'];return;
 
 }
 //
-// Ceate db, add tables ad wite cofig.php
+// Create db, add tables and write config.php
 //
-$coected=tue;
-$coect = @mysql_coect($_SESSION['wwcmsv2istall']['db_host'], $_SESSION['wwcmsv2istall']['db_use'], $_SESSION['wwcmsv2istall']['db_pass']) o $coected=false;
-if ($coected)
+$connected=true;
+$connect = @mysql_connect($_SESSION['wwcmsv2install']['db_host'], $_SESSION['wwcmsv2install']['db_user'], $_SESSION['wwcmsv2install']['db_pass']) or $connected=false;
+if ($connected)
 {
-mysql_quey("ceate database ".$_SESSION['wwcmsv2istall']['web_db'] );
-mysql_select_db($_SESSION['wwcmsv2istall']['web_db']) o die("Website database eo: ".mysql_eo());
-mysql_quey( "SET AUTOCOMMIT=0" );
-mysql_quey( "START TRANSACTION" );
-mysql_quey( "DROP TABLE IF EXISTS `wwc2_active_uses`");
-echo $istalle_lag['Delete']." wwc2_active_uses<b>";
-mysql_quey( "DROP TABLE IF EXISTS `wwc2_baed_uses`");
-echo $istalle_lag['Delete']." wwc2_baed_uses<b>";
-mysql_quey( "DROP TABLE IF EXISTS `wwc2_active_guests`");
-echo $istalle_lag['Delete']." wwc2_active_guests<b>";
-mysql_quey( "DROP TABLE IF EXISTS `wwc2_uses_moe`");
-echo $istalle_lag['Delete']." wwc2_uses_moe<b>";
-mysql_quey( "DROP TABLE IF EXISTS `wwc2_cofig`");
-echo $istalle_lag['Delete']." wwc2_cofig<b>";
-mysql_quey( "DROP TABLE IF EXISTS `wwc2_liks`");
-echo $istalle_lag['Delete']." wwc2_liks<b>";
-mysql_quey( "DROP TABLE IF EXISTS `wwc2_accouts`");
-echo $istalle_lag['Delete']." wwc2_accouts<b>";
-mysql_quey( "DROP TABLE IF EXISTS `wwc2_ews`");
-echo $istalle_lag['Delete']." wwc2_ews<b>";
-mysql_quey( "DROP TABLE IF EXISTS `wwc2_vote_data`");
-echo $istalle_lag['Delete']." wwc2_vote_data<b>";
-mysql_quey( "DROP TABLE IF EXISTS `wwc2_ews_c`");
-echo $istalle_lag['Delete']." wwc2_ews_c<b>";
-mysql_quey( "DROP TABLE IF EXISTS `wwc2_template`");
-echo $istalle_lag['Delete']." wwc2_template<b><b>";
+mysql_query("create database ".$_SESSION['wwcmsv2install']['web_db'] );
+mysql_select_db($_SESSION['wwcmsv2install']['web_db']) or die("Website database error: ".mysql_error());
+mysql_query( "SET AUTOCOMMIT=0" );
+mysql_query( "START TRANSACTION" );
+mysql_query( "DROP TABLE IF EXISTS `wwc2_active_users`");
+echo $installer_lang['Delete']." wwc2_active_users<br>";
+mysql_query( "DROP TABLE IF EXISTS `wwc2_banned_users`");
+echo $installer_lang['Delete']." wwc2_banned_users<br>";
+mysql_query( "DROP TABLE IF EXISTS `wwc2_active_guests`");
+echo $installer_lang['Delete']." wwc2_active_guests<br>";
+mysql_query( "DROP TABLE IF EXISTS `wwc2_users_more`");
+echo $installer_lang['Delete']." wwc2_users_more<br>";
+mysql_query( "DROP TABLE IF EXISTS `wwc2_config`");
+echo $installer_lang['Delete']." wwc2_config<br>";
+mysql_query( "DROP TABLE IF EXISTS `wwc2_links`");
+echo $installer_lang['Delete']." wwc2_links<br>";
+mysql_query( "DROP TABLE IF EXISTS `wwc2_accounts`");
+echo $installer_lang['Delete']." wwc2_accounts<br>";
+mysql_query( "DROP TABLE IF EXISTS `wwc2_news`");
+echo $installer_lang['Delete']." wwc2_news<br>";
+mysql_query( "DROP TABLE IF EXISTS `wwc2_vote_data`");
+echo $installer_lang['Delete']." wwc2_vote_data<br>";
+mysql_query( "DROP TABLE IF EXISTS `wwc2_news_c`");
+echo $installer_lang['Delete']." wwc2_news_c<br>";
+mysql_query( "DROP TABLE IF EXISTS `wwc2_template`");
+echo $installer_lang['Delete']." wwc2_template<br><br>";
 
-$quey7 = mysql_quey(
+$query7 = mysql_query(
 "CREATE TABLE `wwc2_active_guests` (
-`ip` vacha(15) NOT NULL,
-`timestamp` it(11) usiged NOT NULL,
+`ip` varchar(15) NOT NULL,
+`timestamp` int(11) unsigned NOT NULL,
 PRIMARY KEY (`ip`)
-) ENGINE=MyISAM DEFAULT CHARSET=lati1;");
-echo $istalle_lag['Ceate']." wwc2_active_guests<b>";
-$quey8 = mysql_quey("CREATE TABLE `wwc2_active_uses` (
-`useame` vacha(30) NOT NULL,
-`timestamp` it(11) usiged NOT NULL,
-PRIMARY KEY (`useame`)
-) ENGINE=MyISAM DEFAULT CHARSET=lati1;");
-echo $istalle_lag['Ceate']." wwc2_active_uses<b>";
-$quey9 = mysql_quey("CREATE TABLE `wwc2_baed_uses` (
-`useame` vacha(30) NOT NULL,
-`timestamp` it(11) usiged NOT NULL,
-PRIMARY KEY (`useame`)
-) ENGINE=MyISAM DEFAULT CHARSET=lati1;");
-echo $istalle_lag['Ceate']." wwc2_baed_uses<b>";
-$quey2 = mysql_quey(
-"CREATE TABLE `wwc2_cofig` (
-`cof_ame` vacha(255) COLLATE lati1_geeal_ci NOT NULL DEFAULT '',
-`cof_value` text COLLATE lati1_geeal_ci,
-`cof_desc` text COLLATE lati1_geeal_ci,
-`cof_stickied` it(1) NOT NULL DEFAULT '0',
-`cof_dopdow` text COLLATE lati1_geeal_ci,
-PRIMARY KEY (`cof_ame`)
-) ENGINE=MyISAM DEFAULT CHARSET=lati1 COLLATE=lati1_geeal_ci;"
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
+echo $installer_lang['Create']." wwc2_active_guests<br>";
+$query8 = mysql_query("CREATE TABLE `wwc2_active_users` (
+`username` varchar(30) NOT NULL,
+`timestamp` int(11) unsigned NOT NULL,
+PRIMARY KEY (`username`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
+echo $installer_lang['Create']." wwc2_active_users<br>";
+$query9 = mysql_query("CREATE TABLE `wwc2_banned_users` (
+`username` varchar(30) NOT NULL,
+`timestamp` int(11) unsigned NOT NULL,
+PRIMARY KEY (`username`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;");
+echo $installer_lang['Create']." wwc2_banned_users<br>";
+$query2 = mysql_query(
+"CREATE TABLE `wwc2_config` (
+`conf_name` varchar(255) COLLATE latin1_general_ci NOT NULL DEFAULT '',
+`conf_value` text COLLATE latin1_general_ci,
+`conf_descr` text COLLATE latin1_general_ci,
+`conf_stickied` int(1) NOT NULL DEFAULT '0',
+`conf_dropdown` text COLLATE latin1_general_ci,
+PRIMARY KEY (`conf_name`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;"
 );
-echo $istalle_lag['Ceate']." wwc2_cofig<b>";
-$quey10 = mysql_quey("CREATE TABLE `wwc2_liks` (
-`id` it(10) NOT NULL AUTO_INCREMENT,
-`liktitle` vacha(255) NOT NULL DEFAULT 'otitle',
-`likul` vacha(255) NOT NULL DEFAULT 'http://',
-`likdesc` vacha(255) DEFAULT '',
-`likgup` vacha(100) NOT NULL DEFAULT '0',
-`likode` it(11) NOT NULL DEFAULT '0',
-`likpems` it(10) NOT NULL DEFAULT '0',
+echo $installer_lang['Create']." wwc2_config<br>";
+$query10 = mysql_query("CREATE TABLE `wwc2_links` (
+`id` int(10) NOT NULL AUTO_INCREMENT,
+`linktitle` varchar(255) NOT NULL DEFAULT 'notitle',
+`linkurl` varchar(255) NOT NULL DEFAULT 'http://',
+`linkdescr` varchar(255) DEFAULT '',
+`linkgrup` varchar(100) NOT NULL DEFAULT '0',
+`linkorder` int(11) NOT NULL DEFAULT '0',
+`linkprems` int(10) NOT NULL DEFAULT '0',
 PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=441 DEFAULT CHARSET=lati1;");
-echo $istalle_lag['Ceate']." wwc2_liks<b>";
-$quey3 = mysql_quey(
-"CREATE TABLE `wwc2_ews` (
-`id` bigit(20) NOT NULL AUTO_INCREMENT,
-`title` vacha(255) COLLATE lati1_geeal_ci NOT NULL,
-`cotet` logtext COLLATE lati1_geeal_ci NOT NULL,
-`icoid` it(11) NOT NULL DEFAULT '0',
-`timepost` vacha(100) COLLATE lati1_geeal_ci NOT NULL,
-`stickied` it(1) NOT NULL DEFAULT '0' COMMENT '0 o 1',
-`hidde` it(1) NOT NULL DEFAULT '0' COMMENT '0 o 1',
-`autho` vacha(50) COLLATE lati1_geeal_ci NOT NULL,
+) ENGINE=MyISAM AUTO_INCREMENT=441 DEFAULT CHARSET=latin1;");
+echo $installer_lang['Create']." wwc2_links<br>";
+$query3 = mysql_query(
+"CREATE TABLE `wwc2_news` (
+`id` bigint(20) NOT NULL AUTO_INCREMENT,
+`title` varchar(255) COLLATE latin1_general_ci NOT NULL,
+`content` longtext COLLATE latin1_general_ci NOT NULL,
+`iconid` int(11) NOT NULL DEFAULT '0',
+`timepost` varchar(100) COLLATE latin1_general_ci NOT NULL,
+`stickied` int(1) NOT NULL DEFAULT '0' COMMENT '0 or 1',
+`hidden` int(1) NOT NULL DEFAULT '0' COMMENT '0 or 1',
+`author` varchar(50) COLLATE latin1_general_ci NOT NULL,
 PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=88 DEFAULT CHARSET=lati1 COLLATE=lati1_geeal_ci;");
-echo $istalle_lag['Ceate']." wwc2_ews<b>";
-$quey4 = mysql_quey(
-"CREATE TABLE `wwc2_ews_c` (
-`id` bigit(20) NOT NULL AUTO_INCREMENT,
-`poste` vacha(255) COLLATE lati1_geeal_ci NOT NULL,
-`cotet` text COLLATE lati1_geeal_ci NOT NULL,
-`ewsid` it(11) NOT NULL,
-`timepost` vacha(100) COLLATE lati1_geeal_ci NOT NULL,
-`datepost` vacha(100) COLLATE lati1_geeal_ci NOT NULL,
+) ENGINE=MyISAM AUTO_INCREMENT=88 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;");
+echo $installer_lang['Create']." wwc2_news<br>";
+$query4 = mysql_query(
+"CREATE TABLE `wwc2_news_c` (
+`id` bigint(20) NOT NULL AUTO_INCREMENT,
+`poster` varchar(255) COLLATE latin1_general_ci NOT NULL,
+`content` text COLLATE latin1_general_ci NOT NULL,
+`newsid` int(11) NOT NULL,
+`timepost` varchar(100) COLLATE latin1_general_ci NOT NULL,
+`datepost` varchar(100) COLLATE latin1_general_ci NOT NULL,
 PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=145 DEFAULT CHARSET=lati1 COLLATE=lati1_geeal_ci;");
-echo $istalle_lag['Ceate']." wwc2_ews_c<b>";
-$quey6 = mysql_quey("CREATE TABLE `wwc2_template` (
-`templateid` it(10) usiged NOT NULL auto_icemet,
-`styleid` smallit(6) NOT NULL default '0',
-`title` vacha(100) NOT NULL default '',
+) ENGINE=MyISAM AUTO_INCREMENT=145 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;");
+echo $installer_lang['Create']." wwc2_news_c<br>";
+$query6 = mysql_query("CREATE TABLE `wwc2_template` (
+`templateid` int(10) unsigned NOT NULL auto_increment,
+`styleid` smallint(6) NOT NULL default '0',
+`title` varchar(100) NOT NULL default '',
 `template` mediumtext,
-`template_u` mediumtext,
-`templatetype` eum('template','css','othe') NOT NULL default 'template',
-`datelie` it(10) usiged NOT NULL default '0',
-`useame` vacha(100) NOT NULL default '',
-`vesio` vacha(30) NOT NULL default '',
+`template_un` mediumtext,
+`templatetype` enum('template','css','other') NOT NULL default 'template',
+`dateline` int(10) unsigned NOT NULL default '0',
+`username` varchar(100) NOT NULL default '',
+`version` varchar(30) NOT NULL default '',
 PRIMARY KEY  (`templateid`),
 KEY `title` (`title`,`styleid`,`templatetype`)
-) ENGINE=MyISAM DEFAULT CHARSET=lati1 AUTO_INCREMENT=1;");
-echo $istalle_lag['Ceate']." wwc2_template<b>";
-$quey1 = mysql_quey(
-"CREATE TABLE `wwc2_uses_moe` (
-`id` bigit(20) NOT NULL AUTO_INCREMENT,
-`acc_logi` vacha(55) COLLATE lati1_geeal_ci NOT NULL,
-`vp` bigit(55) NOT NULL DEFAULT '0',
-`useid` vacha(32) COLLATE lati1_geeal_ci DEFAULT NULL,
-`questio` vacha(100) COLLATE lati1_geeal_ci DEFAULT NULL,
-`aswe` vacha(100) COLLATE lati1_geeal_ci NOT NULL  DEFAULT '',
-`dp` bigit(55) NOT NULL DEFAULT '0',
-`gmlevel` vacha(11) COLLATE lati1_geeal_ci NOT NULL  DEFAULT '',
-`avata` vacha(100) COLLATE lati1_geeal_ci NOT NULL  DEFAULT '',
-PRIMARY KEY (`id`,`acc_logi`)
-) ENGINE=MyISAM AUTO_INCREMENT=112 DEFAULT CHARSET=lati1 COLLATE=lati1_geeal_ci;");
-echo $istalle_lag['Ceate']." wwc2_uses_moe<b>";
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;");
+echo $installer_lang['Create']." wwc2_template<br>";
+$query1 = mysql_query(
+"CREATE TABLE `wwc2_users_more` (
+`id` bigint(20) NOT NULL AUTO_INCREMENT,
+`acc_login` varchar(55) COLLATE latin1_general_ci NOT NULL,
+`vp` bigint(55) NOT NULL DEFAULT '0',
+`userid` varchar(32) COLLATE latin1_general_ci DEFAULT NULL,
+`question` varchar(100) COLLATE latin1_general_ci DEFAULT NULL,
+`answer` varchar(100) COLLATE latin1_general_ci NOT NULL  DEFAULT '',
+`dp` bigint(55) NOT NULL DEFAULT '0',
+`gmlevel` varchar(11) COLLATE latin1_general_ci NOT NULL  DEFAULT '',
+`avatar` varchar(100) COLLATE latin1_general_ci NOT NULL  DEFAULT '',
+PRIMARY KEY (`id`,`acc_login`)
+) ENGINE=MyISAM AUTO_INCREMENT=112 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;");
+echo $installer_lang['Create']." wwc2_users_more<br>";
 
-$quey11 = mysql_quey(
+$query11 = mysql_query(
 "CREATE TABLE `wwc2_vote_data` (
-`id` bigit(21) NOT NULL AUTO_INCREMENT,
-`useid` bigit(21) DEFAULT NULL,
-`siteid` bigit(21) NOT NULL,
-`timevoted` bigit(21) NOT NULL,
-`voteip` vacha(21) COLLATE lati1_geeal_ci DEFAULT NULL,
+`id` bigint(21) NOT NULL AUTO_INCREMENT,
+`userid` bigint(21) DEFAULT NULL,
+`siteid` bigint(21) NOT NULL,
+`timevoted` bigint(21) NOT NULL,
+`voteip` varchar(21) COLLATE latin1_general_ci DEFAULT NULL,
 PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=170 DEFAULT CHARSET=lati1 COLLATE=lati1_geeal_ci;");
-echo $istalle_lag['Ceate']." wwc2_vote_data<b><b>";
+) ENGINE=MyISAM AUTO_INCREMENT=170 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;");
+echo $installer_lang['Create']." wwc2_vote_data<br><br>";
 
 
-//populate cofiguatio:
-$quey5 = mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('egie_lag','".$lag."','','1','')") o die (mysql_eo());
-echo $istalle_lag['Isetig data to']." wwc2_cofig";
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('egie_coe','".$_SESSION['wwcmsv2istall']['coe']."','','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('egie_logo_db','".$_SESSION['wwcmsv2istall']['logo_db']."','','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('egie_styleid','1','Chage style ID to chage style.','1','')") o die (mysql_eo());
+//populate configuration:
+$query5 = mysql_query("INSERT INTO `wwc2_config` VALUES ('engine_lang','".$lang."','','1','')") or die (mysql_error());
+echo $installer_lang['Inserting data to']." wwc2_config";
+mysql_query("INSERT INTO `wwc2_config` VALUES ('engine_core','".$_SESSION['wwcmsv2install']['core']."','','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('engine_logon_db','".$_SESSION['wwcmsv2install']['logon_db']."','','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('engine_styleid','1','Change style ID to change style.','1','')") or die (mysql_error());
 /**
-* Now costuct ealm databases stig i fomat:
+* Now construct realm databases string in format:
 * "DB1|REALM_PORT|DB1_HOST|DB1_USER|DB1_PASS;DB2|REALM_PORT;DB3|REALM_PORT" etc...
 * without quotes
 */
-$cha_coute=0;$cha_db='';$aosoap_pot='';
-foeach ($_SESSION['wwcmsv2istall']['cha_db'] as $key2=>$sess_chadb)
+$char_counter=0;$char_db='';$raorsoap_port='';
+foreach ($_SESSION['wwcmsv2install']['char_db'] as $key2=>$sess_chardb)
 {
 
-if($sess_chadb<>'')
+if($sess_chardb<>'')
 {
-if(tim($_SESSION['wwcmsv2istall']['cha_host'][$cha_coute])=='')
-$cha_db.=  ''.$sess_chadb.'|'.$_SESSION['wwcmsv2istall']['cha_pot'][$cha_coute].';';
+if(trim($_SESSION['wwcmsv2install']['char_host'][$char_counter])=='')
+$char_db.=  ''.$sess_chardb.'|'.$_SESSION['wwcmsv2install']['char_port'][$char_counter].';';
 else
-$cha_db.=  ''.$sess_chadb.'|'.$_SESSION['wwcmsv2istall']['cha_pot'][$cha_coute].'|'.$_SESSION['wwcmsv2istall']['cha_host'][$cha_coute].'|'.$_SESSION['wwcmsv2istall']['cha_dbuse'][$cha_coute].'|'.$_SESSION['wwcmsv2istall']['cha_dbpass'][$cha_coute].';';
+$char_db.=  ''.$sess_chardb.'|'.$_SESSION['wwcmsv2install']['char_port'][$char_counter].'|'.$_SESSION['wwcmsv2install']['char_host'][$char_counter].'|'.$_SESSION['wwcmsv2install']['char_dbuser'][$char_counter].'|'.$_SESSION['wwcmsv2install']['char_dbpass'][$char_counter].';';
 /**
-* TRINITY RA PORT o SOAP PORT:
+* TRINITY RA PORT or SOAP PORT:
 */
-if ($_SESSION['wwcmsv2istall']['coe']=='Tiity' o $_SESSION['wwcmsv2istall']['coe']=='MaNGOS' o $_SESSION['wwcmsv2istall']['coe']=='Tiitysoap')
+if ($_SESSION['wwcmsv2install']['core']=='Trinity' or $_SESSION['wwcmsv2install']['core']=='MaNGOS' or $_SESSION['wwcmsv2install']['core']=='Trinitysoap')
 {
-$aosoap_pot.= $_SESSION['wwcmsv2istall']['cha_asoap'][$cha_coute].'|';
+$raorsoap_port.= $_SESSION['wwcmsv2install']['char_rasoap'][$char_counter].'|';
 }
 /**
-* Realm ames:
+* Realm names:
 */
-$_SESSION['wwcmsv2istall']['cha_ames2'][$cha_coute]=$_SESSION['wwcmsv2istall']['cha_ames'][$cha_coute];
+$_SESSION['wwcmsv2install']['char_names2'][$char_counter]=$_SESSION['wwcmsv2install']['char_names'][$char_counter];
 }
 
-$cha_coute++;
+$char_counter++;
 
 }
-$cha_db=tim($cha_db,";");
-//cotiue:
+$char_db=rtrim($char_db,";");
+//continue:
 /**
-* TRINITY RA PORT o MANGOS SOAP PORT o TRINITY SOAP PORT:
+* TRINITY RA PORT or MANGOS SOAP PORT or TRINITY SOAP PORT:
 */
-if ($_SESSION['wwcmsv2istall']['coe']=='Tiity')
+if ($_SESSION['wwcmsv2install']['core']=='Trinity')
 {
-if ($aosoap_pot=='') $aosoap_pot='3443';
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('tiity_soap_pot','7878','TityCoe: SOAP Pot (fo sedig igame mail)<b><small>ealm1_SOAP_pot|ealm2_SOAP_pot</small>','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('tiity_a_pot','".$aosoap_pot."','TityCoe: Remote Access Pot (fo sedig igame mail)<b><small>ealm1_RA_pot|ealm2_RA_pot</small>','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('magos_soap_pot','7878','MaNGOS: Soap Pot (fo sedig igame mail)','1','')") o die (mysql_eo());
+if ($raorsoap_port=='') $raorsoap_port='3443';
+mysql_query("INSERT INTO `wwc2_config` VALUES ('trinity_soap_port','7878','TrintyCore: SOAP Port (for sending ingame mail)<br><small>realm1_SOAP_port|realm2_SOAP_port</small>','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('trinity_ra_port','".$raorsoap_port."','TrintyCore: Remote Access Port (for sending ingame mail)<br><small>realm1_RA_port|realm2_RA_port</small>','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('mangos_soap_port','7878','MaNGOS: Soap Port (for sending ingame mail)','1','')") or die (mysql_error());
 
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('tiity_a_usepass','".sttouppe($_SESSION['wwcmsv2istall']['cha_asoap_use'])."|".$_SESSION['wwcmsv2istall']['cha_asoap_pass']."','TityCoe: RA Useame ad Passwod (fo sedig igame mail)<b><small>RA_useame|RA_passwod</small>','1','')") o die (mysql_eo());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('trinity_ra_userpass','".strtoupper($_SESSION['wwcmsv2install']['char_rasoap_user'])."|".$_SESSION['wwcmsv2install']['char_rasoap_pass']."','TrintyCore: RA Username and Password (for sending ingame mail)<br><small>RA_username|RA_password</small>','1','')") or die (mysql_error());
 
 
 }
-else if ($_SESSION['wwcmsv2istall']['coe']=='MaNGOS')
+else if ($_SESSION['wwcmsv2install']['core']=='MaNGOS')
 {
 
-if ($aosoap_pot=='') $aosoap_pot='7878';
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('tiity_soap_pot','".$aosoap_pot."','TityCoe: SOAP Pot (fo sedig igame mail)<b><small>ealm1_SOAP_pot|ealm2_SOAP_pot</small>','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('magos_soap_pot','".$aosoap_pot."','MaNGOS: Soap Pot (fo sedig igame mail)','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('tiity_a_pot','3443','TityCoe: Remote Access Pot (fo sedig igame mail)<b><small>ealm1_RA_pot|ealm2_RA_pot</small>','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('magos_soap_usepass','".sttouppe($_SESSION['wwcmsv2istall']['cha_asoap_use'])."|".$_SESSION['wwcmsv2istall']['cha_asoap_pass']."','MaNGOS: SOAP Useame ad Passwod(fo sedig igame mail)<b><small>SOAP_useame|SOAP_passwod</small>','1','')") o die (mysql_eo());
+if ($raorsoap_port=='') $raorsoap_port='7878';
+mysql_query("INSERT INTO `wwc2_config` VALUES ('trinity_soap_port','".$raorsoap_port."','TrintyCore: SOAP Port (for sending ingame mail)<br><small>realm1_SOAP_port|realm2_SOAP_port</small>','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('mangos_soap_port','".$raorsoap_port."','MaNGOS: Soap Port (for sending ingame mail)','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('trinity_ra_port','3443','TrintyCore: Remote Access Port (for sending ingame mail)<br><small>realm1_RA_port|realm2_RA_port</small>','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('mangos_soap_userpass','".strtoupper($_SESSION['wwcmsv2install']['char_rasoap_user'])."|".$_SESSION['wwcmsv2install']['char_rasoap_pass']."','MaNGOS: SOAP Username and Password(for sending ingame mail)<br><small>SOAP_username|SOAP_password</small>','1','')") or die (mysql_error());
 }
-else if ($_SESSION['wwcmsv2istall']['coe']=='Tiitysoap')
+else if ($_SESSION['wwcmsv2install']['core']=='Trinitysoap')
 {
-if ($aosoap_pot=='') $aosoap_pot='7878';
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('tiity_soap_pot','".$aosoap_pot."','TityCoe: SOAP Pot (fo sedig igame mail)<b><small>ealm1_SOAP_pot|ealm2_SOAP_pot</small>','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('magos_soap_pot','".$aosoap_pot."','MaNGOS: Soap Pot (fo sedig igame mail)<b><small>ealm1_SOAP_pot|ealm2_SOAP_pot</small>','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('tiity_a_pot','3443|','TityCoe: Remote Access Pot (fo sedig igame mail)<b><small>ealm1_RA_pot|ealm2_RA_pot</small>','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('magos_soap_usepass','".sttouppe($_SESSION['wwcmsv2istall']['cha_asoap_use'])."|".$_SESSION['wwcmsv2istall']['cha_asoap_pass']."','MaNGOS: SOAP Useame ad Passwod (fo sedig igame mail)<b><small>SOAP_useame|SOAP_passwod</small>','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('tiity_soap_usepass','".sttouppe($_SESSION['wwcmsv2istall']['cha_asoap_use'])."|".$_SESSION['wwcmsv2istall']['cha_asoap_pass']."','TityCoe: SOAP Useame ad Passwod (fo sedig igame mail)<b><small>SOAP_useame|SOAP_passwod</small>','1','')") o die (mysql_eo());
+if ($raorsoap_port=='') $raorsoap_port='7878';
+mysql_query("INSERT INTO `wwc2_config` VALUES ('trinity_soap_port','".$raorsoap_port."','TrintyCore: SOAP Port (for sending ingame mail)<br><small>realm1_SOAP_port|realm2_SOAP_port</small>','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('mangos_soap_port','".$raorsoap_port."','MaNGOS: Soap Port (for sending ingame mail)<br><small>realm1_SOAP_port|realm2_SOAP_port</small>','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('trinity_ra_port','3443|','TrintyCore: Remote Access Port (for sending ingame mail)<br><small>realm1_RA_port|realm2_RA_port</small>','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('mangos_soap_userpass','".strtoupper($_SESSION['wwcmsv2install']['char_rasoap_user'])."|".$_SESSION['wwcmsv2install']['char_rasoap_pass']."','MaNGOS: SOAP Username and Password (for sending ingame mail)<br><small>SOAP_username|SOAP_password</small>','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('trinity_soap_userpass','".strtoupper($_SESSION['wwcmsv2install']['char_rasoap_user'])."|".$_SESSION['wwcmsv2install']['char_rasoap_pass']."','TrintyCore: SOAP Username and Password (for sending ingame mail)<br><small>SOAP_username|SOAP_password</small>','1','')") or die (mysql_error());
 }
 else
 {
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('magos_soap_pot','7878','MaNGOS: Soap Pot (fo sedig igame mail)','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('tiity_a_pot','3443','TityCoe: Remote Access Pot (fo sedig igame mail)<b><small>ealm1_RA_pot|ealm2_RA_pot</small>','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('tiity_soap_pot','7878','TityCoe: SOAP Pot (fo sedig igame mail)<b><small>ealm1_SOAP_pot|ealm2_SOAP_pot</small>','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('tiity_soap_usepass','|','TityCoe: SOAP Useame ad Passwod (fo sedig igame mail)<b><small>SOAP_useame|SOAP_passwod</small>','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('magos_soap_usepass','|','MaNGOS: SOAP Useame ad Passwod (fo sedig igame mail)<b><small>RA_useame|RA_passwod</small>','1','')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('tiity_a_usepass','|','TityCoe: RA Useame ad Passwod (fo sedig igame mail)<b><small>RA_useame|RA_passwod</small>','1','')") o die (mysql_eo());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('mangos_soap_port','7878','MaNGOS: Soap Port (for sending ingame mail)','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('trinity_ra_port','3443','TrintyCore: Remote Access Port (for sending ingame mail)<br><small>realm1_RA_port|realm2_RA_port</small>','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('trinity_soap_port','7878','TrintyCore: SOAP Port (for sending ingame mail)<br><small>realm1_SOAP_port|realm2_SOAP_port</small>','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('trinity_soap_userpass','|','TrintyCore: SOAP Username and Password (for sending ingame mail)<br><small>SOAP_username|SOAP_password</small>','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('mangos_soap_userpass','|','MaNGOS: SOAP Username and Password (for sending ingame mail)<br><small>RA_username|RA_password</small>','1','')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('trinity_ra_userpass','|','TrintyCore: RA Username and Password (for sending ingame mail)<br><small>RA_username|RA_password</small>','1','')") or die (mysql_error());
 }
 
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('egie_cha_dbs','".$cha_db."','<b><small>DB1|REALM_PORT|DB1_HOST|DB1_USER|DB1_PASS;DB2|REALM_PORT</small>','1','')") o die (mysql_eo());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('engine_char_dbs','".$char_db."','<br><small>DB1|REALM_PORT|DB1_HOST|DB1_USER|DB1_PASS;DB2|REALM_PORT</small>','1','')") or die (mysql_error());
 /**
-* Realm ames ame|ame|ame
+* Realm names name|name|name
 */
-$cha_ames=implode("|",$_SESSION['wwcmsv2istall']['cha_ames2']);
+$char_names=implode("|",$_SESSION['wwcmsv2install']['char_names2']);
 
 
-//cotiue:
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('egie_ealmames','".htmlspecialchas($cha_ames)."','<b><small>ealmame1|ealmame2|ealmame3</small>','1','')") o die (mysql_eo());
+//continue:
+mysql_query("INSERT INTO `wwc2_config` VALUES ('engine_realmnames','".htmlspecialchars($char_names)."','<br><small>realmname1|realmname2|realmname3</small>','1','')") or die (mysql_error());
 
 
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('egie_web_db','".$_SESSION['wwcmsv2istall']['web_db']."','','1','')") o die (mysql_eo());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('engine_web_db','".$_SESSION['wwcmsv2install']['web_db']."','','1','')") or die (mysql_error());
 
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('egie_acp_folde','admicp\/','foldeame\/','1','')") o die (mysql_eo());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('engine_acp_folder','admincp\/','foldername\/','1','')") or die (mysql_error());
 
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('licese','FREE','','1','')") o die (mysql_eo());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('license','FREE','','1','')") or die (mysql_error());
 
-if ($_SESSION['wwcmsv2istall']['coe']=='AcEmu')
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('pemissio_admi','az','','1','')") o die (mysql_eo());
+if ($_SESSION['wwcmsv2install']['core']=='ArcEmu')
+mysql_query("INSERT INTO `wwc2_config` VALUES ('premission_admin','az','','1','')") or die (mysql_error());
 else
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('pemissio_admi','4','','1','')") o die (mysql_eo());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('premission_admin','4','','1','')") or die (mysql_error());
 
-if ($_SESSION['wwcmsv2istall']['coe']=='AcEmu')
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('pemissio_gm','a','','1','')") o die (mysql_eo());
+if ($_SESSION['wwcmsv2install']['core']=='ArcEmu')
+mysql_query("INSERT INTO `wwc2_config` VALUES ('premission_gm','a','','1','')") or die (mysql_error());
 else
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('pemissio_gm','3','','1','')") o die (mysql_eo());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('premission_gm','3','','1','')") or die (mysql_error());
 
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('title','My WoW Seve','','1','')") o die (mysql_eo());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('title','My WoW Server','','1','')") or die (mysql_error());
 
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('egie_loguses','tue','tue/false, disable if you website is slow','1','tue|false')") o die (mysql_eo());
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('vote_eable','1','1 = eabled;  0 = disabled','1','0|1')") o die (mysql_eo());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('engine_logusers','true','true/false, disable if your website is slow','1','true|false')") or die (mysql_error());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('vote_enable','1','1 = enabled;  0 = disabled','1','0|1')") or die (mysql_error());
 
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('module_usepael','logiout.php|egiste.php|cedits.php|usepael.php|MODULE_TEMPLATE.php','Usepael: Do ot show modules i this list<b><small>module1.php|module2.php</small>','1','')") o die (mysql_eo());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('module_userpanel','loginout.php|register.php|credits.php|userpanel.php|MODULE_TEMPLATE.php','Userpanel: Do not show modules in this list<br><small>module1.php|module2.php</small>','1','')") or die (mysql_error());
 
-mysql_quey("INSERT INTO `wwc2_cofig` VALUES ('foote_detail','0','Foote Cedits: <small>0 = simplified; 1 = full detail; 2 = full fo admis oly</small>','1','0|1|2')") o die (mysql_eo());
+mysql_query("INSERT INTO `wwc2_config` VALUES ('footer_detail','0','Footer Credits: <small>0 = simplified; 1 = full detail; 2 = full for admins only</small>','1','0|1|2')") or die (mysql_error());
 
-mysql_quey("INSERT INTO `wwc2_ews` (title,cotet,timepost,autho) VALUES ('Welcome',
-'Thak you fo usig OpeWoW CMS v2.
+mysql_query("INSERT INTO `wwc2_news` (title,content,timepost,author) VALUES ('Welcome',
+'Thank you for using OpenWoW CMS v2.
 
-If you admiistato double click hee to edit ews.
-Go to [b]admiistatio pael[/b] to maage CMS.','".date("U")."','WebWoWCMSv2')") o die (mysql_eo());
+If your administrator double click here to edit news.
+Go to [b]administration panel[/b] to manage CMS.','".date("U")."','WebWoWCMSv2')") or die (mysql_error());
 
-$this->mysql_impot_file('./egie/istalle/sql/wwc2_template.sql',$emsg);
-echo $emsg;$emsg='';
-echo "<b>".$istalle_lag['Isetig data to']." wwc2_template";
-$this->mysql_impot_file('./egie/istalle/sql/wwc2_liks.sql',$emsg);
-echo $emsg;
-echo "<b>".$istalle_lag['Isetig data to']." wwc2_liks<b>";
+$this->mysql_import_file('./engine/installer/sql/wwc2_template.sql',$errmsg);
+echo $errmsg;$errmsg='';
+echo "<br>".$installer_lang['Inserting data to']." wwc2_template";
+$this->mysql_import_file('./engine/installer/sql/wwc2_links.sql',$errmsg);
+echo $errmsg;
+echo "<br>".$installer_lang['Inserting data to']." wwc2_links<br>";
 
 
-if ( $quey1 && $quey2 && $quey3 && $quey4 && $quey5 && $quey6 && $quey7 && $quey8 && $quey9 && $quey10 && $quey11 ) {
-mysql_quey( "COMMIT" );
-mysql_quey( "SET AUTOCOMMIT=1" );
-mysql_close( $coect );
-echo "<b><fot colo=gee>".$istalle_lag['Tables ae ceated successfully']."</fot>";
+if ( $query1 && $query2 && $query3 && $query4 && $query5 && $query6 && $query7 && $query8 && $query9 && $query10 && $query11 ) {
+mysql_query( "COMMIT" );
+mysql_query( "SET AUTOCOMMIT=1" );
+mysql_close( $connect );
+echo "<br><font color=green>".$installer_lang['Tables are created successfully']."</font>";
 
 }
 else {
-if ($quey1) echo "tue"; else echo 'false';
-echo $istalle_lag['Failed to ceate tables']."<b>" . mysql_eo();
-mysql_quey( "ROLLBACK" );
-mysql_quey( "SET AUTOCOMMIT=1" );
+if ($query1) echo "true"; else echo 'false';
+echo $installer_lang['Failed to create tables']."<br>" . mysql_error();
+mysql_query( "ROLLBACK" );
+mysql_query( "SET AUTOCOMMIT=1" );
 
 
-mysql_close( $coect );
-$stop=tue;
+mysql_close( $connect );
+$stop=true;
 }
 }
 }
-elseif ($step=='7')/*add admi use*/
+elseif ($step=='7')/*add admin user*/
 {
 
-if ($_SESSION['wwcmsv2istall']['web_db']=='')
+if ($_SESSION['wwcmsv2install']['web_db']=='')
 {
-echo $istalle_lag['You did ot ete website database, please go step back.'];etu;
+echo $installer_lang['You did not enter website database, please go step back.'];return;
 
 }
 //
-// Ceate db, add tables ad wite cofig.php
+// Create db, add tables and write config.php
 //
-$coected=tue;
-$coect = @mysql_coect($_SESSION['wwcmsv2istall']['db_host'], $_SESSION['wwcmsv2istall']['db_use'], $_SESSION['wwcmsv2istall']['db_pass']) o $coected=false;
-if ($coected)
+$connected=true;
+$connect = @mysql_connect($_SESSION['wwcmsv2install']['db_host'], $_SESSION['wwcmsv2install']['db_user'], $_SESSION['wwcmsv2install']['db_pass']) or $connected=false;
+if ($connected)
 {
 /**
-* Ok we eed to check fo admi accout
+* Ok we need to check for admin account
 **/
 ?>
-<scipt type="text/javascipt">
-fuctio checkadmi()
+<script type="text/javascript">
+function checkadmin()
 {
-va host = documet.getElemetById("host").value;
-va use = documet.getElemetById("use").value;
-va pass = documet.getElemetById("pass").value;
-va admi_useame = documet.getElemetById("admi_useame").value;
-va admi_passwod = documet.getElemetById("admi_passwod").value;
-$('#db_co').fadeI('slow', fuctio() {});
-documet.getElemetById("checkadmi").ieHTML="<?php echo $istalle_lag['Coectig']; ?>...";
-$.post("./egie/istalle/dyamic/checkadmi.php?l=<?php echo $istalle_lag['Next Step']; ?>&f=<?php echo $istalle_lag['Coectio Failed']; ?>&s=<?php echo $istalle_lag['Coectio Successful']; ?>", {host:host, use: use,pass: pass, admi_useame: admi_useame, admi_passwod: admi_passwod },fuctio(data)
+var host = document.getElementById("host").value;
+var user = document.getElementById("user").value;
+var pass = document.getElementById("pass").value;
+var admin_username = document.getElementById("admin_username").value;
+var admin_password = document.getElementById("admin_password").value;
+$('#db_con').fadeIn('slow', function() {});
+document.getElementById("checkadmin").innerHTML="<?php echo $installer_lang['Connecting']; ?>...";
+$.post("./engine/installer/dynamic/checkadmin.php?l=<?php echo $installer_lang['Next Step']; ?>&f=<?php echo $installer_lang['Connection Failed']; ?>&s=<?php echo $installer_lang['Connection Successful']; ?>", {host:host, user: user,pass: pass, admin_username: admin_username, admin_password: admin_password },function(data)
 {
-documet.getElemetById("checkadmi").ieHTML="" + data;
+document.getElementById("checkadmin").innerHTML="" + data;
 }
 );
 }
-</scipt>
-<iput ame="host" id="host" type="hidde" value="<?php echo $_SESSION['wwcmsv2istall']['db_host']; ?>">
-<iput ame="use" id="use" type="hidde" value="<?php echo $_SESSION['wwcmsv2istall']['db_use']; ?>">
-<iput ame="pass" id="pass" type="hidde" value="<?php echo $_SESSION['wwcmsv2istall']['db_pass']; ?>">
+</script>
+<input name="host" id="host" type="hidden" value="<?php echo $_SESSION['wwcmsv2install']['db_host']; ?>">
+<input name="user" id="user" type="hidden" value="<?php echo $_SESSION['wwcmsv2install']['db_user']; ?>">
+<input name="pass" id="pass" type="hidden" value="<?php echo $_SESSION['wwcmsv2install']['db_pass']; ?>">
 <?php
-echo $istalle_lag['Admi Useame'].':';
-$this->Iput("admi_useame",'');echo '<b>';
-echo $istalle_lag['Admi Passwod'].':';
-$this->Iput("admi_passwod",'');echo '<b>';
-echo "<b><spa id='checkadmi'><iput type='butto' oclick='javascipt:checkadmi();etu false' value='".$istalle_lag['Save']."'><b></spa>";
-$stop=tue;
+echo $installer_lang['Admin Username'].':';
+$this->Input("admin_username",'');echo '<br>';
+echo $installer_lang['Admin Password'].':';
+$this->Input("admin_password",'');echo '<br>';
+echo "<br><span id='checkadmin'><input type='button' onclick='javascript:checkadmin();return false' value='".$installer_lang['Save']."'><br></span>";
+$stop=true;
 }
 }
 elseif ($step=='8')
@@ -860,84 +860,84 @@ elseif ($step=='8')
 
 
 
-$coected=tue;
-$coect = @mysql_coect($_SESSION['wwcmsv2istall']['db_host'], $_SESSION['wwcmsv2istall']['db_use'], $_SESSION['wwcmsv2istall']['db_pass']) o $coected=false;
-if ($coected)
+$connected=true;
+$connect = @mysql_connect($_SESSION['wwcmsv2install']['db_host'], $_SESSION['wwcmsv2install']['db_user'], $_SESSION['wwcmsv2install']['db_pass']) or $connected=false;
+if ($connected)
 {
 
 
-$stig = "<?php" . $l. '$cofig=aay(' . $l;
+$string = "<?php" . $ln. '$config=array(' . $ln;
 
-$sql1=mysql_quey("SELECT * FROM ".$_SESSION['wwcmsv2istall']['web_db'].".wwc2_cofig")o die (mysql_eo());
-while ($sql2=mysql_fetch_aay($sql1))
+$sql1=mysql_query("SELECT * FROM ".$_SESSION['wwcmsv2install']['web_db'].".wwc2_config")or die (mysql_error());
+while ($sql2=mysql_fetch_array($sql1))
 {
-$stig .= "'".$sql2[0]."' => '".$sql2[1]."'," . $l;
+$string .= "'".$sql2[0]."' => '".$sql2[1]."'," . $ln;
 }
 
-$stig .= ");" . $l . $l . "defie('AXE',1);" . $l . $l;
-$this->wittefile($stig,'./cofig/cofig.php');
+$string .= ");" . $ln . $ln . "define('AXE',1);" . $ln . $ln;
+$this->writtefile($string,'./config/config.php');
 
-echo "<b><b>";
+echo "<br><br>";
 
-$stig = "<?php" . $l. '$db_host="'.$_SESSION['wwcmsv2istall']['db_host'].'";' . $l;
-$stig .= '$db_use="'.$_SESSION['wwcmsv2istall']['db_use'].'";' . $l;
-$stig .= '$db_pass="'.$_SESSION['wwcmsv2istall']['db_pass'].'";' . $l;
-$stig .= "defie('AXE_db',1);" . $l . $l;
-$this->wittefile($stig,'./cofig/cofig_db.php');
+$string = "<?php" . $ln. '$db_host="'.$_SESSION['wwcmsv2install']['db_host'].'";' . $ln;
+$string .= '$db_user="'.$_SESSION['wwcmsv2install']['db_user'].'";' . $ln;
+$string .= '$db_pass="'.$_SESSION['wwcmsv2install']['db_pass'].'";' . $ln;
+$string .= "define('AXE_db',1);" . $ln . $ln;
+$this->writtefile($string,'./config/config_db.php');
 
 
 }
 else
 {
-echo $istalle_lag['Go to']." '".$istalle_lag['Database Coectio']."'.";
-$stop=tue;
+echo $installer_lang['Go to']." '".$installer_lang['Database Connection']."'.";
+$stop=true;
 }
 
 }
 elseif ($step=='9')
 {
-echo "Whoops, we ae soy but scipt could ot ceate followig files: cofig/cofig.php ad cofig/cofig_db.php<b>
-pobably due CHMOD file pemissios, ty usig you ftp pogam ad chmod them to be wittable, also if you ae o widows
-avigate to www/cofig/ folde, ight click popeties, ucheck 'Read Oly'. If files does ot exists, ceate two empty files
-(cofig.php ad cofig_db.php).<b><b>Click o last step o the left.";etu;
+echo "Whoops, we are sorry but script could not create following files: config/config.php and config/config_db.php<br>
+probably due CHMOD file premissions, try using your ftp program and chmod them to be writtable, also if you are on windows
+navigate to www/config/ folder, right click propreties, uncheck 'Read Only'. If files does not exists, create two empty files
+(config.php and config_db.php).<br><br>Click on last step on the left.";return;
 }
 
-if ($stop) etu;
+if ($stop) return;
 if ($step=='8')
-echo '<b><b><iput ame="ext" type="submit" value="'.$istalle_lag['Stat usig the site'].'"></fom>';
+echo '<br><br><input name="next" type="submit" value="'.$installer_lang['Start using the site'].'"></form>';
 else
-echo '<b><b><iput ame="ext" type="submit" value="'.$istalle_lag['Next Step'].' ('.$step.'/8)"></fom>';
+echo '<br><br><input name="next" type="submit" value="'.$installer_lang['Next Step'].' ('.$step.'/8)"></form>';
 }
 
 // --------------------------------------------------------------------
 
 /**
-* Wite File
+* Write File
 *
 * @access	public
-* @paam	stig
-* @paam	stig
-* @etu	void
+* @param	string
+* @param	string
+* @return	void
 */
-fuctio wittefile($stig,$file)//pits
+function writtefile($string,$file)//prints
 {
-global $lag,$istalle_lag;
+global $lang,$installer_lang;
 
-$fh = fope( $file, 'w');
-fwite($fh, $stig);
+$fh = fopen( $file, 'w');
+fwrite($fh, $string);
 fclose($fh);
 
-echo $file . ' <fot colo=\'gee\'><b>' . $istalle_lag['witte successfully']. '</b></fot>';
+echo $file . ' <font color=\'green\'><b>' . $installer_lang['written successfully']. '</b></font>';
 
 /**
-*We will leave this file wittable becouse admiistato will wat to ecache cofig.php
-*but we will chmod file cofig_db.php becouse it o loge eeds chagig.
+*We will leave this file writtable becouse administrator will want to recache config.php
+*but we will chmod file config_db.php becouse it no longer needs changing.
 **/
-if (peg_match("/cofig_db.php/",$file))
+if (preg_match("/config_db.php/",$file))
 @chmod($file, 0644);
-if (is_witable($file))
+if (is_writable($file))
 {
-echo '<b>' . $istalle_lag['We suggest that you CHMOD'] . ' <b>' . $file . '</b> ' . $istalle_lag['to'] . ' 0664.';
+echo '<br>' . $installer_lang['We suggest that you CHMOD'] . ' <b>' . $file . '</b> ' . $installer_lang['to'] . ' 0664.';
 }
 }
 
@@ -947,116 +947,116 @@ echo '<b>' . $istalle_lag['We suggest that you CHMOD'] . ' <b>' . $file . '</b> 
 * Check table
 *
 * @access	public
-* @paam	stig
-* @etu	boolea
+* @param	string
+* @return	boolean
 */
-fuctio checkTable($table)
+function checkTable($table)
 {
-$esult = @mysql_quey("SELECT * FROM $table");
+$result = @mysql_query("SELECT * FROM $table");
 
-// I could just cast this, but I feel as if this is safe appoach
-etu (!$esult) ? FALSE : TRUE;
+// I could just cast this, but I feel as if this is safer approach
+return (!$result) ? FALSE : TRUE;
 }
 
 // --------------------------------------------------------------------
 
 /**
-* Check Fo Empty Database
+* Check For Empty Database
 *
 * @access	public
-* @paam	stig
-* @etu	boolea
+* @param	string
+* @return	boolean
 */
-fuctio checkFoEmptyDB($database)
+function checkForEmptyDB($database)
 {
-$quey  = 'SELECT cout(*) TABLES, table_schema ';
-$quey .= 'FROM ifomatio_schema.TABLES ';
-$quey .= 'WHERE table_schema= \'' . $database . '\' ';
-$quey .= 'GROUP BY table_schema';
+$query  = 'SELECT count(*) TABLES, table_schema ';
+$query .= 'FROM information_schema.TABLES ';
+$query .= 'WHERE table_schema= \'' . $database . '\' ';
+$query .= 'GROUP BY table_schema';
 
-$esult = @mysql_quey($quey);
-$esult = mysql_fetch_aay($esult);
+$result = @mysql_query($query);
+$result = mysql_fetch_array($result);
 
-etu ($esult == '0') ? TRUE : FALSE;
+return ($result == '0') ? TRUE : FALSE;
 }
 
 // --------------------------------------------------------------------
 
 /**
-* Iput
+* Input
 *
 * @access	public
-* @paam	stig
-* @paam	stig
-* @paam	stig
-* @paam	stig
-* @paam	stig
-* @paam	stig
-* @etu	void
+* @param	string
+* @param	string
+* @param	string
+* @param	string
+* @param	string
+* @param	string
+* @return	void
 */
-fuctio Iput($ame, $value=false,$text=false, $text2=false,$id=false, $moe=false)
+function Input($name, $value=false,$text=false, $text2=false,$id=false, $more=false)
 {
-if (!$value o $value == '')
+if (!$value or $value == '')
 {
-if(isset($_SESSION['wwcmsv2istall'][$ame]))
+if(isset($_SESSION['wwcmsv2install'][$name]))
 {
-$value = $_SESSION['wwcmsv2istall'][$ame];
+$value = $_SESSION['wwcmsv2install'][$name];
 }
 }
 
 if ($id == FALSE)
 {
-$id = $ame;
+$id = $name;
 }
 
-echo '<div>' . $text . '<iput ame="' . $ame . '" id="' . $id . '" type="text" value="' . $value . '" style="width:250px" ' . $moe . '>' . $text2 . '</div>';
+echo '<div>' . $text . '<input name="' . $name . '" id="' . $id . '" type="text" value="' . $value . '" style="width:250px" ' . $more . '>' . $text2 . '</div>';
 }
 
 // --------------------------------------------------------------------
 
 /**
-* Tee
+* Tree
 *
 * @access	public
-* @paam	stig
-* @etu	boolea
+* @param	string
+* @return	boolean
 */
-fuctio Tee()
+function Tree()
 {
-global $istalle_lag, $lag;
+global $installer_lang, $lang;
 
-$cuet_step = '1';
+$current_step = '1';
 
 if(isset($_GET['step']) && !empty($_GET['step']))
 {
-$cuet_step = saitize($_GET['step']);
+$current_step = sanitize($_GET['step']);
 }
 
-$steps = aay(
-1 => $istalle_lag["Laguage selectio"],
-2 => $istalle_lag["Requiemets"],
-3 => $istalle_lag["Seve Coe"],
-4 => $istalle_lag["Database Coectio"],
-5 => $istalle_lag["Database Setup"],
-6 => $istalle_lag["Impot to DB"],
-7 => $istalle_lag["Admi"],
-8 => $istalle_lag["Geeate Cofigs"]
+$steps = array(
+1 => $installer_lang["Language selection"],
+2 => $installer_lang["Requirements"],
+3 => $installer_lang["Server Core"],
+4 => $installer_lang["Database Connection"],
+5 => $installer_lang["Database Setup"],
+6 => $installer_lang["Import to DB"],
+7 => $installer_lang["Admin"],
+8 => $installer_lang["Generate Configs"]
 );
 
 $i = '1';
-$colo = 'black';
+$color = 'black';
 
-foeach ($steps as $step)
+foreach ($steps as $step)
 {
-if ($cuet_step == $i)
+if ($current_step == $i)
 {
-echo '<stog><a hef="./?step=' . $i . '&lag=' . $lag . '">' . $step . '</a></stog><b>';
-$colo = 'gay';
+echo '<strong><a href="./?step=' . $i . '&lang=' . $lang . '">' . $step . '</a></strong><br>';
+$color = 'gray';
 }
 
 else
 {
-echo '<fot colo='.$colo.'><a hef="./?step='.$i.'&lag='.$lag.'">'.$step.'</a></fot><b>';
+echo '<font color='.$color.'><a href="./?step='.$i.'&lang='.$lang.'">'.$step.'</a></font><br>';
 }
 
 $i++;
@@ -1066,102 +1066,102 @@ $i++;
 // --------------------------------------------------------------------
 
 /**
-* MySQL Impot File
+* MySQL Import File
 *
 * @access	public
-* @paam	stig
-* @etu	boolea
+* @param	string
+* @return	boolean
 */
-fuctio mysql_impot_file($fileame, &$emsg)
+function mysql_import_file($filename, &$errmsg)
 {
 // Read the file
-$lies = file($fileame);
+$lines = file($filename);
 
-if(!$lies)
+if(!$lines)
 {
-$emsg = "Could ot ope file $fileame";
-etu FALSE;
+$errmsg = "Could not open file $filename";
+return FALSE;
 }
 
-$sciptfile = FALSE;
+$scriptfile = FALSE;
 
 
-// Ru each lie as a quey
-foeach($lies as $quey)
+// Run each line as a query
+foreach($lines as $query)
 {
-$quey = tim($quey);
+$query = trim($query);
 
-if($quey == '')
+if($query == '')
 {
-cotiue;
+continue;
 }
 
-if(!mysql_quey($quey.';'))
+if(!mysql_query($query.';'))
 {
-$emsg = "<stog>Quey</stog> " . htmlspecialchas($quey) . " <b>FAILED</b><b>REPORT: " . mysql_eo() . "<b>";
-etu FALSE;
+$errmsg = "<strong>Query</strong> " . htmlspecialchars($query) . " <b>FAILED</b><br>REPORT: " . mysql_error() . "<br>";
+return FALSE;
 }
 }
 
-etu TRUE;
+return TRUE;
 }
 }
 
-$Istall = ew Istall;
+$Install = new Install;
 ?>
 
 
 <html>
 <head>
-<title><?php echo $istalle_lag["WWC v2 Istalle"]; ?></title>
+<title><?php echo $installer_lang["WWC v2 Installer"]; ?></title>
 
-<meta http-equiv = "Cotet-Type" cotet = "text/html;chaset=utf-8">
-<lik hef = "./egie/istalle/es/style.css" el = "stylesheet" type = "text/css"/>
-<scipt sc="./egie/js/jquey-1.4.2.mi.js"></scipt>
+<meta http-equiv = "Content-Type" content = "text/html;charset=utf-8">
+<link href = "./engine/installer/res/style.css" rel = "stylesheet" type = "text/css"/>
+<script src="./engine/js/jquery-1.4.2.min.js"></script>
 </head>
 
 <body>
-<div id = "cotaie">
-<div id = "heade">
-<table width="100%" height="100px" cellpaddig="0" cellspacig="0" bode="0" >
-<t>
-<td width="200px" valig="top">
-<h1><img sc="egie/istalle/es/logo.pg"><spa><stog><?php echo $istalle_lag["WebWoW CMS v2 Istall Scipt"]; ?></stog></spa></h1>
+<div id = "container">
+<div id = "header">
+<table width="100%" height="100px" cellpadding="0" cellspacing="0" border="0" >
+<tr>
+<td width="200px" valign="top">
+<h1><img src="engine/installer/res/logo.png"><span><strong><?php echo $installer_lang["WebWoW CMS v2 Install Script"]; ?></strong></span></h1>
 </td>
-<td><div id = "foote">OpeWoW CMS v2 &copy; 2012<b/>Poweed by <a hef = "http://www.opewow.et" title="OpeWoW CMS">OpeWoW</a></div>
-</td></t>
+<td><div id = "footer">OpenWoW CMS v2 &copy; 2012<br/>Powered by <a href = "http://www.openwow.net" title="OpenWoW CMS">OpenWoW</a></div>
+</td></tr>
 </table>
 </div>
-<div id = "cotet">
-<b/>
-<table width="100%" height="97%" bode="0" >
-<t>
-<td width="200px" id="listmeu" valig="top"><?php
-$Istall->Tee();
-echo '<b><i>'.$istalle_lag["Oveview"].':</i><b><textaea style="height:300px">';
-if (isset($_SESSION['wwcmsv2istall']))
+<div id = "content">
+<br/>
+<table width="100%" height="97%" border="0" >
+<tr>
+<td width="200px" id="listmenu" valign="top"><?php
+$Install->Tree();
+echo '<br><i>'.$installer_lang["Overview"].':</i><br><textarea style="height:300px">';
+if (isset($_SESSION['wwcmsv2install']))
 {
-foeach ($_SESSION['wwcmsv2istall'] as $key => $stoeddata)
+foreach ($_SESSION['wwcmsv2install'] as $key => $storeddata)
 {
-if (!isset($opasemoe) || $opasemoe == FALSE)
+if (!isset($noparsemore) || $noparsemore == FALSE)
 {
-if ($key<>'ext')//dot show ext buttos
+if ($key<>'next')//dont show next buttons
 {
-if ($key=='cha_db')
+if ($key=='char_db')
 {
-echo 'ealm_databases = '.$Istall->l();
-foeach ($_SESSION['wwcmsv2istall']['cha_db'] as $key2=>$sess_chadb)
+echo 'realm_databases = '.$Install->ln();
+foreach ($_SESSION['wwcmsv2install']['char_db'] as $key2=>$sess_chardb)
 {
 
-if($sess_chadb=='')
-uset($_SESSION['wwcmsv2istall']['cha_db'][$key2]);
+if($sess_chardb=='')
+unset($_SESSION['wwcmsv2install']['char_db'][$key2]);
 else
-echo  '   '.$sess_chadb.$Istall->l();
-$opasemoe=tue;
+echo  '   '.$sess_chardb.$Install->ln();
+$noparsemore=true;
 }
 }
 else
-echo $key.' = '.htmlspecialchas(tim($stoeddata)). $Istall->l(). '------------------'. $Istall->l();
+echo $key.' = '.htmlspecialchars(trim($storeddata)). $Install->ln(). '------------------'. $Install->ln();
 
 }
 }
@@ -1169,16 +1169,16 @@ echo $key.' = '.htmlspecialchas(tim($stoeddata)). $Istall->l(). '---------------
 }
 }
 
-if (isset($_SESSION['wwcmsv2istall']['web_db']) && tim($_SESSION['wwcmsv2istall']['web_db'])<>'')
-echo  '------------------'. $Istall->l().'web_db = '.htmlspecialchas(tim($_SESSION['wwcmsv2istall']['web_db']));
-echo "</textaea>";
+if (isset($_SESSION['wwcmsv2install']['web_db']) && trim($_SESSION['wwcmsv2install']['web_db'])<>'')
+echo  '------------------'. $Install->ln().'web_db = '.htmlspecialchars(trim($_SESSION['wwcmsv2install']['web_db']));
+echo "</textarea>";
 
 ?>
 </td>
-<td style="paddig-left:28px" valig="top"><?php
-$Istall->Go();
+<td style="padding-left:28px" valign="top"><?php
+$Install->Go();
 ?></td>
-</t>
+</tr>
 </table>
 
 
@@ -1189,7 +1189,7 @@ $Istall->Go();
 </body>
 </html><?php
 //
-// Exit at ed
+// Exit at end
 //
 exit;
 

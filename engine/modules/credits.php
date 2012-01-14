@@ -53,4 +53,4 @@ if(isset($proccess) && $proccess == TRUE){
 <div class="post_body_title"><?php echo $lang_admincp['Credits']; ?></div>
 <?php
 $Html->credits_cms(); 
-?
+?>

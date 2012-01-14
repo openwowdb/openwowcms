@@ -1,12 +1,12 @@
 <?php
+###################################################################
+# This file is a part of OpenWoW CMS by www.openwow.com
+#
+#   Project Owner    : OpenWoW CMS (http://www.openwow.com)
+#   Copyright        : (c) www.openwow.com, 2010
+#   Credits          : Based on work done by AXE and Maverfax
+#   License          : GPLv3
 ##################################################################
-# This file is a part of OpenWoW CMS by www.openwow.co
-
-#   Project Owner    : OpenWoW CMS (http://www.openwow.com
-#   Copyright        : (c) www.openwow.com, 201
-#   Credits          : Based on work done by AXE and Maverfa
-#   License          : GPLv
-#################################################################
 
 // Make sure we have built in support for MySQL
 if (!function_exists('mysql_connect'))
