@@ -248,4 +248,4 @@ if ($user->userinfo['guid']==$userid or strtolower($user->userinfo['gmlevel'])==
 <?php echo $lang['Allowed Characters']; ?>: <span class="colorgood">A-Z</span>,<span class="colorgood"> 0-9</span>,<span class="colorgood"> _ ; ? ! . , : =</span>
 	</form>
 	<?php
-
+}

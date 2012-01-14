@@ -88,4 +88,4 @@ if($form->num_errors > 0){
 		
 	</tr>
 </table>
-</form
+</form>

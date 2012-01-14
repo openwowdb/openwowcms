@@ -1,13 +1,13 @@
 <?php
 
+###################################################################
+# This file is a part of OpenWoW CMS by www.openwow.com
+#
+#   Project Owner    : OpenWoW CMS (http://www.openwow.com)
+#   Copyright        : (c) www.openwow.com, 2010
+#   Credits          : Based on work done by AXE and Maverfax
+#   License          : GPLv3
 ##################################################################
-# This file is a part of OpenWoW CMS by www.openwow.co
-
-#   Project Owner    : OpenWoW CMS (http://www.openwow.com
-#   Copyright        : (c) www.openwow.com, 201
-#   Credits          : Based on work done by AXE and Maverfa
-#   License          : GPLv
-#################################################################
 
 /**
 * Configuration:
@@ -42,4 +42,4 @@ else //there is no data or its expired, vote and insert vote ban then add +1 vp 
 	
 }
 //delete old expired data
-$db->query("DELETE FROM ".$config['engine_web_db'].".wwc2_vote_data WHERE timevoted<='".date("U")."'")or die($db->error('error_msg'))
+$db->query("DELETE FROM ".$config['engine_web_db'].".wwc2_vote_data WHERE timevoted<='".date("U")."'")or die($db->error('error_msg'));
