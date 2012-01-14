@@ -20,9 +20,9 @@
 | http://www.php.net/error_reporting
 |
 */
-	error_reporting(E_NOTICE);
+	error_reporting(E_ALL);
 	/* Will not show NOTICE errors when caching, do not change. */
-	$error_reporting_cache='~E_NOTICE';
+	$error_reporting_cache='E_ALL';
 /*
 |---------------------------------------------------------------
 | INITIALIZE WEB-WOW
