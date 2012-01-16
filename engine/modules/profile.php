@@ -149,6 +149,7 @@ if ($user->userinfo['guid']==$userid or strtolower($user->userinfo['gmlevel'])==
 		}
 		closedir($handle);
 		
+		$cont2='';
 		#echo the files
 		foreach ($files as $file) 
 		{
@@ -198,6 +199,7 @@ if ($user->userinfo['guid']==$userid or strtolower($user->userinfo['gmlevel'])==
 			//loop trough realms and get statuses
 				$config['engine_char_dbs2'] = explode(';',$config['engine_char_dbs']);
 				$i=1;
+				$out='';
 				$realm_names2=explode("|",$config['engine_realmnames']);
 				foreach($config['engine_char_dbs2'] as $realms)
 				{
