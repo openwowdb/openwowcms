@@ -8,6 +8,6 @@
 #   License          : GPLv3
 ##################################################################
 
-define('VERSION','1.1.3');
-define('LASTUPDATE','06/6/2011');
+define('VERSION','1.1.6');
+define('LASTUPDATE','01/16/2012');
 ?>
