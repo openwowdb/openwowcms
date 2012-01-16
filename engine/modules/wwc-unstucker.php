@@ -65,7 +65,6 @@ return;
 
 }
 
-
 ?>
 <!-- This element is important, must be at beginning of module output, dont change it, except module name -->
 <div class="post_body_title"><?php echo $lang['Unstucker']; ?></div>
