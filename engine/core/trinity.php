@@ -102,26 +102,25 @@ return "2";
 /**
 * print_Char_Dropdown
 */
-function print_Char_Dropdown($accountguid)
-{
-global $config,$db;
-echo '<select name="character">';
-$split_realmname=explode('|',$config['engine_realmnames']);//we have data in array
-$split0=explode(';',$config['engine_char_dbs']); //DB1|REALM_PORT|DB1_HOST|DB1_USER|DB1_PASS or DB2|REALM_PORT
-foreach ($split0 as $key=>$split00)
-{
-$split1=explode('|',$split00);//we have data in array
-
-
-/* loop realms then loop characters */
-$db_realmconnector=connect_realm($key);
-$q="SELECT name,guid FROM ".$split1[0].".".TBL_CHARACTERS." WHERE account =  '".$accountguid."'";
-$a = $db_realmconnector->query($q) or die($db->error('error_msg'));
-while ($a2=$db_realmconnector->fetch_array($a)){
-echo '<option value="'.$key.'-'.$a2[1].'">'.$split_realmname[$key].' &raquo; '.$a2[0].'</option>';
-}
-}
-echo '</select>';
+function print_Char_Dropdown($accountguid, $CurAct='') {
+  global $config,$db;
+	echo '<select name="character">';
+	$split_realmname=explode('|',$config['engine_realmnames']);//we have data in array
+	$split0=explode(';',$config['engine_char_dbs']); //DB1|REALM_PORT|DB1_HOST|DB1_USER|DB1_PASS or DB2|REALM_PORT
+	foreach ($split0 as $key=>$split00) {
+		$split1=explode('|',$split00);//we have data in array
+		/* loop realms then loop characters */
+		$db_realmconnector=connect_realm($key);
+		if ($db_realmconnector) {
+			$q="SELECT name,guid FROM ".$split1[0].".".TBL_CHARACTERS." WHERE account =  '".$accountguid."'";
+			$a = $db_realmconnector->query($q); // or die($db->error('error_msg'));
+			while ($a2=$db_realmconnector->fetch_array($a)) {
+				if ($CurAct==$key.'-'.$a2[1]) $sel='" selected'; else $sel ='"';
+				echo '<option value="'.$key.'-'.$a2[1].$sel.'>'.$split_realmname[$key].' &raquo; '.$a2[0].'</option>';
+			}
+		}
+	}
+	echo '</select>';
 }
 
 
