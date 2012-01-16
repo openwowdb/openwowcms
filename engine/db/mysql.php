@@ -377,6 +377,13 @@ function connect_realm($id) //id -> from 0 to infinity
 	#check if its on localhost or remote server:
 	if (!isset($split1[2]))//its on localhost, apply connector now
 		return $db;
-	else
-		return new DBLayer(trim($split1['2']), trim($split1['3']), trim($split1['4']), trim($split1['0']));
+	else {
+//		return new DBLayer(trim($split1['2']), trim($split1['3']), trim($split1['4']), trim($split1['0']));
+		$IsOn = @fsockopen($split1['2'],$split1['1'], $ERROR_NO, $ERROR_STR,(float)0.5);
+		if($IsOn){
+			//Online
+			@fclose($IsOn);
+			return new DBLayer(trim($split1['2'].":".$split1['1']), trim($split1['3']), trim($split1['4']), trim($split1['0']));
+		} 
+	}
 }
