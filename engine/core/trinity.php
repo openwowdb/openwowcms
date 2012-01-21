@@ -416,6 +416,7 @@ fputs($telnet,$ra_pass."\n");
 $remote_login = fgets($telnet,1024);
 //if(strstr($remote_login, "Thanks for using the best Emulator <3."))
 //{
+$moneytext='';
 if ($item<>'' && $item<>'0')//send item
 {
 //sendmail to RA console
