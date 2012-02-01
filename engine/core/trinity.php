@@ -1,13 +1,8 @@
 <?php
-###################################################################
-# This file is a part of OpenWoW CMS by www.openwow.com
-#
-#   Project Owner    : OpenWoW CMS (http://www.openwow.com)
-#   Copyright        : (c) www.openwow.com, 2010
-#   Credits          : Based on work done by AXE and Maverfax
-#   License          : GPLv3
-##################################################################
-
+############################################################
+# This file is part of Web-WoW CMS V2 @ web-wow.net
+# Do not redistribute it without premission from AXE.
+# Copyright (c) AXE, zg_20102 at hotmail dot com
 ############################################################
 #  - all returns
 #
@@ -403,57 +398,53 @@ if($s){@fclose($s);} else return '<span class="colorbad">Port <strong>"'.$realm_
 $telnet = fsockopen($realm_host, $realm_ra_port[$realmid], $error, $error_str, (float)0.5);
 if($telnet)
 {
-if ($config['trinity_version']==strtolower('older'))
-fputs($telnet, "USER ".strtoupper($ra_user)."\n");
-else
-fputs($telnet, strtoupper($ra_user)."\n");
+sleep(3);
 
-$msgout[1]=fread($telnet,1024); // msg after user typed in
-if (strstr($msgout[1], "Not enough privileges"))
-{
-return '<span class="colorbad">User you tryed to connect to console does not have enough privilages to do it.</span>';
-}
+//fgets($telnet,1024); // PASS
+fputs($telnet,$ra_user."\n");
 
 sleep(3);
-if ($config['trinity_version']==strtolower('older'))
-$test1123=fwrite($telnet, 'PASS '.$ra_pass."\n");
-else
-$test1123=fwrite($telnet, $ra_pass."\n");
 
-sleep(3);
+//fgets($telnet,1024); // Motd
+fputs($telnet,$ra_pass."\n");
+
 
 $remote_login = fgets($telnet,1024);
-
-if ($config['trinity_version']==strtolower('older'))
-$remote_login_string="Logged in.";
-else
-$remote_login_string="Welcome to";
-
-if(strstr($remote_login, $remote_login_string))
-{
+//if(strstr($remote_login, "Thanks for using the best Emulator <3."))
+//{
 if ($item<>'' && $item<>'0')//send item
 {
 //sendmail to RA console
-fputs($telnet, ".send items ".$playername." \"".$subject."\" \"".$text."\" ".$item."[:".$stack."]\n");
-//Note: if stack is too large item will not be sent
-$mailtext="Mail with item sent! No money was sent.";$moneytext='';
+fputs($telnet, ".send items ".$playername." \"".$subject."\" \"".$text."\"".$item."\n");
+$easf=time();
+$mailtext="Mail with item sent! No money was sent.";
 }
 elseif ($money>'0' && $money<>'')//send money
 {
 fputs($telnet, ".send money ".$playername." \"".$subject."\" \"".$text."\" ".$money."\n");
-$moneytext="Mail with money sent! No item was sent.";$mailtext='';
+$moneytext="Mail with money sent! No item was sent.";
 }
 else //send letter
 {
 fputs($telnet, ".send mail ".$playername." \"".$subject."\" \"".$text."\"\n");
-$moneytext="Normal Mail sent!";$mailtext='';
+$moneytext="Normal Mail sent!";
 }
+$test1111 = fgets($telnet,1024);
 return  "<!-- success --><span class=\"colorgood\">".$mailtext.$moneytext."<br></span><br>";
-}
-elseif($remote_login=='')
-return  "<span class=\"colorbad\">".$ra_user.' is already logged in to remote console please try again later.</span>';
+//check database if actuall item is there
+//WebsiteVoteShopREFXXXXXXX ->this is unique
+sleep(3);
+$check=$db->query("SELECT * FROM mail WHERE receiver = '".$playerguid."' AND subject ='".$subject."' LIMIT 1")or die(mysql_error());
+if(mysql_num_rows($check)=='0')
+$status="<br>Recheck script: Mail is not arrived after waiting 3 seconds it might arrive later on, check ingame.";
 else
-return  "<span class=\"colorbad\">Remote Login Problem: ".$remote_login."</span><br>Used login: ".$ra_user;
+$status="";
+
+return  "<!-- success --><span class=\"colorgood\">".$mailtext.$moneytext.$status."<br></span><br>";
+//}
+//else
+//return  "<span class=\"colorbad\">Remote Login Problem: ".$remote_login."</span><br>Used login: ".$ra_user;
+
 
 
 fclose($telnet);
@@ -461,7 +452,6 @@ fclose($telnet);
 else
 return  "<span class=\"colorbad\">Trinity server is offline, you must do this when server is online.</span>";
 }
-
 }
 
 

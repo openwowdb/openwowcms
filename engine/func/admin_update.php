@@ -169,11 +169,12 @@ if ($confirm=='' or !$confirm) $confirm=false; else $confirm=true;
 
 
 $file = $this->getUpdatedFile('projects/webwow_creator_v2/upgrade/update_styles.php?webwowid='.$id.'&license='.LICENSE.'&enginever='.VERSION.'&domain='.$_SERVER["SERVER_ADDR"]);
+
 $file[0]=explode($Html->ln(),$file[0]);
 $_SESSION['update_files']=array();
 
 //get max styleid and make unique id (+1);
-$getstyle_sql1=$db->query("SELECT max(styleid) as 'maxid' FROM ".$config['engine_web_db'].".wwc2_template LIMIT 1") or die($db->error('error_msg'));
+$getstyle_sql1=$db->query("SELECT max(styleid) as 'maxid' FROM ".$config['engine_web_db'].".wwc2_template LIMIT 1") or die('CMS: '.$db->error('error_msg'));
 $getstyle_sql2=$db->fetch_assoc($getstyle_sql1);
 $style_gotten_id=$getstyle_sql2['maxid']+1;
 
@@ -215,10 +216,13 @@ $key_for_update++;
 
 continue;
 };
+
 $query_string.= $count.'(\''.$style_gotten_id.'\',';
+//echo '('.$count.')<br>';
 }
 #middle
 $query_string.= '\''.$value.'\'';
+//echo '<font color=red>'.$sql_section_counter.'(</font>'.htmlspecialchars($value).'<font color=red>)</font><br>';
 
 $sql_section_counter++;
 
@@ -238,7 +242,8 @@ $query_string.= ',';
 $query_string=substr($query_string, 0, -1);
 //echo '<br>'.htmlspecialchars($query_string).'<br>';
 
-$db->query($query_string) or die($db->error('error_msg'));
+$db->query($query_string) or die($db->error('error_msg').'<br>Style might not be allowed for you.');
+
 $db->query("UPDATE ".$config['engine_web_db'].".wwc2_config set conf_value='".$style_gotten_id."' where conf_name='engine_styleid' LIMIT 1") or die($db->error('error_msg'));
 echo 'Style is imported to database. Do not forget to recache after file installation.<br><br>Installing style files:<br>';
 
@@ -389,7 +394,7 @@ $out .= "Connection: Close\r\n\r\n";
 fwrite($fp, $out);
 $start=false;$stop=false;
 while (!feof($fp)) {
-$temp=trim(fgets($fp, 4096));
+$temp=trim(fgets($fp));
 /**
 * There is some additional variables before [_filestart_]
 * Those variables are:
@@ -450,6 +455,7 @@ return rtrim($str);
 } //End of function rstrtrim($str, $remove=null)
 }
 $updateclass= new Update;
+
 
 
 
