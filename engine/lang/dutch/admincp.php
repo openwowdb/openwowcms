@@ -57,7 +57,7 @@ $lang_admincp = array(
   "Disabled on this web server - Automated CMS update will not be possible."=>"Uitgeschakelt op deze webserver - Automatische CMS update is niet mogelijk",
   "View PHP info"=>"Zie PHP info",
   "License"=>"Licentie",
-  "PHP fshockopen() is disabled, update is not possible using this method."=>"PHP fshockopen() is uitgeschakelt, updaten is niet mogelijk op deze manier.",
+  "PHP fsockopen() is disabled, update is not possible using this method."=>"PHP fsockopen() is uitgeschakelt, updaten is niet mogelijk op deze manier.",
   "Locked"=>"Gesloten",
   
   "Action report"=>"Actie raport",

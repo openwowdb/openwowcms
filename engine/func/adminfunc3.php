@@ -95,7 +95,7 @@ return;
 }
 else if(!function_exists("fsockopen") && isset($_GET['getmorestyles']) )
 {
-echo $lang_admincp["PHP fshockopen() is disabled, update is not possible using this method."].'<br><br>';return;
+echo $lang_admincp["PHP fsockopen() is disabled, update is not possible using this method."].'<br><br>';return;
 }
 /*REMOTE UPDATE end*/
 
