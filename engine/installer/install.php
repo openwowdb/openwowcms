@@ -2,10 +2,10 @@
 ###################################################################
 # This file is a part of OpenWoW CMS by www.openwow.com
 #
-#   Project Owner    : OpenWoW CMS (http://www.openwow.com)
-#   Copyright        : (c) www.openwow.com, 2010
-#   Credits          : Based on work done by AXE and Maverfax
-#   License          : GPLv3
+# Project Owner : OpenWoW CMS (http://www.openwow.com)
+# Copyright : (c) www.openwow.com, 2010
+# Credits : Based on work done by AXE and Maverfax
+# License : GPLv3
 ##################################################################
 
 
@@ -13,7 +13,7 @@ if (!defined('INSTALL_AXE')) die();
 error_reporting(0);
 
 /*******************************************************************************
-*                              PRELIMINARY LOADING
+*				PRELIMINARY LOADING
 *******************************************************************************/
 
 @session_start();
@@ -33,7 +33,7 @@ function sanitize($string = '')
 }
 
 /*******************************************************************************
-*                               LOAD LANGUAGE
+*				LOAD LANGUAGE
 *******************************************************************************/
 
 /**
@@ -73,24 +73,24 @@ if (is_valid_lang($requested_lang))
 require ('./engine/lang/' . strtolower($lang) . '/installer.php');
 
 /*******************************************************************************
-*                               INSTALLER
+*				INSTALLER
 *******************************************************************************/
 
 /**
 * Install
 *
-* @package		Web-WoW
-* @author		AXE (creator), maverfax (debugger)
+* @package Web-WoW
+* @author AXE (creator), maverfax (debugger)
 */
 class Install {
 
 	/**
-	 * Line - Returns the Line Ending Characters based on Operating System
-	 *
-	 * @access public
-	 * @return string Line Ending Characters
-	 *
-	 */
+	* Line - Returns the Line Ending Characters based on Operating System
+	*
+	* @access public
+	* @return string Line Ending Characters
+	*
+	*/
 	function ln()
 	{
 		$server = strtolower(
@@ -110,12 +110,12 @@ class Install {
 	// --------------------------------------------------------------------
 
 	/**
-	 * Go
-	 *
-	 * @return void
-	 * @access public
-	 *
-	 */
+	* Go
+	*
+	* @return void
+	* @access public
+	*
+	*/
 	function Go()
 	{
 		global $Html, $lang, $installer_lang;
@@ -257,7 +257,7 @@ class Install {
 			$this->Input("db_user",'root');echo '<br>';
 			echo $installer_lang['Database Password'].":";
 			$this->Input("db_pass");echo '<br>';
-			echo "<br><span class='innerlinks'><a href='#' onclick='db_con(\"".$installer_lang['Connecting']."\",\"".$installer_lang['Next Step']."\",\"".$installer_lang['Connection Failed']."\",\"".$installer_lang['Connection Successful']."\");return false'>".$installer_lang['Click Here to Test Connection']."</a></span>";
+			echo "<br><span class='innerlinks'><a href='javascript:void();' onclick='db_con(\"".$installer_lang['Connecting']."\",\"".$installer_lang['Next Step']."\",\"".$installer_lang['Connection Failed']."\",\"".$installer_lang['Connection Successful']."\");return false'>".$installer_lang['Click Here to Test Connection']."</a></span>";
 			echo "<span id='db_con' style='display:none'></span>";
 			$stop=true;
 		}
@@ -268,102 +268,109 @@ class Install {
 			$db_host = isset($_SESSION['wwcmsv2install']['db_host']) ? $_SESSION['wwcmsv2install']['db_host'] : "localhost";
 			$db_user = isset($_SESSION['wwcmsv2install']['db_user']) ? $_SESSION['wwcmsv2install']['db_user'] : "";
 			$db_pass = isset($_SESSION['wwcmsv2install']['db_pass']) ? $_SESSION['wwcmsv2install']['db_pass'] : "";
-
-			if ($connect = @mysql_connect($db_host, $db_user, $db_pass))
+			if ($db_host && $db_user)
 			{
-				// Get all database names and store into $databases
-				$dbquery = mysql_query("SHOW DATABASES");
-				$databases = array();
-				while ($row = mysql_fetch_assoc($dbquery))
+				if ($connect = mysql_connect($db_host, $db_user, $db_pass))
 				{
-					array_push($databases, $row['Database']);
-				}
-
-				#
-				# ACC DB DETECTION:
-				#
-				echo '<div id="tworows"><span style="margin-left:80px; font-weight:normal">'.$installer_lang['Accounts database'].':<br>';
-				$i = 0;
-
-				foreach ($databases as $database)
-				{
-					if ($this->checkTable($database.'.'.$p_db[0]) && $this->checkTable($database.'.'.$p_db[1]))
+					// Get all database names and store into $databases
+					$dbquery = mysql_query("SHOW DATABASES");
+					$databases = array();
+					while ($row = mysql_fetch_assoc($dbquery))
 					{
-						$i++;
-						$curr_db = $database;
+						array_push($databases, $row['Database']);
 					}
-				}
 
-				$this->Input("logon_db", (isset($curr_db) ? $curr_db : ''));
+					#
+					# ACC DB DETECTION:
+					#
+					echo '<div id="tworows"><span style="margin-left:80px; font-weight:normal">'.$installer_lang['Accounts database'].':<br>';
+					$i = 0;
 
-				echo '<small style=" font-size:10px; color:gray">('.$installer_lang['Compatible Database is Autodetected'].', '.$i.' '.$installer_lang['found'].')</small>';
-				echo '</span><img src="engine/installer/res/db.png"></div><br>';
-
-				//
-				// REALM DATABASE X
-				//
-				#this is RA or SOAP info:
-				echo '<div id="tworows2"><div id="tworows3">';
-				/*print soap and ra input forms:*/
-				if (isset($_SESSION['wwcmsv2install']['core']))
-				{
-					if ($_SESSION['wwcmsv2install']['core']=='Trinity'){
-						echo $installer_lang['Mail sending'].':<br>';
-						$this->Input("char_rasoap_user",'"',"&nbsp;&nbsp;&nbsp;".$installer_lang['Remote Access User'].": ",' ('.$installer_lang['required'].')','char_rasoap_user'.$i);
-						$this->Input("char_rasoap_pass",'',"&nbsp;&nbsp;&nbsp;".$installer_lang['Remote Access Pass'].": ",' ('.$installer_lang['required'].')','char_rasoap_pass'.$i);
-					}
-					else if ($_SESSION['wwcmsv2install']['core']=='MaNGOS' or $_SESSION['wwcmsv2install']['core']=='Trinitysoap'){
-						echo $installer_lang['Mail sending'].':<br>';
-						$this->Input("char_rasoap_user",'',"&nbsp;&nbsp;&nbsp;".$installer_lang['SOAP User'].": ",' ('.$installer_lang['required'].')','char_rasoap_user'.$i);
-						$this->Input("char_rasoap_pass",'',"&nbsp;&nbsp;&nbsp;".$installer_lang['SOAP Pass'].": ",' ('.$installer_lang['required'].')','char_rasoap_pass'.$i);
-					}
-				}
-
-				#
-				#REALM DB DETECTION:
-				#
-				echo "<br>".$installer_lang['Realm database(s)'].':<br>';
-				#some vars:
-				$j=1;
-				echo '<div id="addmore"><script type="text/javascript">';
-				echo "core = '" . $_SESSION['wwcmsv2install']['core'] . "';";
-				echo "lang = " . json_encode($installer_lang).";";
-				foreach ($databases as $database)
-				{
-					echo "addfromdb('$database', '3306');";
-					$j++;
-					continue;
-				}
-
-				echo '</script><a id="addmorebtn" href="#" onclick="javascript:addmore();return false;">[+'.$installer_lang['add more'].']</a></div>';
-				echo '<small style=" font-size:10px; color:gray">('.$installer_lang['Compatible Database is Autodetected'].', '.($j-1).' '.$installer_lang['found'].')</small>';
-				echo '</div></div><br>';
-
-				#
-				#WEBSITE DB DETECTION:
-				#
-				echo '<div id="tworows2" ><div id="tworows3">'.$installer_lang['Website database'].':<br>';
-				#some vars:
-				$j = 0;$curr_db = false;
-
-				#do loop:
-				foreach ($databases as $database)
-				{
-					if ($this->checkForEmptyDB($database))
+					foreach ($databases as $database)
 					{
+						if ($this->checkTable($database.'.'.$p_db[0]) && $this->checkTable($database.'.'.$p_db[1]))
+						{
+							$i++;
+							$curr_db = $database;
+						}
+					}
+
+					$this->Input("logon_db", (isset($curr_db) ? $curr_db : ''));
+
+					echo '<small style=" font-size:10px; color:gray">('.$installer_lang['Compatible Database is Autodetected'].', '.$i.' '.$installer_lang['found'].')</small>';
+					echo '</span><img src="engine/installer/res/db.png" alt="db.png"></div><br>';
+
+					//
+					// REALM DATABASE X
+					//
+					#this is RA or SOAP info:
+					echo '<div id="tworows2"><div id="tworows3">';
+					/*print soap and ra input forms:*/
+					if (isset($_SESSION['wwcmsv2install']['core']))
+					{
+						if ($_SESSION['wwcmsv2install']['core']=='Trinity'){
+							echo $installer_lang['Mail sending'].':<br>';
+							$this->Input("char_rasoap_user",'"',"&nbsp;&nbsp;&nbsp;".$installer_lang['Remote Access User'].": ",' ('.$installer_lang['required'].')','char_rasoap_user'.$i);
+							$this->Input("char_rasoap_pass",'',"&nbsp;&nbsp;&nbsp;".$installer_lang['Remote Access Pass'].": ",' ('.$installer_lang['required'].')','char_rasoap_pass'.$i);
+						}
+						else if ($_SESSION['wwcmsv2install']['core']=='MaNGOS' or $_SESSION['wwcmsv2install']['core']=='Trinitysoap'){
+							echo $installer_lang['Mail sending'].':<br>';
+							$this->Input("char_rasoap_user",'',"&nbsp;&nbsp;&nbsp;".$installer_lang['SOAP User'].": ",' ('.$installer_lang['required'].')','char_rasoap_user'.$i);
+							$this->Input("char_rasoap_pass",'',"&nbsp;&nbsp;&nbsp;".$installer_lang['SOAP Pass'].": ",' ('.$installer_lang['required'].')','char_rasoap_pass'.$i);
+						}
+					}
+
+					#
+					#REALM DB DETECTION:
+					#
+					echo "<br>".$installer_lang['Realm database(s)'].':<br>';
+					#some vars:
+					$j=1;
+					echo '<div id="addmore"><script type="text/javascript">';
+					echo "core = '" . $_SESSION['wwcmsv2install']['core'] . "';";
+					echo "lang = " . json_encode($installer_lang).";";
+					foreach ($databases as $database)
+					{
+						echo "addfromdb('$database', '3306');";
 						$j++;
-						$curr_db = $database;
+						continue;
 					}
-				}
-				$this->Input("web_db", $curr_db, false, '<small> '.$installer_lang['If DB does not exists, it will be created'] . '</small>');
-				mysql_close($connect);
 
-				echo '<small style="font-size:10px; color:gray">('.$installer_lang['Compatible Database is Autodetected'].', '.$j.' '.$installer_lang['found'].')</small>';
-				echo '</div></div><br><br>';
+					echo '</script><a id="addmorebtn" href="#" onclick="javascript:addmore();return false;">[+'.$installer_lang['add more'].']</a></div>';
+					echo '<small style=" font-size:10px; color:gray">('.$installer_lang['Compatible Database is Autodetected'].', '.($j-1).' '.$installer_lang['found'].')</small>';
+					echo '</div></div><br>';
+
+					#
+					#WEBSITE DB DETECTION:
+					#
+					echo '<div id="tworows2" ><div id="tworows3">'.$installer_lang['Website database'].':<br>';
+					#some vars:
+					$j = 0;$curr_db = false;
+
+					#do loop:
+					foreach ($databases as $database)
+					{
+						if ($this->checkForEmptyDB($database))
+						{
+							$j++;
+							$curr_db = $database;
+						}
+					}
+					$this->Input("web_db", $curr_db, false, '<small> '.$installer_lang['If DB does not exists, it will be created'] . '</small>');
+					mysql_close($connect);
+
+					echo '<small style="font-size:10px; color:gray">('.$installer_lang['Compatible Database is Autodetected'].', '.$j.' '.$installer_lang['found'].')</small>';
+					echo '</div></div><br><br>';
+				}
+				else
+				{
+					echo $installer_lang['Connection Failed'].' ('.mysql_error().')';
+					$stop = true;
+				}
 			}
 			else
 			{
-				echo $installer_lang['Connection Failed'].' ('.mysql_error().')';
+				echo $installer_lang['Connection Failed'].' (db_host/db_user)';
 				$stop = true;
 			}
 		}
@@ -372,15 +379,20 @@ class Install {
 			if ($_SESSION['wwcmsv2install']['web_db']=='')
 			{
 				echo $installer_lang['You did not enter website database, please go step back.'];
+				echo "</form>";
 				return;
 			}
 
 			echo "<script src=\"./engine/js/install.js\"></script>";
-			echo "<br><span class='innerlinks'><a href='#' onclick='db_install();return false'>".$installer_lang['Click Here to Test Connection']."</a></span>";
-			echo "<span id='db_process' style='display:none'></span>";
+			echo '<script type="text/javascript">';
+			echo "lang = " . json_encode($installer_lang).";";
+			echo '</script>';
+			echo "<br><span class='innerlinks' id='db_install'><br><br><a href='#' onclick='db_install(\"".$installer_lang['Connecting']."\");$(\"#db_install\").hide();return false'>".$installer_lang['Click Here to Install Database']."</a></span>";
+			echo '<br><div id="db_process"></div>';
+			$stop = true;
 		}
 
-		if ($stop) return;
+		if ($stop) { echo "</form>"; return; }
 		echo '<br><br><input name="next" type="submit" value="'.$installer_lang['Next Step'].' ('.$step.'/8)"></form>';
 	}
 
@@ -389,9 +401,9 @@ class Install {
 	/**
 	* Check table
 	*
-	* @access	public
-	* @param	string
-	* @return	boolean
+	* @access public
+	* @param string
+	* @return boolean
 	*/
 	function checkTable($table)
 	{
@@ -406,13 +418,13 @@ class Install {
 	/**
 	* Check For Empty Database
 	*
-	* @access	public
-	* @param	string
-	* @return	boolean
+	* @access public
+	* @param string
+	* @return boolean
 	*/
 	function checkForEmptyDB($database)
 	{
-		$query  = 'SELECT count(*) TABLES, table_schema ';
+		$query = 'SELECT count(*) TABLES, table_schema ';
 		$query .= 'FROM information_schema.TABLES ';
 		$query .= 'WHERE table_schema= \'' . $database . '\' ';
 		$query .= 'GROUP BY table_schema';
@@ -428,14 +440,14 @@ class Install {
 	/**
 	* Input
 	*
-	* @access	public
-	* @param	string
-	* @param	string
-	* @param	string
-	* @param	string
-	* @param	string
-	* @param	string
-	* @return	void
+	* @access public
+	* @param string
+	* @param string
+	* @param string
+	* @param string
+	* @param string
+	* @param string
+	* @return void
 	*/
 	function Input($name, $value=false,$text=false, $text2=false,$id=false, $more=false)
 	{
@@ -460,9 +472,9 @@ class Install {
 	/**
 	* Tree
 	*
-	* @access	public
-	* @param	string
-	* @return	boolean
+	* @access public
+	* @param string
+	* @return boolean
 	*/
 	function Tree()
 	{
@@ -493,13 +505,13 @@ class Install {
 		{
 			if ($current_step == $i)
 			{
-				echo '<strong><a href="./?step=' . $i . '&lang=' . $lang . '">' . $step . '</a></strong><br>';
+				echo '<strong><a href="index.php?step=' . $i . '&lang=' . $lang . '">' . $step . '</a></strong><br>';
 				$color = 'gray';
 			}
 
 			else
 			{
-				echo '<font color='.$color.'><a href="./?step='.$i.'&lang='.$lang.'">'.$step.'</a></font><br>';
+				echo '<font color='.$color.'><a href="index.php?step='.$i.'&lang='.$lang.'">'.$step.'</a></font><br>';
 			}
 
 			$i++;
@@ -510,33 +522,35 @@ class Install {
 }
 
 $Install = new Install;
+$title = $installer_lang["WWC v2 Installer"] . (isset($_GET['step']) && strlen($_GET['step']) == 1 ? ' - Step '.preg_replace( "/[^0-9]/", "", $_GET['step'] ) : '');
 ?>
+
 <html>
-<head>
-<title><?php echo $installer_lang["WWC v2 Installer"]; ?></title>
+	<head>
+		<title><?php echo $title;?></title>
+		<meta http-equiv = "Content-Type" content = "text/html;charset=utf-8" />
+		<meta name="Description" content="OpenWoW CMS v2 - <?php echo $title;?>" />
+		<link href = "./engine/installer/res/style.css" rel = "stylesheet" type = "text/css"/>
+		<script src="./engine/js/jquery-1.4.2.min.js"></script>
+	</head>
 
-<meta http-equiv = "Content-Type" content = "text/html;charset=utf-8">
-<link href = "./engine/installer/res/style.css" rel = "stylesheet" type = "text/css"/>
-<script src="./engine/js/jquery-1.4.2.min.js"></script>
-</head>
-
-<body>
-<div id = "container">
-<div id = "header">
-<table width="100%" height="100px" cellpadding="0" cellspacing="0" border="0" >
-<tr>
-<td width="200px" valign="top">
-<h1><img src="engine/installer/res/logo.png"><span><strong><?php echo $installer_lang["WebWoW CMS v2 Install Script"]; ?></strong></span></h1>
-</td>
-<td><div id = "footer">OpenWoW CMS v2 &copy; 2012<br/>Powered by <a href = "http://www.openwow.net" title="OpenWoW CMS">OpenWoW</a></div>
-</td></tr>
-</table>
-</div>
-<div id = "content">
-<br/>
-<table width="100%" height="97%" border="0" >
-<tr>
-<td width="200px" id="listmenu" valign="top"><?php
+	<body>
+		<div id = "container">
+			<div id = "header">
+				<table width="100%" height="100px" cellpadding="0" cellspacing="0" border="0" >
+					<tr>
+						<td width="200px" valign="top">
+							<h1><img src="engine/installer/res/logo.png" alt="logo.png"><span><strong><?php echo $installer_lang["WebWoW CMS v2 Install Script"]; ?></strong></span></h1>
+						</td>
+						<td><div id = "footer">OpenWoW CMS v2 &copy; 2012<br/>Powered by <a href = "http://www.openwow.net" title="OpenWoW CMS">OpenWoW</a></div></td>
+					</tr>
+				</table>
+			</div>
+			<div id = "content"><br/>
+				<table width="100%" height="97%" border="0" >
+					<tr>
+						<td width="200px" id="listmenu" valign="top">
+<?php
 $Install->Tree();
 echo '<br><i>'.$installer_lang["Overview"].':</i><br><textarea style="height:300px">';
 if (isset($_SESSION['wwcmsv2install']))
@@ -552,17 +566,15 @@ if (isset($_SESSION['wwcmsv2install']))
 					echo 'realm_databases = '.$Install->ln();
 					foreach ($_SESSION['wwcmsv2install']['char_db'] as $key2=>$sess_chardb)
 					{
-
 						if($sess_chardb=='')
 							unset($_SESSION['wwcmsv2install']['char_db'][$key2]);
 						else
-							echo  '   '.$sess_chardb.$Install->ln();
+							echo ' '.$sess_chardb.$Install->ln();
 						$noparsemore=true;
 					}
 				}
 				else
 					echo $key.' = '.htmlspecialchars(trim($storeddata)). $Install->ln(). '------------------'. $Install->ln();
-
 			}
 		}
 
@@ -570,27 +582,21 @@ if (isset($_SESSION['wwcmsv2install']))
 }
 
 if (isset($_SESSION['wwcmsv2install']['web_db']) && trim($_SESSION['wwcmsv2install']['web_db'])<>'')
-	echo  '------------------'. $Install->ln().'web_db = '.htmlspecialchars(trim($_SESSION['wwcmsv2install']['web_db']));
+	echo '------------------'. $Install->ln().'web_db = '.htmlspecialchars(trim($_SESSION['wwcmsv2install']['web_db']));
 echo "</textarea>";
-
 ?>
-</td>
-<td style="padding-left:28px" valign="top"><?php
+						</td>
+						<td style="padding-left:28px" valign="top">
+<?php
 $Install->Go();
-?></td>
-</tr>
-</table>
-
-
-</div>
-
-<!---->
-</div>
-</body>
+?>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</body>
 </html>
 <?php
-//
-// Exit at end
-//
 exit;
 ?>

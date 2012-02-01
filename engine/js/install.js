@@ -15,8 +15,22 @@ function db_con(busy, nextstep, failed, success) {
 
 function db_install() {
     $('#db_process').fadeIn('slow', function () { });
-    $.get("./engine/installer/dynamic/db_install.php", {}, function (data) { $("#db_process").append(data); }
-    );
+    $('#errorcounts').remove();
+    $.get("./engine/installer/dynamic/db_install.php", {}, function (data) { $("#db_process").append(data); db_errors(); });
+}
+
+function db_ignore(id) {
+    $('#db_error' + id).remove();
+    $('#db_error_ignore').html(parseInt($('#db_error_ignore').html()) + 1);
+    $('#db_error_count').html(parseInt($('#db_error_count').html()) - 1);
+}
+
+function db_errors() {
+    if ($('span[id^="db_error"]').size() > 0)
+        return;
+    $('#db_install a').html(lang['Continue']);
+    $('#db_install').appendTo('#db_process');
+    $('#db_install').fadeIn('slow');
 }
 
 function pastetext(text, id) {
