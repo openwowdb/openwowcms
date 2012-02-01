@@ -13,6 +13,19 @@ function db_con(busy, nextstep, failed, success) {
     );
 }
 
+function checkadmin() {
+    var host = $("#host").val();
+    var user = $("#user").val();
+    var pass = $("#pass").val();
+    var admin_username = $("#admin_username").val();
+    var admin_password = $("#admin_password").val();
+    $("#checkadmin").html(lang['Connecting'] + "...");
+    $.post("./engine/installer/dynamic/checkadmin.php?l=" + lang['Next Step'] + "&f=" + lang['Connection Failed'] + "&s=" + lang['Connection Successful'],
+        { host: host, user: user, pass: pass, admin_username: admin_username, admin_password: admin_password },
+        function (data) { $("#checkadmin").html(data); }
+    );
+}
+
 function db_install() {
     $('#db_process').fadeIn('slow', function () { });
     $('#errorcounts').remove();
@@ -23,6 +36,7 @@ function db_ignore(id) {
     $('#db_error' + id).remove();
     $('#db_error_ignore').html(parseInt($('#db_error_ignore').html()) + 1);
     $('#db_error_count').html(parseInt($('#db_error_count').html()) - 1);
+    db_errors();
 }
 
 function db_errors() {

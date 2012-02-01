@@ -91,10 +91,51 @@ if ($step == '')
 }
 $errorCount = 0;
 
+// --------------------------------------------------------------------
+
+/**
+* MySQL Import File
+*
+* @access	public
+* @param	string
+* @return	boolean
+*/
+function mysql_import_file($filename, &$errmsg)
+{
+	// Read the file
+	$lines = file($filename);
+
+	if(!$lines)
+	{
+		$errmsg = "Could not open file $filename";
+		return FALSE;
+	}
+
+	$scriptfile = FALSE;
+	// Run each line as a query
+	foreach($lines as $query)
+	{
+		$query = trim($query);
+
+		if($query == '')
+		{
+			continue;
+		}
+
+		if(!mysql_query($query.';'))
+		{
+			$errmsg = "<strong>Query</strong> " . htmlspecialchars($query) . " <b>FAILED</b><br>REPORT: " . mysql_error() . "<br>";
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
 // Check all database connections!
 if (!isset($wwcms['db_test']) || $wwcms['db_test'] == false)
 {
-	echo "<fieldset><legend>Testing Database Settings</legend>";
+	echo "<fieldset><legend>Initial Step</legend>";
 	$char_counter = 0; $char_db = ''; $raorsoap_port = '';
 	if (isset($wwcms['char_db']))
 	{
@@ -120,6 +161,12 @@ if (!isset($wwcms['db_test']) || $wwcms['db_test'] == false)
 						continue;
 					}
 				}
+
+				/**
+				* Now construct realm databases string in format:
+				* "DB1|REALM_PORT|DB1_HOST|DB1_USER|DB1_PASS;DB2|REALM_PORT;DB3|REALM_PORT" etc...
+				* without quotes
+				*/
 				$char_db .= $sess_chardb.'|'.$wwcms['char_port'][$char_counter];
 
 				if ($validHost)
@@ -135,7 +182,12 @@ if (!isset($wwcms['db_test']) || $wwcms['db_test'] == false)
 			}
 			$char_counter++;
 		}
+		$_SESSION['wwcmsv2install']['raorsoap_port'] = $raorsoap_port;
 		$_SESSION['wwcmsv2install']['char_db_string'] = $char_db;
+	}
+	if ($errorCount == 0)
+	{
+		echo "<br><font color=green>Character database check - passed</font>";
 	}
 	echo "</fieldset>";
 	if ($errorCount > 0)
@@ -149,13 +201,13 @@ if (!isset($wwcms['db_test']) || $wwcms['db_test'] == false)
 	return;
 }
 
-if ($step <= 4)
+if ($step <= 5)
 {
 	if ($con = mysql_connect($wwcms['db_host'], $wwcms['db_user'], $wwcms['db_pass']))
 	{
 		if ($step == 1)
 		{
-			echo "<fieldset><legend>Creating Database</legend>";
+			echo "<fieldset><legend>Step 1 / 5</legend>";
 			$result = doQuery("CREATE DATABASE `" . $wwcms['web_db'] . "`");
 			if ($result)
 			{
@@ -185,7 +237,7 @@ if ($step <= 4)
 		// Empty Database
 		if ($step == 2)
 		{
-			echo "<fieldset><legend>Clearing Database</legend>";
+			echo "<fieldset><legend>Step 2 / 5</legend>";
 			foreach ($tables as $table => $createSql)
 			{
 				if(doQuery("DROP TABLE IF EXISTS $table"))
@@ -197,7 +249,7 @@ if ($step <= 4)
 		// Create Tables
 		if ($step == 3)
 		{
-			echo "<fieldset><legend>Creating Tables</legend>";
+			echo "<fieldset><legend>Step 3 / 5</legend>";
 			foreach ($tables as $table => $createSql)
 			{
 				$success = doQuery($createSql);
@@ -215,21 +267,85 @@ if ($step <= 4)
 
 		if ($step == 4)
 		{
+			echo "<fieldset><legend>Step 4 / 5</legend>";
+			$raorsoap_port = (isset($wwcms['raorsoap_port']) ? $wwcms['raorsoap_port'] : '');
+			$core = $wwcms['core'];
+			if ($raorsoap_port == '')
+				$raorsoap_port = ($core == 'Trinity' ? 3443 : 7878);
+
+			/**
+			* TRINITY RA PORT, MANGOS SOAP PORT, TRINITY SOAP PORT:
+			*/
+			$trinity_soap_port = ($core == "Trinity" ? "7878" : $raorsoap_port);
+			$trinity_ra_port = ($core == "Trinity" ? $raorsoap_port : ($core == "Trinitysoap" ? "3443|" : "3443"));
+			$trinity_ra_userpass =  ($core == "Trinity" ? strtoupper($wwcms['char_rasoap_user'])."|".$wwcms['char_rasoap_pass'] : null);
+			$trinity_soap_userpass = ($core == "Trinitysoap" ? strtoupper($wwcms['char_rasoap_user'])."|".$wwcms['char_rasoap_pass'] : null);
+			$mangos_soap_port = ($core == "Trinity" ? "7878" : $raorsoap_port);
+			$mangos_soap_userpass = ($core == "Trinity" ? null : strtoupper($wwcms['char_rasoap_user'])."|".$wwcms['char_rasoap_pass']);
+
+			/**
+			* Realm names name|name|name
+			*/
+			if (isset($wwcms['char_names2']))
+				$char_names = implode("|", $wwcms['char_names2']);
+			else
+				$char_names = "|";
+
 			$insertQueries = array(
-				"`wwc2_config`" => "
-('engine_lang','$lang','','1',''),
-('engine_core','".$wwcms['core']."','','1',''),
-('engine_logon_db','".$wwcms['logon_db']."','','1',''),
-('engine_styleid','1','Change style ID to change style.','1','')"
+				"`wwc2_config`" =>
+					"('engine_lang','$lang','','1','')".
+					",('engine_core','".$wwcms['core']."','','1','')".
+					",('engine_logon_db','".$wwcms['logon_db']."','','1','')".
+					",('engine_web_db','".$wwcms['web_db']."','','1','')".
+					",('engine_styleid','1','Change style ID to change style.','1','')".
+					",('trinity_soap_port','".$trinity_soap_port."','TrintyCore: SOAP Port (for sending ingame mail)<br><small>realm1_SOAP_port|realm2_SOAP_port</small>','1','')".
+					",('mangos_soap_port','".$mangos_soap_port."','MaNGOS: Soap Port (for sending ingame mail)<br><small>realm1_SOAP_port|realm2_SOAP_port</small>','1','')".
+					",('trinity_ra_port',$trinity_ra_port,'TrintyCore: Remote Access Port (for sending ingame mail)<br><small>realm1_RA_port|realm2_RA_port</small>','1','')".
+					($mangos_soap_userpass == null ? "" : ",('mangos_soap_userpass','$mangos_soap_userpass','MaNGOS: SOAP Username and Password (for sending ingame mail)<br><small>SOAP_username|SOAP_password</small>','1','')").
+					($trinity_soap_userpass == null ? "" : ",('trinity_soap_userpass','$trinity_soap_userpass','TrintyCore: SOAP Username and Password (for sending ingame mail)<br><small>SOAP_username|SOAP_password</small>','1','')").
+					($trinity_ra_userpass == null ? "" : ",('trinity_ra_userpass','$trinity_ra_userpass','TrintyCore: RA Username and Password (for sending ingame mail)<br><small>RA_username|RA_password</small>','1','')").
+					",('engine_char_dbs','".$wwcms['char_db_string']."','<br><small>DB1|REALM_PORT|DB1_HOST|DB1_USER|DB1_PASS;DB2|REALM_PORT</small>','1','')".
+					",('engine_realmnames','".htmlspecialchars($char_names)."','<br><small>realmname1|realmname2|realmname3</small>','1','')".
+					",('engine_acp_folder','admincp\/','foldername\/','1','')".
+					",('license','FREE','','1','')".
+					",('premission_admin','" . ($core == "ArcEmu" ? "az" : "4") . "','','1','')".
+					",('premission_gm','" . ($core == "ArcEmu" ? "a" : "3") . "','','1','')".
+					",('title','My WoW Server','','1','')".
+					",('engine_logusers','true','true/false, disable if your website is slow','1','true|false')".
+					",('vote_enable','1','1 = enabled;  0 = disabled','1','0|1')".
+					",('module_userpanel','loginout.php|register.php|credits.php|userpanel.php|MODULE_TEMPLATE.php','Userpanel: Do not show modules in this list<br><small>module1.php|module2.php</small>','1','')".
+					",('footer_detail','0','Footer Credits: <small>0 = simplified; 1 = full detail; 2 = full for admins only</small>','1','0|1|2')",
+				"`wwc2_news`" => "(null, 'Welcome','Thank you for using OpenWoW CMS v2.<br><br>If your administrator double click here to edit news.<br><br>Go to [b]administration panel[/b] to manage CMS.',0, '".@date("U")."',0, 0,'WebWoWCMSv2')"
 				);
+
 			foreach ($insertQueries as $table => $insert)
 			{
 				$success = doQuery("INSERT INTO $table VALUES $insert");
 				if ($success)
 					echo "<br>".$installer_lang['Inserting data to']." ".$table;
 				else
-					echo "<br>".sprintf($installer_lang['Inserting data failed'], $table);
+					echo "<br><strong>Query</strong> " . htmlspecialchars($insert) . " <b>FAILED</b><br>REPORT: " . mysql_error() . "<br>";
 			}
+			echo "</fieldset>";
+		}
+
+		if ($step == 5)
+		{
+			echo "<fieldset><legend>Step 5 / 5</legend>";
+			mysql_import_file('../sql/wwc2_template.sql', $errmsg);
+			echo $errmsg;
+			$errmsg='';
+			echo "<br>".$installer_lang['Inserting data to']." `wwc2_template`";
+			mysql_import_file('../sql/wwc2_links.sql', $errmsg);
+			echo $errmsg;
+			echo "<br>".$installer_lang['Inserting data to']." `wwc2_links`<br>";
+			echo "</fieldset>";
+			echo "<br><font color=green>".$installer_lang['Tables are created successfully']."</font>";
+			echo '<br><br><input name="next" type="submit" value="'.$installer_lang['Next Step'].' (6/8)"></form>';
+			echo '<script type="text/javascript">$("#db_install").remove();</script>';
+			$_SESSION['wwcmsv2install']['sqlstep'] = 1;
+			$_SESSION['wwcmsv2install']['db_test'] = false;
+			return;
 		}
 		mysql_close($con);
 	}
@@ -241,14 +357,9 @@ if ($step <= 4)
 }
 else
 {
-	echo '<br><br><input name="next" type="submit" value="'.$installer_lang['Next Step'].' (6/8)"></form>';
-	echo '<script type="text/javascript">$("#db_install").remove();</script>';
-	$_SESSION['wwcmsv2install']['sqlstep'] = 1;
-	$_SESSION['wwcmsv2install']['db_test'] = false;
-	return;
+	exit; // Should never Happen
 }
 // Next Step
 ++$_SESSION['wwcmsv2install']['sqlstep'];
 return;
 ?>
-<script type="text/javascript">setTimeout('db_install()', '5000');</script>

@@ -391,6 +391,33 @@ class Install {
 			echo '<br><div id="db_process"></div>';
 			$stop = true;
 		}
+		elseif ($step=='7')
+		{
+			$db_host = isset($_SESSION['wwcmsv2install']['db_host']) ? $_SESSION['wwcmsv2install']['db_host'] : "localhost";
+			$db_user = isset($_SESSION['wwcmsv2install']['db_user']) ? $_SESSION['wwcmsv2install']['db_user'] : "";
+			$db_pass = isset($_SESSION['wwcmsv2install']['db_pass']) ? $_SESSION['wwcmsv2install']['db_pass'] : "";
+			if ($connect = mysql_connect($db_host, $db_user, $db_pass))
+			{
+				echo "<script src=\"./engine/js/install.js\"></script>";
+				echo '<script type="text/javascript">';
+				echo "lang = " . json_encode($installer_lang).";";
+				echo '</script>';
+?>
+				<input name="host" id="host" type="hidden" value="<?php echo $_SESSION['wwcmsv2install']['db_host']; ?>">
+				<input name="user" id="user" type="hidden" value="<?php echo $_SESSION['wwcmsv2install']['db_user']; ?>">
+				<input name="pass" id="pass" type="hidden" value="<?php echo $_SESSION['wwcmsv2install']['db_pass']; ?>">
+<?php
+				echo $installer_lang['Admin Username'].':';
+				$this->Input("admin_username",'');
+				echo '<br>';
+				echo $installer_lang['Admin Password'].':';
+				$this->Input("admin_password",'');
+				echo '<br>';
+				echo "<br><span id='checkadmin'>
+				<input type='button' onclick='checkadmin();return false' value='".$installer_lang['Save']."'><br></span>";
+				$stop = true;
+			}
+		}
 
 		if ($stop) { echo "</form>"; return; }
 		echo '<br><br><input name="next" type="submit" value="'.$installer_lang['Next Step'].' ('.$step.'/8)"></form>';
