@@ -56,7 +56,7 @@ while ($news=$db->fetch_assoc($news_sql))
 	if ($user->userlevel==$config['premission_admin'])
 		echo '</span>';
 	echo '</div>';
-	echo '<span class="newsbottom"><span>(<a href="#" onclick="ajax_loadContent(\'comments'.$news['id'].'\',\'./engine/dynamic/news_comments.php?newsid='.$news['id'].'&nocache='.rand(1,999999).'\',\'...\');return false;">'.$comments_count[0].' '.$lang['comments'].'</a>)</span>'.$lang['Posted'].' '.nicetime(date("j M Y",$news['timepost'])).'</span><div style="height:10px"></div>';
+	echo '<span class="newsbottom"><span>(<a href="#" onclick="ajax_loadContent(\'comments'.$news['id'].'\',\'./engine/dynamic/news_comments.php?newsid='.$news['id'].'&nocache='.rand(1,999999).'\',\'...\');return false;">'.$comments_count[0].' '.$lang['comments'].'</a>)</span>'.$lang['Posted'].' '.nicetime($news['timepost']).'</span><div style="height:10px"></div>';
 	
 	//for dynamic news content
 	echo '<div id="comments'.$news['id'].'" class="comments_box"></div>';

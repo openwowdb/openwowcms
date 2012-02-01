@@ -545,6 +545,7 @@ include('./engine/modules/' . $module . '.php');
 				foreach($config['engine_char_dbs'] as $realms)
 				{
 					$realm_data = explode("|",$realms);
+					if (!isset($realm_data) || count($realm_data) == 1) continue;
 
 					if (!isset($realm_data[2]) || $realm_data[2] =='')
 					{

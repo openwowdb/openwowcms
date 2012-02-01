@@ -418,10 +418,83 @@ class Install {
 				$stop = true;
 			}
 		}
+		elseif ($step=='8')
+		{
+			$db_host = isset($_SESSION['wwcmsv2install']['db_host']) ? $_SESSION['wwcmsv2install']['db_host'] : "localhost";
+			$db_user = isset($_SESSION['wwcmsv2install']['db_user']) ? $_SESSION['wwcmsv2install']['db_user'] : "";
+			$db_pass = isset($_SESSION['wwcmsv2install']['db_pass']) ? $_SESSION['wwcmsv2install']['db_pass'] : "";
+			if ($connect = mysql_connect($db_host, $db_user, $db_pass))
+			{
+				$string = "<?php" . $ln. '$config=array(' . $ln;
+				$result = mysql_query("SELECT * FROM ".$_SESSION['wwcmsv2install']['web_db'].".wwc2_config");
+				while ($row = mysql_fetch_array($result))
+				{
+					$string .= "'".$row[0]."' => '".$row[1]."'," . $ln;
+				}
+
+				$string .= ");" . $ln . $ln . "define('AXE',1);" . $ln . $ln;
+				$this->writefile($string,'./config/config.php');
+				echo "<br><br>";
+				$string = "<?php" . $ln. '$db_host="'.$_SESSION['wwcmsv2install']['db_host'].'";' . $ln;
+				$string .= '$db_user="'.$_SESSION['wwcmsv2install']['db_user'].'";' . $ln;
+				$string .= '$db_pass="'.$_SESSION['wwcmsv2install']['db_pass'].'";' . $ln;
+				$string .= "define('AXE_db',1);" . $ln . $ln;
+				$this->writefile($string,'./config/config_db.php');
+			}
+			else
+			{
+				echo $installer_lang['Go to']." '".$installer_lang['Database Connection']."'.";
+				$stop=true;
+			}
+		}
+		elseif ($step=='9')
+		{
+			echo "Whoops, we are sorry but script could not create following files: config/config.php and config/config_db.php<br>probably due CHMOD file premissions, try using your ftp program and chmod them to be writtable, also if you are on windowsnavigate to www/config/ folder, right click propreties, uncheck 'Read Only'. If files does not exists, create two empty files(config.php and config_db.php).<br><br>Click on last step on the left.";
+			return;
+		}
 
 		if ($stop) { echo "</form>"; return; }
+		if ($step=='8')
+		{
+			echo '<br><br><input name="next" type="submit" value="'.$installer_lang['Start using the site'].'"></form>';
+			return;
+		}
 		echo '<br><br><input name="next" type="submit" value="'.$installer_lang['Next Step'].' ('.$step.'/8)"></form>';
 	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	* Write File
+	*
+	* @access	public
+	* @param	string
+	* @param	string
+	* @return	void
+	*/
+	function writefile($string,$file)//prints
+	{
+		global $lang,$installer_lang;
+
+		$fh = fopen( $file, 'w');
+		fwrite($fh, $string);
+		($fh);
+
+		echo $file . ' <font color=\'green\'><b>' . $installer_lang['written successfully']. '</b></font>';
+
+		/**
+		*We will leave this file writtable becouse administrator will want to recache config.php
+		*but we will chmod file config_db.php becouse it no longer needs changing.
+		**/
+		if (preg_match("/config_db.php/",$file))
+			@chmod($file, 0644);
+
+		if (is_writable($file))
+		{
+			echo '<br>' . $installer_lang['We suggest that you CHMOD'] . ' <b>' . $file . '</b> ' . $installer_lang['to'] . ' 0664.';
+		}
+	}
+
 
 	// --------------------------------------------------------------------
 

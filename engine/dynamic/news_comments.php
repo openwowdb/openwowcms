@@ -28,7 +28,7 @@ include_once(PATHROOT."engine/func/nicetime.php");
 if ($_GET['newsid'])
 {
 	$newsid = preg_replace( "/[^0-9]/", "", $_GET['newsid'] );
-	$start = preg_replace( "/[^0-9]/", "", $_GET['start'] );
+	$start = isset($_GET['start']) ? preg_replace( "/[^0-9]/", "", $_GET['start'] ) : '';
 	if ($start=='') $start=0;	
 	
 		
@@ -49,7 +49,7 @@ if ($_GET['newsid'])
 	if (isset($_POST['comment'.$newsid]))
 	{
 		if($user->logged_in && trim($_POST['comment'.$newsid])<>'')
-		$db->query("INSERT INTO ".$config['engine_web_db'].".wwc2_news_c (poster,content,newsid,timepost) VALUES ('".$db->escape($user->username)."','".$db->escape($_POST['comment'.$newsid])."','".$newsid."','".date("U")."')") or die(mysql_error());
+		$db->query("INSERT INTO ".$config['engine_web_db'].".wwc2_news_c (poster,content,newsid,timepost,datepost) VALUES ('".$db->escape($user->username)."','".$db->escape($_POST['comment'.$newsid])."','".$newsid."','".date("U")."', '')") or die(mysql_error());
 		exit;
 	}
 	if (isset($_GET['latest']))
@@ -95,7 +95,7 @@ if ($_GET['newsid'])
 	echo '<table width="100%" border="0" cellspacing="3px">
 	  <tr>
 		<td width="64px"><div class="avatar"><img src="'.$avatarurl.'" /></div></td>
-		<td><div class="comments_poster"><a href="./?page=profile&id='.$userinfo['guid'].'">'.$comments['poster'].'</a> ( '.nicetime(date("j M Y",$comments['timepost'])).')</div><div class="comments_body">'.do_bbcode($comments['content']).'</div></td>
+		<td><div class="comments_poster"><a href="./?page=profile&id='.$userinfo['guid'].'">'.$comments['poster'].'</a> ('.nicetime($comments['timepost']).')</div><div class="comments_body">'.do_bbcode($comments['content']).'</div></td>
 	  </tr>
 	</table></div>';
 		}
