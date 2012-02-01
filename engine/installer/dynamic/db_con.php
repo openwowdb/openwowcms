@@ -27,7 +27,7 @@ function _htmlspecialchars($str)
 $con = @mysql_connect($_POST['host'], $_POST['user'], $_POST['pass']) or $fail=true;
 @mysql_close( $con );
 if ($fail)
-echo '&nbsp;&nbsp;<font color="red">'._htmlspecialchars($_GET['f']).'</font> ('.mysql_error().")";
+	echo '&nbsp;&nbsp;<font color="red">'._htmlspecialchars($_GET['f']).'</font> ('.mysql_error().")";
 else
-echo '<font color="green">'._htmlspecialchars($_GET['s']).'</font><br><br><input name="next" type="submit" value="'.$_GET['l'].' (4/8)"></form>';
+	echo '<font color="green">'._htmlspecialchars($_GET['s']).'</font><br><br><input name="next" type="submit" value="'.$_GET['l'].' (4/8)"></form>';
 ?>

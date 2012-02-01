@@ -1,0 +1,67 @@
+var lang = {};
+var core = "";
+
+function db_con(busy, nextstep, failed, success) {
+    var host = $("#db_host").val();
+    var user = $("#db_user").val();
+    var pass = $("#db_pass").val();
+    $('#db_con').html(busy + "...");
+    $('#db_con').fadeIn('slow', function () { });
+    $.post("./engine/installer/dynamic/db_con.php?l=" + nextstep + "&f=" + failed + "&s=" + success,
+        { host: host, user: user, pass: pass },
+        function (data) { $("#db_con").html(data); }
+    );
+}
+
+function db_install() {
+    $('#db_process').fadeIn('slow', function () { });
+    $.get("./engine/installer/dynamic/db_install.php", {}, function (data) { $("#db_process").append(data); }
+    );
+}
+
+function pastetext(text, id) {
+    $('#char_db' + id).val(text);
+    $('#charcontentchar_db' + id).hide();
+}
+
+function addremoteaccess(id) {
+    $('#charcontentchar_db' + id).append('<br>&nbsp;&nbsp;&nbsp;' + lang['Remote Access Port'] + ': ')
+    .append('<input name="char_rasoap[]" id="char_rasoap' + id + '" value="" style="width: 250px;" type="text">')
+    .append( '(' + lang['required'] + ')');
+}
+
+function addsoapaccess(id) {
+    $('#charcontentchar_db' + id).append('<br>&nbsp;&nbsp;&nbsp;' + lang['SOAP Port'] + ': ')
+    .append('<input name="char_rasoap[]" id="char_rasoap' + id + '" value="" style="width: 250px;" type="text">')
+    .append('(' + lang['required'] + ')');
+}
+
+function addmore() {
+    var id = $('#addmore div').size() / 2;
+    id2 = id + 1;
+    var realm = $('<div id="addmore' + id2 + '">' +
+        '<b>No' + id2 + '</b> ' +
+        '<input name="char_db[]" id="char_db' + id2 + '" value="" style="width: 250px;" type="text" onkeypress="$(\'#charcontentchar_db' + id2 + '\').show()"> <a href="javascript:void();" onclick="pastetext(\'\',' + id2 + ')">[-' + lang['remove'] + ']</a>' +
+        '<div id="charcontentchar_db' + id2 + '" style="display: none;">&nbsp;&nbsp;&nbsp;' +
+        '<strong>' + lang['Port'] + '</strong>: <input name="char_port[]" id="char_port' + id2 + '" value="3306" style="width: 250px;" type="text"> (' + lang['required'] + ')' +
+        '<br>&nbsp;&nbsp;&nbsp;' + lang['Host'] + ': <input name="char_host[]" id="char_host' + id2 + '" value="" style="width: 250px;" type="text"> (' + lang['optional'] + ')' +
+        '<br>&nbsp;&nbsp;&nbsp;' + lang['DB user'] + ': <input name="char_dbuser[]" id="char_dbuser' + id2 + '" value="" style="width: 250px;" type="text"> (' + lang['optional'] + ')' +
+        '<br>&nbsp;&nbsp;&nbsp;' + lang['DB pass'] + ': <input name="char_dbpass[]" id="char_dbpass' + id2 + '" value="" style="width: 250px;" type="text"> (' + lang['optional'] + ')</div>');
+    $('#addmore').append(realm);
+    if (core != undefined) {
+        if (core == "Trinity")
+            addremoteaccess(id2);
+        else if (core == "MaNGOS" || core == "Trinitysoap")
+            addsoapaccess(id2);
+    }
+    $('#charcontentchar_db' + id2).append('<br>&nbsp;&nbsp;&nbsp;<strong>' + lang['Name'] + '</strong>: <input name="char_names[]" id="char_names' + id2 + '" value="' + lang['Realm'] + ' ' + lang['Name'] + '" style="width: 250px;" type="text"> (' + lang['required'] + ')<br><br>');
+    $('#addmorebtn').appendTo($('#addmore').last());
+    return id2;
+}
+
+function addfromdb(db, port) {
+    var id = addmore();
+    $('#char_db' + id).val(db);
+    $('#char_port' + id).val(port);
+    $('#charcontentchar_db' + id).show();
+}

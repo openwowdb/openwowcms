@@ -12,7 +12,7 @@ session_start();
 error_reporting(~E_NOTICE);
 $fail=false;
 
-if (!isset($_SESSION['wwcmsv2install'])) 
+if (!isset($_SESSION['wwcmsv2install']))
 {
 	echo 'No access.';session_destroy();exit;
 }
