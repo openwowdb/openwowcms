@@ -53,7 +53,8 @@ if (!$_GET['f'] or $_GET['f']=='') {$function='main';  };
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title><?php echo $lang_admincp['Admin Control Panel']; ?></title>
 
-<script type="text/javascript" src="<?php echo PATHROOT; ?>engine/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="<?php echo PATHROOT; ?>engine/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="<?php echo PATHROOT; ?>engine/js/jquery-ui-1.8.min.js"></script>
 <script type="text/javascript" src="<?php echo PATHROOT; ?>engine/js/power.js"></script>
 <script type="text/javascript" src="./res/highlight/js/codemirror.js"></script>
 <link rel="stylesheet" type="text/css" href="<?php echo PATHROOT; ?>engine/js/power/power.css" />

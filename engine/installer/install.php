@@ -631,7 +631,8 @@ $title = $installer_lang["WWC v2 Installer"] . (isset($_GET['step']) && strlen($
 		<meta http-equiv = "Content-Type" content = "text/html;charset=utf-8" />
 		<meta name="Description" content="OpenWoW CMS v2 - <?php echo $title;?>" />
 		<link href = "./engine/installer/res/style.css" rel = "stylesheet" type = "text/css"/>
-		<script src="./engine/js/jquery-1.4.2.min.js"></script>
+		<script type="text/javascript" src="./engine/js/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="./engine/js/jquery-ui-1.8.min.js"></script>
 	</head>
 
 	<body>

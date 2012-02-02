@@ -70,22 +70,21 @@ if (!function_exists("echo_shout"))
 	function echo_shout($arr)
 	{
 		global $user;
-		if (count($arr) >= 1)
+		if (is_array($arr) && isset($arr[0]) && is_array($arr[0]))
 		{
-			foreach ($arr as $shout)
-			{
-				echo '<div id="shoutmsg' . $shout['id'] . '">';
-				$userinfo=$user->getUserInfo($shout['poster']);
-				echo '<img src="'.$user->avatar($userinfo['avatar']).'" height="15px" width="15px" alt="avatar" /> ';
-				echo $shout['poster'].": ";
-				echo '<font color="#00FFFF">'.$shout['message'].'</font><br> <small class="comments_poster" id="time_'.$shout['id'].'_update">('. nicetime($shout['timepost']).')</small>';
-				echo '<var id="time_' . $shout['id'] . '" style="display:none;">'.$shout['timepost'].'</var>';
-				echo '</div>';
-			}
+			array_map("echo_shout", $arr);
+			return;
 		}
+
+		echo '<div id="shoutmsg' . $arr['id'] . '">';
+		$userinfo=$user->getUserInfo($arr['poster']);
+		echo '<img src="'.$user->avatar($userinfo['avatar']).'" height="15px" width="15px" alt="avatar" /> ';
+		echo $arr['poster'].": ";
+		echo '<font color="#00FFFF">'.$arr['message'].'</font><br> <small class="comments_poster" id="time_'.$arr['id'].'_update">('. nicetime($arr['timepost']).')</small>';
+		echo '<var id="time_' . $arr['id'] . '" style="display:none;">'.$arr['timepost'].'</var>';
+		echo '</div>';
 	}
 }
-
 
 if (isset($_POST['message']))
 {
@@ -95,19 +94,15 @@ if (isset($_POST['message']))
 		$message = $db->escape($_POST['message']);
 		$date = date("U");
 		$db->query("INSERT INTO ".$config['engine_web_db'].".mod_shoutbox (poster,message,timepost) VALUES ('".$username."','".$message."','".$date."')") or die(mysql_error());
-		$id = mysql_insert_id();
-		echo_shout(array(array('id'=>$id, 'poster'=>$username, 'message'=>$message, 'timepost'=>$date)));
+		$id = $db->insert_id();
+		echo_shout(array('id'=>$id, 'poster'=>$username, 'message'=>$message, 'timepost'=>$date));
 	}
 }
 
 if (isset($_POST['latest']))
 {
 	$shouts_sql = $db->query("SELECT * FROM ".$config['engine_web_db'].".mod_shoutbox WHERE id > " .$db->escape($_POST['latest'])."  ORDER by id DESC") or die(mysql_error());
-	$shouts = array();
 	while ($row = $db->fetch_array($shouts_sql))
-	{
-		array_push($shouts, $row);
-	}
-	echo_shout($shouts);
+		echo_shout($row);
 }
 ?>

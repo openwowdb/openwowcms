@@ -38,7 +38,15 @@ var shoutbox = {
             info,
             function (data) {
                 var count = 1;
-                $($(data).get().reverse()).each(function () {shoutbox.shoutid++; $(this).hide(); $(this).prependTo('#shoutcontent').delay(800 * count).fadeIn(1000); count++; });
+                $($(data).get().reverse()).each(
+                    function ()
+                    {
+                        shoutbox.shoutid++;
+                        $(this).hide();
+                        $(this).css("background-color", "#DBB84D");
+                        $(this).prependTo('#shoutcontent').delay(800 * count).slideDown('slow', function() { $(this).css("background-color", ""); });
+                        count++;
+                    });
             });
     },
 
@@ -89,7 +97,7 @@ var shoutbox = {
             periods[j] = periods[j] + shoutbox.lang["s"];
         }
 
-        return difference + " " + periods[j] + " " + tense + " ";
+        return difference + " " + periods[j] + " " + tense;
     },
 };
 $(document).ready(function(){ shoutbox.init(); });

@@ -157,7 +157,7 @@ class Html {
 			else
 				$stylesheet='';
 
-			$stylesheet .= '<script src="./engine/js/jquery-1.4.2.min.js" type="text/javascript"></script>'.$this->ln().'<script src="./engine/js/power.js" type="text/javascript"></script>'.$this->ln().'<link rel="stylesheet" type="text/css" href="./engine/js/power/power.css">'.$this->ln();
+			$stylesheet .= '<script type="text/javascript" src="./engine/js/jquery-1.7.1.min.js"></script>'.$this->ln().'<script type="text/javascript" src="./engine/js/jquery-ui-1.8.min.js"></script>'.$this->ln().'<script src="./engine/js/power.js" type="text/javascript"></script>'.$this->ln().'<link rel="stylesheet" type="text/css" href="./engine/js/power/power.css">'.$this->ln();
 
 			// merge all
 			$this->page_output= '<?php global $Html,$user,$form; $Html->includemodule_proccess(); ?>'.$page_output['doctype'].$this->ln().
