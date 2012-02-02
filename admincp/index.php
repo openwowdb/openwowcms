@@ -72,13 +72,13 @@ return false ;
 function addmore(id)
 {
 id2=id+1;
-document.getElementById('1addmore'+id).innerHTML='<input name="conf_name[]" id="conf_name'+id+'" value="" style="width: 200px;" type="text"><div style="height:3px"></div></div><div id="1addmore'+id2+'"><a href="#" onclick="javascript:addmore('+id2+');return false;">[+<?php echo $lang_admincp['add more']; ?>]</a>';
+document.getElementById('1addmore'+id).innerHTML='<input name="conf_name[]" id="conf_name'+id+'" value="" style="width: 200px;" type="text"><div style="height:3px"></div></div><div id="1addmore'+id2+'"><a href="javascript:void();" onclick="javascript:addmore('+id2+');return false;">[+<?php echo $lang_admincp['add more']; ?>]</a>';
 document.getElementById('2addmore'+id).innerHTML='<input name="conf_value[]" id="conf_value'+id+'" value="" style="width: 200px;" type="text">&nbsp;&nbsp;<?php echo $lang_admincp['Note']; ?>: <input name="conf_descr[]" id="conf_descr'+id+'" value="" style="width: 200px;" type="text"><div style="height:3px"></div></div><div id="2addmore'+id2+'">';
 }
 function addmore2(id)
 {
 id2=id+1;
-document.getElementById('1addmore'+id).innerHTML='<div style="height:160px"><input name="title[]" id="conf_name'+id+'" value="" style="width: 200px;" type="text"></div></div><div id="1addmore'+id2+'"><a href="#" onclick="javascript:addmore2('+id2+');return false;">[+<?php echo $lang_admincp['add more']; ?>]</a>';
+document.getElementById('1addmore'+id).innerHTML='<div style="height:160px"><input name="title[]" id="conf_name'+id+'" value="" style="width: 200px;" type="text"></div></div><div id="1addmore'+id2+'"><a href="javascript:void();" onclick="javascript:addmore2('+id2+');return false;">[+<?php echo $lang_admincp['add more']; ?>]</a>';
 document.getElementById('2addmore'+id).innerHTML='<textarea id="csscode'+id+'" name="template[]" style="width:96%; height:150px"></textarea><div style="height:10px"></div></div></div><div id="2addmore'+id2+'">';
 
 var editor = CodeMirror.fromTextArea('csscode'+id, {
@@ -93,7 +93,7 @@ lineNumbers: true
 function addmorelink(id)
 {
 id2=id+1;
-document.getElementById('addmorelink'+id).innerHTML='<div style="background-color:#ECECEC" class="linkmanager"><?php echo $lang_admincp['Title']; ?>: <input name="linktitle[]" type="text" value="" /> URL: <input name="linkurl[]" type="text" value="" /> <?php echo $lang_admincp['Order']; ?>: <input name="linkorder[]" type="text" value="" style="width:30px" /> <i><?php echo $lang_admincp['Group']; ?> <input name="linkgrup[]" type="text" value="" style="width:100px" /></i><div style="height:10px"></div> <?php echo $lang_admincp['Description']; ?>: <input name="linkdescr[]" type="text" value="" style="width:200px" /> <?php echo $lang_admincp['Viewable']; ?>: <select name="linkprems[]"><option value="0"><?php echo $lang_admincp['All']; ?></option><option value="1"><?php echo $lang_admincp['Guests']; ?></option><option value="2"><?php echo $lang_admincp['All logged in']; ?></option><option value="4">&nbsp;&nbsp;<?php echo $lang_admincp['Only Admins']; ?></option><option value="5">&nbsp;&nbsp;<?php echo $lang_admincp["Only GM's and Admins"]; ?></option></select></div><div id="addmorelink'+id2+'"><a href="#" onclick="javascript:addmorelink('+id2+');return false;">[+<?php echo $lang_admincp['add more']; ?>]</a>';
+document.getElementById('addmorelink'+id).innerHTML='<div style="background-color:#ECECEC" class="linkmanager"><?php echo $lang_admincp['Title']; ?>: <input name="linktitle[]" type="text" value="" /> URL: <input name="linkurl[]" type="text" value="" /> <?php echo $lang_admincp['Order']; ?>: <input name="linkorder[]" type="text" value="" style="width:30px" /> <i><?php echo $lang_admincp['Group']; ?> <input name="linkgrup[]" type="text" value="" style="width:100px" /></i><div style="height:10px"></div> <?php echo $lang_admincp['Description']; ?>: <input name="linkdescr[]" type="text" value="" style="width:200px" /> <?php echo $lang_admincp['Viewable']; ?>: <select name="linkprems[]"><option value="0"><?php echo $lang_admincp['All']; ?></option><option value="1"><?php echo $lang_admincp['Guests']; ?></option><option value="2"><?php echo $lang_admincp['All logged in']; ?></option><option value="4">&nbsp;&nbsp;<?php echo $lang_admincp['Only Admins']; ?></option><option value="5">&nbsp;&nbsp;<?php echo $lang_admincp["Only GM's and Admins"]; ?></option></select></div><div id="addmorelink'+id2+'"><a href="javascript:void();" onclick="javascript:addmorelink('+id2+');return false;">[+<?php echo $lang_admincp['add more']; ?>]</a>';
 
 
 

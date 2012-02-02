@@ -27,7 +27,6 @@ if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())
 			{
 				return array_map('stripslashes_deep', $value);
 			}
-
 			else
 			{
 				return stripslashes($value);

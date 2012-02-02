@@ -298,7 +298,7 @@ $i++;
 }
 echo '<tr>
 <td valign="top">
-<div id="1addmore'.$i.'"><a href="#" onclick="javascript:addmore2('.$i.');return false;">[+'.$lang_admincp['add more'].']</a></div>
+<div id="1addmore'.$i.'"><a href="javascript:void();" onclick="javascript:addmore2('.$i.');return false;">[+'.$lang_admincp['add more'].']</a></div>
 </td>
 <td valign="top">
 <div id="2addmore'.$i.'"></div>
@@ -449,7 +449,7 @@ $i++;
 }
 ?>
 
-<tr><td valign="top"><?php echo '<div id="1addmore1"><a href="#" onclick="javascript:addmore(1);$WowheadPower.hideTooltip();return false;" onmouseout="$WowheadPower.hideTooltip();" onmousemove="$WowheadPower.moveTooltip(event)" onmouseover="$WowheadPower.showTooltip(event, \''.$lang_admincphelp[5].'\')">[+'.$lang_admincp['add more'].']</a></div>'; ?></td><td  valign="top"><?php echo '<div id="2addmore1"></div>'; ?></td><td valign="top"></td></tr>
+<tr><td valign="top"><?php echo '<div id="1addmore1"><a href="javascript:void();" onclick="javascript:addmore(1);$WowheadPower.hideTooltip();return false;" onmouseout="$WowheadPower.hideTooltip();" onmousemove="$WowheadPower.moveTooltip(event)" onmouseover="$WowheadPower.showTooltip(event, \''.$lang_admincphelp[5].'\')">[+'.$lang_admincp['add more'].']</a></div>'; ?></td><td  valign="top"><?php echo '<div id="2addmore1"></div>'; ?></td><td valign="top"></td></tr>
 <tr><td colspan="2" align="left"><input type="submit" name="submit" value="<?php echo $lang_admincp['Save']; ?>"></td><td></td></tr></table>
 </form><br />
 <?php
@@ -534,7 +534,7 @@ echo '<div style="background-color: '.$color.';" class="linkmanager">'.$lang_adm
 if ($color=='#C9C9C9') $color="#ECECEC"; else $color='#C9C9C9';
 
 }
-echo '<div id="addmorelink1"><a href="#" onclick="javascript:addmorelink(1);return false;">[+ '.$lang_admincp['add more'].']</a></div><br><input name="submit" type="submit" value="'.$lang_admincp['Save and Cache'].'" /></form>';
+echo '<div id="addmorelink1"><a href="javascript:void();" onclick="javascript:addmorelink(1);return false;">[+ '.$lang_admincp['add more'].']</a></div><br><input name="submit" type="submit" value="'.$lang_admincp['Save and Cache'].'" /></form>';
 ?><br /><br />
 <table width="100%" border="0" class="acptable" cellpadding="8px" >
 <tr>

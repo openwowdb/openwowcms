@@ -55,7 +55,7 @@ $num_totalfiles=count($_SESSION['update_files']);
 
 
 /* Make loop here */
-if ($_SESSION['update_files'][$i]<>''){
+if (isset($_SESSION['update_files'][$i]) && $_SESSION['update_files'][$i]<>''){
 /* file.php?test=true strip ?test=true
 * also will strip style changer variable "?sinstallpath=8" (will not mix with others, so this is final format)
 */

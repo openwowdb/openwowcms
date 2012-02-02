@@ -101,12 +101,12 @@ if(isset($proccess) && $proccess == TRUE){
 <script type="text/javascript">
 function preview()
 {
-	document.getElementById("preview").innerHTML='<img style="border:solid 1px black" width="64" height="64" src="./engine/res/avatars/'+document.getElementById("avatar").value+'.gif" />';
+	$("#preview").html('<img style="border:solid 1px black" width="64" height="64" src="./engine/res/avatars/'+$("#avatar").val()+'.gif" />');
 }
 function realm112()
 {
-	document.getElementById("realm").value=document.getElementById("gmrealm").value;
-	document.getElementById("gm").disabled=false;
+	$("#realm").val($("#gmrealm").val());
+	$("#gm").removeAttr('disabled');
 }
 </script>
 <?php
@@ -153,17 +153,14 @@ if ($user->userinfo['guid']==$userid or strtolower($user->userinfo['gmlevel'])==
 		$cont2 = "";
 		foreach ($files as $file) 
 		{
-			
 			if (strstr($file, ".gif"))
 			{
-				
 				$file2=substr($file, 0,-4); //without .gif
 				$file3=str_replace('_',' ',$file2); //replace "_" with " "
 				if ($userinfo['avatar']==$file2)
 				$cont2.= '<option value="'.$file2.'" selected="selected">'.ucfirst($file3).'</option>';
 				else
 				$cont2.= '<option value="'.$file2.'">'.ucfirst($file3).'</option>';
-				
 			} 
 		}
 		echo $cont2;

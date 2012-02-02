@@ -315,7 +315,11 @@ if ($step <= 5)
 					",('vote_enable','1','1 = enabled;  0 = disabled','1','0|1')".
 					",('module_userpanel','loginout.php|register.php|credits.php|userpanel.php|MODULE_TEMPLATE.php','Userpanel: Do not show modules in this list<br><small>module1.php|module2.php</small>','1','')".
 					",('footer_detail','0','Footer Credits: <small>0 = simplified; 1 = full detail; 2 = full for admins only</small>','1','0|1|2')",
-				"`wwc2_news`" => "(null, 'Welcome','Thank you for using OpenWoW CMS v2.<br><br>If your administrator double click here to edit news.<br><br>Go to [b]administration panel[/b] to manage CMS.',0, '".@date("U")."',0, 0,'WebWoWCMSv2')"
+				"`wwc2_news`" => "(null, 'Welcome','Thank you for using OpenWoW CMS v2.
+
+If your administrator double click here to edit news.
+
+Go to [b]administration panel[/b] to manage CMS.',0, '".@date("U")."',0, 0,'WebWoWCMSv2')"
 				);
 
 			foreach ($insertQueries as $table => $insert)

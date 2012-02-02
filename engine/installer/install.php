@@ -336,7 +336,7 @@ class Install {
 						continue;
 					}
 
-					echo '</script><a id="addmorebtn" href="#" onclick="javascript:addmore();return false;">[+'.$installer_lang['add more'].']</a></div>';
+					echo '</script><a id="addmorebtn" href="javascript:void();" onclick="javascript:addmore();return false;">[+'.$installer_lang['add more'].']</a></div>';
 					echo '<small style=" font-size:10px; color:gray">('.$installer_lang['Compatible Database is Autodetected'].', '.($j-1).' '.$installer_lang['found'].')</small>';
 					echo '</div></div><br>';
 

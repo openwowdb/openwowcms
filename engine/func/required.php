@@ -96,23 +96,21 @@ class Html {
 							if ($plugins_inc[$template['title']][$i][2] == '1')//if template boxed
 							{
 								//echo \'<span style="border:solid 1px red; width:100px; position:absolute;float:right">Edit plugin</span>\';
-								$page_output[$template['title']]  = $thisbox['start'].'<?php @include("./engine/plugins/';
-								$page_output[$template['title']] .= $template['title'].'-'.$plugins_inc[$template['title']][$i][0];
-								$page_output[$template['title']] .= '-'.$plugins_inc[$template['title']][$i][1].'-';
-								$page_output[$template['title']] .= $plugins_inc[$template['title']][$i][2].'.php"); ?>'.$this->ln();
-								$page_output[$template['title']] .= $thisbox['end'].$page_output[$template['title']];
+								$page_output[$template['title']] = $thisbox['start'].'<?php @include("./engine/plugins/'
+								. $template['title'].'-'.$plugins_inc[$template['title']][$i][0]
+								. '-'.$plugins_inc[$template['title']][$i][1].'-'
+								. $plugins_inc[$template['title']][$i][2].'.php"); ?>'.$this->ln()
+								 . $thisbox['end'] . $page_output[$template['title']];
 							}
-
 							else//pure plugin without template box around it
 							{
-								$page_output[$template['title']]  = '<?php @include("./engine/plugins/'.$template['title'];
-								$page_output[$template['title']] .= '-'.$plugins_inc[$template['title']][$i][0];
-								$page_output[$template['title']] .= '-'.$plugins_inc[$template['title']][$i][1];
-								$page_output[$template['title']] .= '-'.$plugins_inc[$template['title']][$i][2].'.php"); ?>';
-								$page_output[$template['title']] .= $this->ln() . $page_output[$template['title']];
+								$page_output[$template['title']] = '<?php @include("./engine/plugins/'.$template['title']
+								. '-'.$plugins_inc[$template['title']][$i][0]
+								. '-'.$plugins_inc[$template['title']][$i][1]
+								. '-'.$plugins_inc[$template['title']][$i][2].'.php"); ?>'
+								. $this->ln() . $page_output[$template['title']];
 							}
 						}
-
 						else//else after content
 						{
 							if ($plugins_inc[$template['title']][$i][2]=='1')//if template boxed
@@ -123,7 +121,6 @@ class Html {
 								'-'.$plugins_inc[$template['title']][$i][1].
 								'-'.$plugins_inc[$template['title']][$i][2].'.php"); ?>'.$this->ln().$thisbox['end'];
 							}
-
 							else
 							{
 								$page_output[$template['title']]=$page_output[$template['title']].'<?php @include("./engine/plugins/'.
@@ -132,7 +129,6 @@ class Html {
 								'-'.$plugins_inc[$template['title']][$i][1].
 								'-'.$plugins_inc[$template['title']][$i][2].'.php"); ?>'.$this->ln();								
 							}
-
 						}
 
 						$i++;
@@ -279,237 +275,223 @@ class Html {
 		}
 	}
 
-function lang_selection($selected) #returns
-{
-$out = '';
-$dir=PATHROOT.'engine/lang/';
-if (is_dir($dir)) {
-if ($dh = opendir($dir)) {
-while (($file = readdir($dh)) !== false) {
-if ($file<>'..' && $file<>'.')
-{
-if ($file<>'index.html')
-{
-if (strtolower($file)==strtolower($selected))
-$out.= "<option value='".$file."' selected='selected' style='font-weight:bold'>".ucwords($file)."</option>";
-else
-$out.= "<option value='".$file."'>".ucwords($file)."</option>";
-}
-}
-}
-closedir($dh);
-}
-}
-return '<select id="lang" name="lang">'.$out.'</select>';
-}
-function cache($string,$file)
-{
-$error=false;
-/* attempt to create file */
-$fh = @fopen( $file, "w" ) or $error=true;
+	function lang_selection($selected) #returns
+	{
+		$out = '';
+		$dir=PATHROOT.'engine/lang/';
+		if (is_dir($dir)) {
+			if ($dh = opendir($dir)) {
+				while (($file = readdir($dh)) !== false) {
+					if ($file<>'..' && $file<>'.')
+					{
+						if ($file<>'index.html')
+						{
+							if (strtolower($file)==strtolower($selected))
+								$out.= "<option value='".$file."' selected='selected' style='font-weight:bold'>".ucwords($file)."</option>";
+							else
+								$out.= "<option value='".$file."'>".ucwords($file)."</option>";
+						}
+					}
+				}
+				closedir($dh);
+			}
+		}
+		return '<select id="lang" name="lang">'.$out.'</select>';
+	}
 
-/* CHMOD CHECK */
-if (!@is_writable($file)) {
-if (!@chmod($file, 0666)) {
-$error=true;
-};
-}
-if ($string=='') $string='<?php'. $this->ln() . '/* This file is auto-generated because cache script was initiated */'. $this->ln().'/* and content was empty. ( '.$file.' ) */' . $this->ln(). '/* This file is part of Web-WoW CMS v2 all rights reserved. */' . $this->ln().'?>';
-@fwrite( $fh, $string );
-@fclose( $fh );
-if ($error) {@chmod($file, 0664);return false;}
-else {@chmod($file, 0664);return true;}
-}
+	function cache($string,$file)
+	{
+		$error=false;
+		/* attempt to create file */
+		$fh = @fopen( $file, "w" ) or $error=true;
 
+		/* CHMOD CHECK */
+		if (!@is_writable($file)) {
+			if (!@chmod($file, 0666)) {
+				$error=true;
+			};
+		}
+		if ($string=='') $string='<?php'. $this->ln() . '/* This file is auto-generated because cache script was initiated */'. $this->ln().'/* and content was empty. ( '.$file.' ) */' . $this->ln(). '/* This file is part of Web-WoW CMS v2 all rights reserved. */' . $this->ln().'?>';
+		@fwrite( $fh, $string );
+		@fclose( $fh );
+		if ($error) {@chmod($file, 0664);return false;}
+		else {@chmod($file, 0664);return true;}
+	}
 
-function cache_menulinks(){ #returns true on success else false
-global $db;
-/**
-* Build content
-*/
-$out = "<?php" .$this->ln(). '/* Autogenerated file by Link Manager (WWCMSv2) */'.$this->ln().'function menulinks($grup,$sep) { global $user,$config;' . $this->ln();
+	function cache_menulinks(){ #returns true on success else false
+		global $db;
+		/**
+		* Build content
+		*/
+		$out = "<?php" .$this->ln(). '/* Autogenerated file by Link Manager (WWCMSv2) */'.$this->ln().'function menulinks($grup,$sep) { global $user,$config;' . $this->ln();
 
-$sql1 = $db->query("SELECT * FROM ".TBL_LINKS." ORDER BY linkgrup ASC, linkorder ASC")or die($db->error('error_msg'));
-$grup='no_grup_defined_start';
-while ($sql2=mysql_fetch_assoc($sql1))
-{
-/**
-* If new grup is started:
-*/
-if ($grup<>$sql2['linkgrup']){
-if ($grup<>'no_grup_defined_start') {
-$out.='return $out;';
-$out.= $this->ln().''.$this->ln().'}'. $this->ln();
+		$sql1 = $db->query("SELECT * FROM ".TBL_LINKS." ORDER BY linkgrup ASC, linkorder ASC")or die($db->error('error_msg'));
+		$grup='no_grup_defined_start';
+		while ($sql2=mysql_fetch_assoc($sql1))
+		{
+			/**
+			* If new grup is started:
+			*/
+			if ($grup<>$sql2['linkgrup']){
+				if ($grup<>'no_grup_defined_start') {
+					$out.='return $out;';
+					$out.= $this->ln().''.$this->ln().'}'. $this->ln();
+				}
 
-}
+				$out.='if ($grup=="'.$sql2['linkgrup'].'") { '. $this->ln() . '$i=0;$out=false;'. $this->ln();
+				$grup=$sql2['linkgrup'];
+			}
 
-$out.='if ($grup=="'.$sql2['linkgrup'].'") { '. $this->ln() . '$i=0;$out=false;'. $this->ln();
-$grup=$sql2['linkgrup'];
+			/**
+			* print links, add premission code here
+			*/
+			if ($sql2['linkprems']=='1') //guests
+			{
+				$stringstart=' if(!$user->logged_in){'.$this->ln();
+				$stringend=' } ';
+			}
+			elseif($sql2['linkprems']=='2') //logged in - all
+			{
+				$stringstart=' if($user->logged_in){'.$this->ln();
+				$stringend=' } ';
+			}
+			elseif($sql2['linkprems']=='3') //logged in - normal users
+			{
+				$stringstart=' if(strtolower($user->userlevel)==\'0\'){'.$this->ln();
+				$stringend=' } ';
+			}
+			elseif($sql2['linkprems']=='4') //logged in - admin
+			{
+				$stringstart=' if(strtolower($user->userlevel)==strtolower($config[\'premission_admin\'])){'.$this->ln();
+				$stringend=' } ';
+			}
+			elseif($sql2['linkprems']=='5') //logged in - gms and admins
+			{
+				$stringstart=' if(strtolower($user->userlevel)==strtolower($config[\'premission_admin\']) or strtolower($user->userlevel)==strtolower($config[\'premission_gm\'])){'.$this->ln();
+				$stringend=' } ';
+			}
 
-}
+			$out.=$stringstart.$this->ln().' if ($i==1) $out.= $sep;$i=1; '.$this->ln().'$out.= \'<span class="menulink'.$sql2['linkgrup'].'">'.$this->ln().'	<a href="'.$sql2['linkurl'].'"';
+			if ($sql2['linkdescr']<>'')
+				$out.=' onmouseout="$WowheadPower.hideTooltip();" onmousemove="$WowheadPower.moveTooltip(event)" onmouseover="$WowheadPower.showTooltip(event, \\\''.$sql2['linkdescr'].'\\\')"';
+			$out.='>'.$sql2['linktitle'].'</a>'.$this->ln().'</span>\';';
+			$out.=$stringend.$this->ln();
+			$stringstart='';
+			$stringend='';
+		}
 
-/**
-* print links, add premission code here
-*/
-if ($sql2['linkprems']=='1') //guests
-{
-$stringstart=' if(!$user->logged_in){'.$this->ln();
-$stringend=' } ';
-}
-elseif($sql2['linkprems']=='2') //logged in - all
-{
-$stringstart=' if($user->logged_in){'.$this->ln();
-$stringend=' } ';
-}
-elseif($sql2['linkprems']=='3') //logged in - normal users
-{
-$stringstart=' if(strtolower($user->userlevel)==\'0\'){'.$this->ln();
-$stringend=' } ';
-}
-elseif($sql2['linkprems']=='4') //logged in - admin
-{
-$stringstart=' if(strtolower($user->userlevel)==strtolower($config[\'premission_admin\'])){'.$this->ln();
-$stringend=' } ';
-}
-elseif($sql2['linkprems']=='5') //logged in - gms and admins
-{
-$stringstart=' if(strtolower($user->userlevel)==strtolower($config[\'premission_admin\']) or strtolower($user->userlevel)==strtolower($config[\'premission_gm\'])){'.$this->ln();
-$stringend=' } ';
-}
+		$out.='return $out;';
+		$out.= ''.$this->ln().'}'.$this->ln().'}';
+		/**
+		* Initiate cache now:
+		*/
+		if ($this->cache($out,PATHROOT.'engine/_cache/cache_menulinks.php'))
+			return true;
+		else
+			return false;
+	}
 
+	function cache_vote(){ #returns true on success else false
+		global $db;
+		/**
+		* Build content
+		*/
+		$out1 = "<?php" .$this->ln(). '/* Autogenerated file by Global Caching (WWCMSv2) */'.$this->ln().'?>';
+		$out2 = $out1;
+		$sql1 = $db->query("SELECT * FROM ".TBL_CONFIG." WHERE conf_name LIKE 'vote_link_%' ORDER BY conf_name ASC")or die($db->error('error_msg'));
+		while ($sql2=mysql_fetch_assoc($sql1))
+		{
+			$id=preg_replace( "/vote_link_/", "", $sql2['conf_name'] );
+			$out1.='<span class="votelink" id="'.$sql2['conf_name'].'"><a href="'.$sql2['conf_value'].'" target="_blank" onclick="ajax_loadContent(\''.$sql2['conf_name'].'\',\'./engine/dynamic/vote_proccess.php?id='.$sql2['conf_name'].'\',\'<img src=./engine/_style_res/<?php echo $config[\'engine_styleid\'];?>/images/voteimg/'.$id.'.gif alt=[<?php echo $lang[\'Vote\'];?>]>\');"><img src="./engine/_style_res/<?php echo $config[\'engine_styleid\'];?>/images/voteimg/'.$id.'.gif" alt="[<?php echo $lang[\'Vote\'];?>]"></a></span>';
+			//for guests:
+			$out2.='<span class="votelink"><a href="'.$sql2['conf_value'].'" target="_blank"><img src="./engine/_style_res/<?php echo $config[\'engine_styleid\'];?>/images/voteimg/'.$id.'.gif" alt="[<?php echo $lang[\'Vote\'];?>]"></a></span>';
+		}
 
+		/**
+		* Initiate cache now:
+		*/
+		if ($this->cache($out1,PATHROOT.'engine/_cache/cache_vote_loggedin.php') && $this->cache($out2,PATHROOT.'engine/_cache/cache_vote_loggedout.php'))
+			return true;
+		else
+			return false;
+	}
 
-$out.=$stringstart.$this->ln().' if ($i==1) $out.= $sep;$i=1; '.$this->ln().'$out.= \'<span class="menulink'.$sql2['linkgrup'].'">'.$this->ln().'	<a href="'.$sql2['linkurl'].'"';
-if ($sql2['linkdescr']<>'')
-$out.=' onmouseout="$WowheadPower.hideTooltip();" onmousemove="$WowheadPower.moveTooltip(event)" onmouseover="$WowheadPower.showTooltip(event, \\\''.$sql2['linkdescr'].'\\\')"';
-$out.='>'.$sql2['linktitle'].'</a>'.$this->ln().'</span>\';';
+	function ln() #returns
+	{
+		# linebreak
+		$system = strtolower( PHP_OS );
+		if (strtoupper(substr($system, 0, 3)) == 'WIN' )
+			return "\r\n";
+		else if ( strtoupper(substr($system, 0, 3)) == 'MAC' )
+			return "\r";
+		else
+			return "\n";
+	}
 
-$out.=$stringend.$this->ln();
+	function includeplugins() #returns array
+	{
+		$out=array();
+		if ($handle = opendir(PATHROOT.'engine/plugins/'))
+		{
+			while (false !== ($file = readdir($handle)))
+			{
+				$file = preg_replace( "/[^A-Za-z0-9-.]/", "", $file );
+				if (substr($file,-4,4)=='.php')
+				{
+					$file = preg_replace( "/.php/", "", $file );
+					$file= explode("-",$file); #we have array now
+					if ($out[$file[0]][0] == false)
+						$out[$file[0]][0] = $file[1].'-'.$file[2].'-'.$file[3];
+					else
+						$out[$file[0]][count($out[$file[0]])]=$file[1].'-'.$file[2].'-'.$file[3];
+				}
+			}
+			closedir($handle);
+		}
+		return $out;
+	}
 
+	function includemodule() //finish this
+	{
+		global $user;
+		$module = '';
 
+		if(isset($_GET['page']) && !empty($_GET['page']))
+		{
+			$module = preg_replace('/[^A-Za-z0-9_-]/', '', $_GET['page']); //only letters and numbers
 
-$stringstart='';
-$stringend='';
+			if(file_exists('./engine/modules/'.$module.'.php'))
+			{
+				include('./engine/modules/' . $module . '.php');
+			}
+			else
+			{
+				echo 'CODE 404';
+			}
+		}
+		else
+		{
+			include('./engine/news.php');
+		}
+	}
 
-}
-$out.='return $out;';
-$out.= ''.$this->ln().'}'.$this->ln().'}';
-
-/**
-* Initiate cache now:
-*/
-if ($this->cache($out,PATHROOT.'engine/_cache/cache_menulinks.php'))
-return true;
-else
-return false;
-}
-
-function cache_vote(){ #returns true on success else false
-global $db;
-/**
-* Build content
-*/
-$out1 = "<?php" .$this->ln(). '/* Autogenerated file by Global Caching (WWCMSv2) */'.$this->ln().'?>';
-$out2 = $out1;
-$sql1 = $db->query("SELECT * FROM ".TBL_CONFIG." WHERE conf_name LIKE 'vote_link_%' ORDER BY conf_name ASC")or die($db->error('error_msg'));
-while ($sql2=mysql_fetch_assoc($sql1))
-{
-$id=preg_replace( "/vote_link_/", "", $sql2['conf_name'] );
-$out1.='<span class="votelink" id="'.$sql2['conf_name'].'"><a href="'.$sql2['conf_value'].'" target="_blank" onclick="ajax_loadContent(\''.$sql2['conf_name'].'\',\'./engine/dynamic/vote_proccess.php?id='.$sql2['conf_name'].'\',\'<img src=./engine/_style_res/<?php echo $config[\'engine_styleid\'];?>/images/voteimg/'.$id.'.gif alt=[<?php echo $lang[\'Vote\'];?>]>\');"><img src="./engine/_style_res/<?php echo $config[\'engine_styleid\'];?>/images/voteimg/'.$id.'.gif" alt="[<?php echo $lang[\'Vote\'];?>]"></a></span>';
-//for guests:
-$out2.='<span class="votelink"><a href="'.$sql2['conf_value'].'" target="_blank"><img src="./engine/_style_res/<?php echo $config[\'engine_styleid\'];?>/images/voteimg/'.$id.'.gif" alt="[<?php echo $lang[\'Vote\'];?>]"></a></span>';
-
-
-}
-
-/**
-* Initiate cache now:
-*/
-if ($this->cache($out1,PATHROOT.'engine/_cache/cache_vote_loggedin.php') && $this->cache($out2,PATHROOT.'engine/_cache/cache_vote_loggedout.php'))
-return true;
-else
-return false;
-}
-function ln() #returns
-{
-# linebreak
-$system = strtolower( PHP_OS );
-if (strtoupper(substr($system, 0, 3)) == 'WIN' )
-return "\r\n";
-else if ( strtoupper(substr($system, 0, 3)) == 'MAC' )
-return "\r";
-else
-return "\n";
-}
-function includeplugins() #returns array
-{
-$out=array();
-if ($handle = opendir(PATHROOT.'engine/plugins/'))
-{
-while (false !== ($file = readdir($handle)))
-{
-$file = preg_replace( "/[^A-Za-z0-9-.]/", "", $file );
-if (substr($file,-4,4)=='.php')
-{
-$file = preg_replace( "/.php/", "", $file );
-$file= explode("-",$file); #we have array now
-
-if ($out[$file[0]][0]==false)
-$out[$file[0]][0]=$file[1].'-'.$file[2].'-'.$file[3];
-else
-$out[$file[0]][count($out[$file[0]])]=$file[1].'-'.$file[2].'-'.$file[3];
-}
-}
-closedir($handle);
-}
-return $out;
-}
-
-function includemodule() //finish this
-{
-global $user;
-$module = '';
-
-if(isset($_GET['page']) && !empty($_GET['page']))
-{
-$module = preg_replace('/[^A-Za-z0-9_-]/', '', $_GET['page']); //only letters and numbers
-
-if(file_exists('./engine/modules/'.$module.'.php'))
-{
-include('./engine/modules/' . $module . '.php');
-}
-
-else
-{
-echo 'CODE 404';
-}
-}
-
-else
-{
-include('./engine/news.php');
-}
-}
-function includemodule_proccess()
-{
-$module = '';$proccess = false;
-
-if(isset($_GET['page']) && !empty($_GET['page']))
-{
-$module = preg_replace('/[^A-Za-z0-9_-]/', '', $_GET['page']); //only letters and numbers
-
-if(file_exists('./engine/modules/'.$module.'.php'))
-{
-$proccess = true;
-include('./engine/modules/' . $module . '.php');
-}
-}
-}
+	function includemodule_proccess()
+	{
+		$module = '';$proccess = false;
+		if(isset($_GET['page']) && !empty($_GET['page']))
+		{
+			$module = preg_replace('/[^A-Za-z0-9_-]/', '', $_GET['page']); //only letters and numbers
+			if(file_exists('./engine/modules/'.$module.'.php'))
+			{
+				$proccess = true;
+				include('./engine/modules/' . $module . '.php');
+			}
+		}
+	}
 
 	function credits($style=false) #returns
 	{
 		global $db,$lang,$config,$user;
-
 		if ($style)
 		{
 			$style=$style.' | ';
@@ -519,7 +501,6 @@ include('./engine/modules/' . $module . '.php');
 		{
 			return $lang['Page generated'].': '.round((microtime()-TIMESTART),2).' | '.$lang['Queries executed'].': '.$db->num_queries.' | '.$lang['Copyright'].' &copy; 2010-2011 | '.$style.$lang['Powered by'].': <a href="./?page=credits" title="">WWCv2</a>  | <a href="tos.php">'.$lang['Terms of Use'].'</a>';
 		}
-
 		else
 		{
 			return $lang['Copyright'].' &copy; 2010-2011 | '.$style.$lang['Powered by'].': <a target="_blank" href="http://www.web-wow.net/" title="">WWCv2</a>  | <a href="tos.php">'.$lang['Terms of Use'].'</a>';	
@@ -529,7 +510,6 @@ include('./engine/modules/' . $module . '.php');
 	function portcheck($sep,$port=false,$server=false) #returns text or returns '' if fockopen doesn't exists
 	{
 		global $config;
-
 		$out = '';
 
 		if(function_exists("fsockopen"))
@@ -553,10 +533,8 @@ include('./engine/modules/' . $module . '.php');
 					}
 
 					$out .= $sep[$i].'<span id="portcheck'.$i.'">--</span><script type="text/javascript">ajax_loadContent(\'portcheck'.$i.'\',\'./engine/dynamic/status.php?port='.$realm_data[1].'&ip='.$realm_data[2].'\',\'--\');</script>';
-
 					$i++;
 				}
-
 				return $out;
 			}
 
@@ -693,25 +671,25 @@ function error($message, $file, $line, $db_error = false)
 <div style="PADDING: 6px 5px; BACKGROUND-COLOR: #F1F1F1; color:#000000;font-size:11px">
 <?php
 
-	if (defined('PUN_DEBUG'))
+if (defined('PUN_DEBUG'))
+{
+	echo "\t\t".'<strong>File:</strong> '.$file.'<br />'."\n\t\t".'<strong>Line:</strong> '.$line.'<br /><br />'."\n\t\t".'<strong>Website reported</strong>: '.$message."\n";
+
+	if ($db_error)
 	{
-		echo "\t\t".'<strong>File:</strong> '.$file.'<br />'."\n\t\t".'<strong>Line:</strong> '.$line.'<br /><br />'."\n\t\t".'<strong>Website reported</strong>: '.$message."\n";
+		echo "\t\t".'<br /><br /><strong>Database reported:</strong> '.pun_htmlspecialchars($db_error['error_msg']).(($db_error['error_no']) ? ' (Errno: '.$db_error['error_no'].')' : '')."\n";
 
-		if ($db_error)
+		if ($db_error['error_sql'] != '')
 		{
-			echo "\t\t".'<br /><br /><strong>Database reported:</strong> '.pun_htmlspecialchars($db_error['error_msg']).(($db_error['error_no']) ? ' (Errno: '.$db_error['error_no'].')' : '')."\n";
-
-			if ($db_error['error_sql'] != '')
-			{
-				echo "\t\t".'<br /><br /><strong>Failed query:</strong> '.pun_htmlspecialchars($db_error['error_sql'])."\n";	
-			}
+			echo "\t\t".'<br /><br /><strong>Failed query:</strong> '.pun_htmlspecialchars($db_error['error_sql'])."\n";	
 		}
 	}
+}
 
-	else
-	{
-		echo "\t\t".'Error: <strong>'.$message.'.</strong>'."\n";
-	}
+else
+{
+	echo "\t\t".'Error: <strong>'.$message.'.</strong>'."\n";
+}
 
 ?>
 </div>
@@ -721,13 +699,13 @@ function error($message, $file, $line, $db_error = false)
 </html>
 <?php
 
-	// If a database connection was established (before this error) we close it
-	if ($db_error)
-	{
-		$GLOBALS['db']->close();
-	}
+// If a database connection was established (before this error) we close it
+if ($db_error)
+{
+	$GLOBALS['db']->close();
+}
 
-	exit;
+exit;
 }
 
 //PHP 4.2.x Compatibility function
