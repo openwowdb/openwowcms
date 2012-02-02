@@ -230,9 +230,9 @@ class Install {
 			foreach ($functions as $func)
 			{
 				if (function_exists($func))
-					echo '<div id="tworows"><span style="color:green">'.ucwords($installer_lang['enabled']).'</span> fsockopen()</div>';
+					echo '<div id="tworows"><span style="color:green">'.ucwords($installer_lang['enabled']).'</span> '.$func.'()</div>';
 				else
-					echo '<div id="tworows"><span style="color:red">'.ucwords($installer_lang['disabled']).'</span> fsockopen()</div>';
+					echo '<div id="tworows"><span style="color:red">'.ucwords($installer_lang['disabled']).'</span> '.$func.'()</div>';
 			}
 		}
 		elseif ($step=='3')
@@ -259,7 +259,7 @@ class Install {
 			$this->Input("db_pass");echo '<br>';
 			echo "<br><span class='innerlinks'><a href='javascript:void();' onclick='db_con(\"".$installer_lang['Connecting']."\",\"".$installer_lang['Next Step']."\",\"".$installer_lang['Connection Failed']."\",\"".$installer_lang['Connection Successful']."\");return false'>".$installer_lang['Click Here to Test Connection']."</a></span>";
 			echo "<span id='db_con' style='display:none'></span>";
-			$stop=true;
+			$stop = true;
 		}
 		elseif ($step=='5')
 		{
@@ -370,7 +370,7 @@ class Install {
 			}
 			else
 			{
-				echo $installer_lang['Connection Failed'].' (db_host/db_user)';
+				echo $installer_lang['Connection Failed'].' (host/user)';
 				$stop = true;
 			}
 		}
