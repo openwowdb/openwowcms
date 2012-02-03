@@ -1,5 +1,5 @@
 <?php 
-global $Html,$form,$lang_admincp,$lang,$config;
+global $lang_admincp,$lang,$config;
 
 if (!$lang_admincp) include_once(PATHROOT."engine/lang/".strtolower($config['engine_lang'])."/admincp.php");
 include_once(PATHROOT.$config['engine_acp_folder']."defines.php");
@@ -17,14 +17,14 @@ if(isset($proccess) && $proccess == TRUE){
 	* index.php page.
     */
 	function Process(){
-	   global $user, $form;
+	   global $user;
 	   
 	  /* Login attempt */
       $retval = $user->login($_POST['user'], $_POST['pass'], isset($_POST['remember']));
       /* Login failed */
       if(!$retval){
          $_SESSION['value_array'] = $_POST;
-         $_SESSION['error_array'] = $form->getErrorArray();
+			$_SESSION['error_array'] = Form::getErrorArray();
       }
 	  else
 	  	header("Location: index.php");
@@ -42,7 +42,7 @@ if(isset($proccess) && $proccess == TRUE){
 	}
 	
 	/* Reinitilaze 'form' proccess with latest session data */
-	$form->_Form();
+	Form::_Form();
 	return;
 	
 }
@@ -52,5 +52,5 @@ if(isset($proccess) && $proccess == TRUE){
 <!-- This element is important, must be at beginning of module output, dont change it, except module name -->
 <div class="post_body_title"><?php echo $lang_admincp['Credits']; ?></div>
 <?php
-$Html->credits_cms(); 
+Html::credits_cms();
 ?>

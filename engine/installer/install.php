@@ -118,7 +118,7 @@ class Install {
 	*/
 	function Go()
 	{
-		global $Html, $lang, $installer_lang;
+		global $lang, $installer_lang;
 
 		// Store data to session
 		if ( isset( $_POST ) ) {
@@ -157,7 +157,7 @@ class Install {
 			//
 			// Language selection
 			//
-			echo $Html->lang_selection('English');
+			echo Html::lang_selection('English');
 		}
 		elseif ($step=='2')
 		{

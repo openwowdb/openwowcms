@@ -153,8 +153,8 @@ document.getElementById('addmorelink'+id).innerHTML='<div style="background-colo
 </b>
 <div id="menu_content"><?php
 @$adminfunc->$function();
-if($form->num_errors > 0){
-echo "<br><span class='error'>".$form->num_errors."</span>";
+if(Form::$num_errors > 0){
+	echo "<br><span class='error'>".Form::$num_errors."</span>";
 }  ?>
 </div>
 <b class="menu_round">

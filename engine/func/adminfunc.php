@@ -60,7 +60,7 @@ return preg_replace( "/'/", "", preg_replace( "/\"/", "", $str ));
 */
 function main(){
 
-global $form,$db,$lang_admincphelp, $lang_admincp;
+global $db,$lang_admincphelp, $lang_admincp;
 $name=  $lang_admincp['License and Version'];
 
 /* Print form */
@@ -169,7 +169,7 @@ require_once("../engine/func/adminfunc3.php");
 
 function cssmanager(){
 
-global $form,$db,$lang_admincphelp,$lang_admincp,$config,$Html;
+global $db,$lang_admincphelp,$lang_admincp,$config;
 echo '<h2>'.$lang_admincp['CSS Editor'].' (<a href="#csscodefull2">Go to testing box</a>)</h2>';
 if ($_GET['javascript']=='1') $javascript='&javascript=1'; else $javascript='&javascript=0';
 if (!isset($_GET['javascript']))
@@ -180,8 +180,8 @@ return;
 if (isset ($_POST['cachetoconfig']))
 {
 //add script za cachanje u stylesheet.css
-$Html->cache($_POST['csscodefull'],PATHROOT.'engine/_style_res/'.$config['engine_styleid'].'/stylesheet.css');
-if (!$Html->cache($_POST['csscodefull'],PATHROOT.'engine/_style_res/'.$config['engine_styleid'].'/stylesheet_backup.css'))
+Html::cache($_POST['csscodefull'],PATHROOT.'engine/_style_res/'.$config['engine_styleid'].'/stylesheet.css');
+if (!Html::cache($_POST['csscodefull'],PATHROOT.'engine/_style_res/'.$config['engine_styleid'].'/stylesheet_backup.css'))
 echo 'Backup not made, please create empty file:<strong> engine/_style_res/'.$config['engine_styleid'].'/stylesheet_backup.css</strong><br>';
 echo $lang_admincp['Action report'].": <font color='orange'>stylesheet.css is cached with test data, <strong>stylesheet_backup.css</strong> is created and cached.</font>";
 $fulledit2=$_POST['csscodefull'];
@@ -189,7 +189,7 @@ $fulledit2=$_POST['csscodefull'];
 if (isset ($_POST['submit']))
 {
 /* Apply filters */
-//$form->setError('user_name', "* Username below 5 characters");
+//Form::setError('user_name', "* Username below 5 characters");
 $i=0;
 $query_insert=false;
 foreach($_POST['title'] as $x) {
@@ -198,9 +198,9 @@ if ($x<>''){
 #remove quotes from strings, as we don't need them
 $x= $this->filter(trim($x));$_POST['template'][$i]= $this->filter($_POST['template'][$i]);
 #check for errors
-if(!preg_match("/^([0-9a-zA-Z_\/;&#?!.,():% -])+$/", $x)) {$form->setError('title'.$i, "*"); }
+if(!preg_match("/^([0-9a-zA-Z_\/;&#?!.,():% -])+$/", $x)) {Form::setError('title'.$i, "*"); }
 if (trim($_POST['template'][$i])<>'')
-{if(!preg_match("/^([0-9a-zA-Z_\/;&#?!.,()\n\rn:%= -])+$/", trim($_POST['template'][$i]))) $form->setError('template'.$i, "*");}
+{if(!preg_match("/^([0-9a-zA-Z_\/;&#?!.,()\n\rn:%= -])+$/", trim($_POST['template'][$i]))) Form::setError('template'.$i, "*");}
 
 if ($_POST['title'][$i]<>'')//dont save/erase it if title is empty
 $query_insert.="('".$config['engine_styleid']."','".$db->escape($x)."','".$db->escape($_POST['template'][$i])."','css'), ";
@@ -209,7 +209,7 @@ $query_insert.="('".$config['engine_styleid']."','".$db->escape($x)."','".$db->e
 $i++;
 }
 $j=$i;
-if ( $form->num_errors == 0 )
+if ( Form::$num_errors == 0 )
 {
 $db->query("DELETE FROM ".TBL_TEMPLATE." WHERE templatetype='css' AND styleid='".$config['engine_styleid']."'")or die($db->error('error_msg'));
 $query_insert=rtrim($query_insert,', ');
@@ -228,7 +228,7 @@ echo $lang_admincp['Action report'].": <font color='gray'>".$lang_admincp['No ch
 /* Set session arrays if any errors */
 $_SESSION['value_array'] = $_POST;
 //print_r($_SESSION['value_array']);
-$_SESSION['error_array'] = $form->getErrorArray();
+$_SESSION['error_array'] = Form::getErrorArray();
 }
 ?><form name="adminform" id="adminform" action="./?f=cssmanager<?php echo $javascript; ?>" method="POST">
 <?php
@@ -238,7 +238,7 @@ echo '<table width="100%" border="0" cellpadding="2"><tr><td width="200px">'.$la
 $fulledit='';
 while ($sql2=mysql_fetch_assoc($sql1)){
 ?><tr>
-<td valign="top" width="200px"><?php echo $form->error('title'.$i);?><input style="width:96%;font-family:consolas,'courier new',courier,monospace" type="text" name="title[]" value="<?php
+<td valign="top" width="200px"><?php echo Form::error('title'.$i);?><input style="width:96%;font-family:consolas,'courier new',courier,monospace" type="text" name="title[]" value="<?php
 if ($_SESSION['value_array']['title'][$i]<>'')
 {echo htmlspecialchars($_SESSION['value_array']['title'][$i]);$fulledit.=htmlspecialchars($_SESSION['value_array']['title'][$i]);}
 else
@@ -246,7 +246,7 @@ else
 $fulledit.=' {
 ';
 ?>" /></td>
-<td valign="top"><?php echo $form->error('template'.$i);?><textarea style="font-family:consolas,'courier new',courier,monospace;width:100%; font-size:12px" name="template[]" id="csscode<?php echo $i;?>" rows="4"><?php
+<td valign="top"><?php echo Form::error('template'.$i);?><textarea style="font-family:consolas,'courier new',courier,monospace;width:100%; font-size:12px" name="template[]" id="csscode<?php echo $i;?>" rows="4"><?php
 if ($_SESSION['value_array']['template'][$i]<>'')
 {echo htmlspecialchars($_SESSION['value_array']['template'][$i]);$fulledit.=htmlspecialchars($_SESSION['value_array']['template'][$i]);}
 else
@@ -276,10 +276,10 @@ $i++;
 while ($j>$i)
 {
 ?><tr>
-<td valign="top" width="200px"><?php echo $form->error('title'.$i);?><input style="width:96%;font-family:consolas,'courier new',courier,monospace" type="text" name="title[]" value="<?php
+<td valign="top" width="200px"><?php echo Form::error('title'.$i);?><input style="width:96%;font-family:consolas,'courier new',courier,monospace" type="text" name="title[]" value="<?php
 echo htmlspecialchars($_SESSION['value_array']['title'][$i]);
 ?>" /></td>
-<td valign="top"><?php echo $form->error('template'.$i);?><textarea name="template[]" id="csscode<?php echo $i;?>" rows="4" style="width:100%"><?php
+<td valign="top"><?php echo Form::error('template'.$i);?><textarea name="template[]" id="csscode<?php echo $i;?>" rows="4" style="width:100%"><?php
 echo htmlspecialchars($_SESSION['value_array']['template'][$i]); ?></textarea>
 <script type="text/javascript">
 var editor = CodeMirror.fromTextArea('csscode<?php echo $i;?>', {
@@ -329,14 +329,14 @@ lineNumbers: true
 
 function updateconfig(){
 
-global $form,$db,$lang_admincphelp,$lang_admincp;
+global $db,$lang_admincphelp,$lang_admincp;
 $name= $lang_admincp['Configuration Variables'];
 $descr= $lang_admincphelp[26].".";
 $note= "";
 if (isset ($_POST['submit']))
 {
 /* Apply filters */
-//$form->setError('user_name', "* Username below 5 characters");
+//Form::setError('user_name', "* Username below 5 characters");
 $i=0;
 $query_insert=false;
 foreach($_POST['conf_name'] as $x) {
@@ -347,18 +347,18 @@ $x= $this->filter($x);$_POST['conf_value'][$i]= $this->filter($_POST['conf_value
 $_POST['conf_descr'][$i]= $this->filter($_POST['conf_descr'][$i]);
 $_POST['conf_stickied'][$i]= preg_replace( "/[^0-9]/", "", $_POST['conf_stickied'][$i] );
 #check for errors
-if(!preg_match("/^([0-9a-zA-Z_])+$/", $x)) {$form->setError('conf_name'.$i, "<big title='Invalid characters!'>&#9632;&#9632;&#9632;</big>"); }
+if(!preg_match("/^([0-9a-zA-Z_])+$/", $x)) {Form::setError('conf_name'.$i, "<big title='Invalid characters!'>&#9632;&#9632;&#9632;</big>"); }
 $_POST['conf_value'][$i]=htmlspecialchars($_POST['conf_value'][$i]);
-if(!preg_match("/^([0-9a-zA-Z_\/;&#?!.,-:=@ |()])+$/", $_POST['conf_value'][$i])) $form->setError('conf_value'.$i, "<big title='Invalid characters!'>&#9632;&#9632;&#9632;</big>");
+if(!preg_match("/^([0-9a-zA-Z_\/;&#?!.,-:=@ |()])+$/", $_POST['conf_value'][$i])) Form::setError('conf_value'.$i, "<big title='Invalid characters!'>&#9632;&#9632;&#9632;</big>");
 if ($_POST['conf_descr'][$i]<>'' && ($_POST['conf_stickied'][$i]=='0' or $_POST['conf_stickied'][$i]==''))
-if(!preg_match("/^([0-9a-zA-Z_\/;&#?!.,-:= |()])+$/", $_POST['conf_descr'][$i])) $form->setError('conf_descr'.$i, "<big title='Invalid characters!'>&#9632;&#9632;&#9632;</big>");
+if(!preg_match("/^([0-9a-zA-Z_\/;&#?!.,-:= |()])+$/", $_POST['conf_descr'][$i])) Form::setError('conf_descr'.$i, "<big title='Invalid characters!'>&#9632;&#9632;&#9632;</big>");
 $query_insert.="('".$db->escape($x)."','".$db->escape($_POST['conf_value'][$i])."','".$db->escape($_POST['conf_descr'][$i])."','".$_POST['conf_stickied'][$i]."','".$db->escape($_POST['conf_dropdown'][$i])."'), ";
 
 }
 $i++;
 }
 $j=$i;
-if ( $form->num_errors == 0 )
+if ( Form::$num_errors == 0 )
 {
 $db->query("DELETE FROM ".TBL_CONFIG)or die($db->error('error_msg'));
 $query_insert=rtrim($query_insert,', ');
@@ -376,7 +376,7 @@ echo $lang_admincp['Action report'].": <font color='gray'>".$lang_admincp['No ch
 /* Set session arrays if any errors */
 $_SESSION['value_array'] = $_POST;
 //print_r($_SESSION['value_array']);
-$_SESSION['error_array'] = $form->getErrorArray();
+$_SESSION['error_array'] = Form::getErrorArray();
 }
 /* Print form */
 
@@ -407,7 +407,7 @@ echo '<input name="conf_name[]" onmouseout="$WowheadPower.hideTooltip();" onmous
 }
 else
 echo '<span onmouseout="$WowheadPower.hideTooltip();" onmousemove="$WowheadPower.moveTooltip(event)" onmouseover="$WowheadPower.showTooltip(event, \''.$lang_admincphelp[3].'\')">'.$sql2['conf_name'].'</span><input name="conf_name[]" type="hidden" id="'.$sql2['conf_name'].'" value="'.$sql2['conf_name'].'" />';
-echo $form->error('conf_name'.$i).'&nbsp;&nbsp;'; ?></td><td  valign="top">
+echo Form::error('conf_name'.$i).'&nbsp;&nbsp;'; ?></td><td  valign="top">
 <?php
 if (trim($sql2['conf_dropdown'])<>'') {
 
@@ -428,7 +428,7 @@ echo "value='".$conf_dropdownparts."'>".$conf_dropdownparts."</option>";
 ?>
 <input type="text" name="conf_value[]" onmouseout="$WowheadPower.hideTooltip();" onmousemove="$WowheadPower.moveTooltip(event)" onmouseover="$WowheadPower.showTooltip(event, '<?php echo $lang_admincphelp[2]; ?>')" value="<?php echo $sql2['conf_value']; ?>" style="width:300px"><input type="hidden" name="conf_dropdown[]" value="" /><?php
 }
-echo $form->error('conf_value'.$i).'&nbsp;&nbsp;'; ?><?php echo '<span onmouseout="$WowheadPower.hideTooltip();" onmousemove="$WowheadPower.moveTooltip(event)" onmouseover="$WowheadPower.showTooltip(event, \''.$lang_admincphelp[4].'\')">'.$sql2['conf_descr'].'</span><input name="conf_descr[]" type="hidden" value="'.$sql2['conf_descr'].'" />'.$form->error('conf_descr'.$i).'&nbsp;&nbsp;'; ?><input type="hidden" name="conf_stickied[]" value="<?php echo $sql2['conf_stickied']; ?>" /></td>
+echo Form::error('conf_value'.$i).'&nbsp;&nbsp;'; ?><?php echo '<span onmouseout="$WowheadPower.hideTooltip();" onmousemove="$WowheadPower.moveTooltip(event)" onmouseover="$WowheadPower.showTooltip(event, \''.$lang_admincphelp[4].'\')">'.$sql2['conf_descr'].'</span><input name="conf_descr[]" type="hidden" value="'.$sql2['conf_descr'].'" />'.Form::error('conf_descr'.$i).'&nbsp;&nbsp;'; ?><input type="hidden" name="conf_stickied[]" value="<?php echo $sql2['conf_stickied']; ?>" /></td>
 <td  valign="top"></td></tr>
 <?php
 $i++;
@@ -440,9 +440,9 @@ while ($j>$i)
 <?php
 echo '<input name="conf_name[]"  onmouseout="$WowheadPower.hideTooltip();" onmousemove="$WowheadPower.moveTooltip(event)" onmouseover="$WowheadPower.showTooltip(event, \''.$lang_admincphelp[3].'\')" type="text" value="'.$_SESSION['value_array']['conf_name'][$i].'" style="width:200px; color:darkblue" />';
 
-echo $form->error('conf_name'.$i).'&nbsp;&nbsp;'; ?></td><td  valign="top">
+echo Form::error('conf_name'.$i).'&nbsp;&nbsp;'; ?></td><td  valign="top">
 <input type="text" name="conf_value[]" value="<?php echo $_SESSION['value_array']['conf_value'][$i]; ?>" style="width:200px"><?php
-echo $form->error('conf_value'.$i).'&nbsp;&nbsp;[Note]: '.'<input name="conf_descr[]" style="width: 200px;" type="text" value="'.$_SESSION['value_array']['conf_descr'][$i].'" >'.$form->error('conf_descr'.$i).'&nbsp;&nbsp;'; ?></td>
+echo Form::error('conf_value'.$i).'&nbsp;&nbsp;[Note]: '.'<input name="conf_descr[]" style="width: 200px;" type="text" value="'.$_SESSION['value_array']['conf_descr'][$i].'" >'.Form::error('conf_descr'.$i).'&nbsp;&nbsp;'; ?></td>
 <td  valign="top"></td></tr>
 <?php
 $i++;
@@ -481,7 +481,7 @@ require_once("../engine/func/adminfunc2.php");
 */
 function links()
 {
-global $db,$config,$Html,$lang_admincp,$lang_admincphelp;
+global $db,$config,$lang_admincp,$lang_admincphelp;
 echo '<h2>'.$lang_admincp['Menu Manager'].'</h2>';
 if (isset($_POST['submit']))
 {
@@ -510,7 +510,7 @@ $query_insert=rtrim($query_insert,', ');
 $db->query("INSERT INTO ".TBL_LINKS." (linktitle,linkurl,linkorder,linkdescr,linkgrup,linkprems) VALUES ".$query_insert )or die($db->error('error_msg'));
 
 echo $lang_admincp['Action report'].": <font color='green'>".$lang_admincp['New data inserted'];
-if ($Html->cache_menulinks()) echo ' '.$lang_admincp['and cached'].'.'; else echo ', '.$lang_admincp['links not cached'].'.';
+if (Html::cache_menulinks()) echo ' '.$lang_admincp['and cached'].'.'; else echo ', '.$lang_admincp['links not cached'].'.';
 echo "</font>";
 }
 $sql1 = $db->query("SELECT * FROM ".TBL_LINKS." ORDER BY linkgrup ASC, linkorder ASC")or die(mysql_error());
@@ -566,7 +566,7 @@ onmouseover=&quot;$WowheadPower.showTooltip(event, \'<font color="orange">{Linkd
 */
 function lang()
 {
-global $Html,$config,$lang_admincp,$lang_admincphelp,$db;
+global $config,$lang_admincp,$lang_admincphelp,$db;
 ?>
 <h2><a href="./?f=lang"><?php echo $lang_admincp['Languages']; ?></a></h2>
 <?php
@@ -575,7 +575,7 @@ if (!isset($_POST['create']) && !isset($_GET['lang']) && !isset($_GET['save'])){
 <?php echo $lang_admincp['Note']; ?>: <?php echo $lang_admincphelp[31]; ?><br /><br />
 <form method="get"><input type="hidden" value="lang" name="f" />
 <?php
-echo $Html->lang_selection($config['engine_lang']);
+echo Html::lang_selection($config['engine_lang']);
 ?>
 <input type="submit" name="submit" value="OK" /> <input type="submit" name="submit2" value="<?php echo $lang_admincp['Save']; ?>" />
 </form><br />
@@ -609,7 +609,7 @@ if ($file<>'..' && $file<>'.')
 {
 
 @mkdir(PATHROOT.'engine/lang/'.$lang_name.'/', 0777);
-if ($Html->cache(@file_get_contents(PATHROOT.'engine/lang/english/'.$file),PATHROOT.'engine/lang/'.$lang_name.'/'.$file))
+if (Html::cache(@file_get_contents(PATHROOT.'engine/lang/english/'.$file),PATHROOT.'engine/lang/'.$lang_name.'/'.$file))
 echo $lang_admincp['From'].': ./engine/lang/<strong>english</strong>/'.$file.'&nbsp;&nbsp;&nbsp;'.$lang_admincp['to'].'&nbsp;&nbsp;&nbsp;./engine/lang/<strong>'.$lang_name.'</strong>/'.$file.' <br>';
 else
 echo $lang_admincp['File']." ".'<strong>engine/lang/'.$lang_name.'/'.$file.'</strong> '.$lang_admincp['Not Writable'].', '.$lang_admincp['please chmod this file to 777'].'.<br>';
@@ -701,7 +701,7 @@ foreach ($_POST as $postedkey => $postedvalue)
 */
 if (substr($postedkey,-4)=='_php' && $postedvalue<>''){
 
-if ($Html->cache($postedvalue,PATHROOT.'engine/lang/'.$editlang.'/'.substr(preg_replace( '/\_/', '.',$postedkey ),4)))
+if (Html::cache($postedvalue,PATHROOT.'engine/lang/'.$editlang.'/'.substr(preg_replace( '/\_/', '.',$postedkey ),4)))
 echo '<font color=gray>./ engine / lang / </font>'.$editlang.' / <strong>'.substr(preg_replace( '/\_/', '.',$postedkey ),4) .'</strong><br>';
 else
 echo $lang_admincp['File'].' <strong>'.substr(preg_replace( '/\_/', '.',$postedkey ),4).'</strong> '.$lang_admincp['Not Writable'].', '.$lang_admincp['please chmod this file to 777'].'.<br>';
@@ -853,8 +853,7 @@ echo '<br><img src="./res/novote.jpg" style="float:left;" />&nbsp;--';
 * credits() - This function should be viewable to all users.
 */
 function credits(){
-global $Html;
-$Html->credits_cms();
+Html::credits_cms();
 }
 
 function phpinfoo(){phpinfo();}

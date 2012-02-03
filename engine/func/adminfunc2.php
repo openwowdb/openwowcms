@@ -10,10 +10,10 @@
 ##################################################################
 
 
-global $Html,$lang_admincp,$lang_admincphelp;
+global $lang_admincp,$lang_admincphelp;
 unset($_SESSION['update_files']);
 echo '<h2>'.$lang_admincp['Plugins'].'</h2>';
-$existing_plugins=$Html->includeplugins();
+$existing_plugins=Html::includeplugins();
 if (isset($_GET['x']) && isset($_GET['z']) && isset($_GET['boxed']))
 {
 /*filter variables*/
@@ -85,7 +85,7 @@ echo '<br><br><span class="buttonlink"><a href="?f=plugins&x='.$x.'&y=&z=&boxed=
 elseif(isset($_POST['submit']) or isset($_POST['submit1']) )//save plugin or create new-same thing
 {
 
-if ($Html->cache(trim($_POST['code']),PATHROOT.'engine/plugins/'.$x.'-'.$y.'-'.$z.'-'.$boxed.'.php')){
+if (Html::cache(trim($_POST['code']),PATHROOT.'engine/plugins/'.$x.'-'.$y.'-'.$z.'-'.$boxed.'.php')){
 echo $lang_admincp['Action report'].': '.$lang_admincp['Plugin'].' <strong>'.$x.'-'.$y.'-'.$z.'-'.$boxed.'.php</strong> '.$lang_admincp['is saved'].'.<br><br>';
 /**
 * If there are files that need to be written, initiate update script in iframe and writte files

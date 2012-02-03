@@ -44,7 +44,7 @@ if (file_exists(PATHROOT . 'config/config.php') && file_exists(PATHROOT . 'confi
 {
 	require_once (PATHROOT."config/config.php");
 	require_once (PATHROOT."config/config_db.php");
-	
+
 	// Include mysql engine and start connection if configs are valid
 	if (defined('AXE_db') && defined('AXE'))
 	{
@@ -53,7 +53,6 @@ if (file_exists(PATHROOT . 'config/config.php') && file_exists(PATHROOT . 'confi
 }
 
 require_once (PATHROOT. 'engine/version.php');
-
 
 // start the page generation timer
 //$pagestarttime = microtime();
@@ -76,7 +75,6 @@ if (!defined('AXE_db'))
 {
 	// restrict users from directly accessing the install directory
 	define('INSTALL_AXE',1);
-
 	require_once(PATHROOT . 'engine/installer/install.php');
 }
 
@@ -86,6 +84,7 @@ require_once (PATHROOT . 'engine/lang/' . strtolower($config['engine_lang']) . '
 
 // Include necessary libraries
 require_once (PATHROOT."engine/func/session.php");
+require_once (PATHROOT."engine/func/form.php");
 require_once (PATHROOT."engine/core/".strtolower($config['engine_core']).".php");
 require_once (PATHROOT."engine/func/required.php");
 

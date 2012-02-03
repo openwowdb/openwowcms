@@ -8,7 +8,6 @@
 #   License          : GPLv3
 ##################################################################
 
-
 /**
  * This boolean constant controls whether or
  * not the script keeps track of active users
@@ -194,38 +193,36 @@ class SessionUser
     * Effectively logging in the user if all goes well.
     */
    function login($subuser, $subpass, $subremember){
-      global $db, $form, $user, $lang;  //The database and form object
+      global $db, $user, $lang;  //The database and form object
 
       /* Username error checking */
       $field = "user";  //Use field name for username
       if(!$subuser || strlen($subuser = trim($subuser)) == 0){
-         $form->setError($field, "* ".$lang['Username']." ".$lang['not entered']);
+				Form::setError($field, "* ".$lang['Username']." ".$lang['not entered']);
       }
       else{
-	  
          /* Check if username is not alphanumeric */
 		  if(!ctype_alnum($subuser)){
-            $form->setError($field, "* ".$lang['Username']." ".$lang['not alphanumeric']);
+            Form::setError($field, "* ".$lang['Username']." ".$lang['not alphanumeric']);
          }
 		 /* Check if username is banned ingame */
          else if($user->usernameBanned($subuser)){
-            $form->setError($field, "* ".$lang['Username'].' '.strtolower($lang['Banned']));
+					Form::setError($field, "* ".$lang['Username'].' '.strtolower($lang['Banned']));
          } 
 		 /* Check if username is banned website */
          else if($db->usernameBanned($subuser)){
-            $form->setError($field, "* ".$lang['Username'].' '.strtolower($lang['Banned']));
+					Form::setError($field, "* ".$lang['Username'].' '.strtolower($lang['Banned']));
         } 
       }
 	  
-
       /* Password error checking */
       $field = "pass";  //Use field name for password
       if(!$subpass){
-         $form->setError($field, "* ".$lang['Password']." ".$lang['not entered']);
+				Form::setError($field, "* ".$lang['Password']." ".$lang['not entered']);
       }
       
       /* Return if form errors exist */
-      if($form->num_errors > 0){
+			if(Form::$num_errors > 0){
          return false;
       }
 
@@ -236,15 +233,15 @@ class SessionUser
       /* Check error codes */
       if($result == 1){
          $field = "user";
-         $form->setError($field, "* ".$lang['Username']." not found");
+				Form::setError($field, "* ".$lang['Username']." not found");
       }
       else if($result == 2){
          $field = "pass";
-         $form->setError($field, "* ".$lang['Invalid']." ".strtolower($lang['Password']));
+				Form::setError($field, "* ".$lang['Invalid']." ".strtolower($lang['Password']));
       }
       
       /* Return if form errors exist */
-      if($form->num_errors > 0){
+			if(Form::$num_errors > 0){
          return false;
       }
 	  /* Insert data to wwc2_users_more if doesnt exists */
@@ -304,14 +301,14 @@ class SessionUser
 
       /* Reflect fact that user has logged out */
       $this->logged_in = false;
-      
+
       /**
        * Remove from active users table and add to
        * active guests tables.
        */
       $db->removeActiveUser($this->username);
       $db->addActiveGuest($_SERVER['REMOTE_ADDR'], $this->time);
-      
+
       /* Set user level to guest */
       $this->username  = GUEST_NAME;
       $this->userlevel = 0;
@@ -325,58 +322,55 @@ class SessionUser
     * returns 0. Returns 2 if registration failed.
     */
    function register($subuser, $subpass, $subemail){
-      global $db, $form,$user,$lang;//, $mailer;  //The database, form and mailer object
-      
+      global $db, $user,$lang;//, $mailer;  //The database, form and mailer object
+
       /* Username error checking */
       $field = "user_name";  //Use field name for username
-	 
+
       if(!$subuser || strlen($subuser = trim($subuser)) == 0){
-         $form->setError($field, "* Username not entered");
+				Form::setError($field, "* Username not entered");
       }
-	  
-      else{ 
-	 
+      else{
          /* Spruce up username, check length */
          $subuser = stripslashes($subuser);
          if(strlen($subuser) < 5){
-            $form->setError($field, "* ".$lang['Username']." ".$lang['below 5 characters']."");
+					Form::setError($field, "* ".$lang['Username']." ".$lang['below 5 characters']."");
          }
          else if(strlen($subuser) > 30){
-            $form->setError($field, "* ".$lang['Username']." ".$lang['above 30 characters']."");
+					Form::setError($field, "* ".$lang['Username']." ".$lang['above 30 characters']."");
          }
          /* Check if username is not alphanumeric */
          else  if(!ctype_alnum($subuser)){
-            $form->setError($field, "* ".$lang['Username']." ".$lang['not alphanumeric']."");
+					Form::setError($field, "* ".$lang['Username']." ".$lang['not alphanumeric']."");
          }
          /* Check if username is reserved */
          else if(strcasecmp($subuser, GUEST_NAME) == 0){
-            $form->setError($field, "* ".$lang['Username']." ".$lang['reserved word']."");
+					Form::setError($field, "* ".$lang['Username']." ".$lang['reserved word']."");
          }
          /* Check if username is already in use */
          else if($user->usernameTaken($subuser)){
-            $form->setError($field, "* ".$lang['Username']." ".$lang['already in use']."");
+					Form::setError($field, "* ".$lang['Username']." ".$lang['already in use']."");
          }
          /* Check if username is banned */
          else if($user->usernameBanned($subuser)){
-            $form->setError($field, "* ".$lang['Username']." ".strtolower($lang['Banned']));
-         } 
-		 
+					Form::setError($field, "* ".$lang['Username']." ".strtolower($lang['Banned']));
+         }
       }
 
       /* Password error checking */
       $field = "pass_word";  //Use field name for password
       if(!$subpass){
-         $form->setError($field, "* ".$lang['Password']." ".$lang['not entered']."");
+				Form::setError($field, "* ".$lang['Password']." ".$lang['not entered']."");
       }
       else{
          /* Spruce up password and check length*/
          $subpass = stripslashes($subpass);
          if(strlen($subpass) < 5){
-            $form->setError($field, "* ".$lang['Password']." ".$lang['below 5 characters']."");
+					Form::setError($field, "* ".$lang['Password']." ".$lang['below 5 characters']."");
          }
          /* Check if password is not alphanumeric */
          else if(!ctype_alnum($subpass = trim($subpass))){
-            $form->setError($field, "* ".$lang['Password']." ".$lang['not alphanumeric']."");
+					Form::setError($field, "* ".$lang['Password']." ".$lang['not alphanumeric']."");
          }
          /**
           * Note: I trimmed the password only after I checked the length
@@ -385,23 +379,21 @@ class SessionUser
           * kind of stupid to report "password too short".
           */
       }
-      
+
       /* Email error checking */
       $field = "email";  //Use field name for email
       if(!$subemail || strlen($subemail = trim($subemail)) == 0){
-         $form->setError($field, "* Email ".$lang['not entered']);
+				Form::setError($field, "* Email ".$lang['not entered']);
       }
       else{
-
          if(!preg_match('/^([a-z0-9])(([-a-z0-9._])*([a-z0-9]))*\@([a-z0-9])*(\.([a-z0-9])([-a-z0-9_-])+)*$/i', $subemail)){
-		 
-            $form->setError($field, "* Email ".strtolower($lang['Invalid']));
+					Form::setError($field, "* Email ".strtolower($lang['Invalid']));
          }
          $subemail = stripslashes($subemail);
       }
 
       /* Errors exist, have user correct them */
-      if($form->num_errors > 0){
+			if(Form::$num_errors > 0){
          return 1;  //Errors with form
       }
       /* No errors, add the new account to the */
@@ -415,7 +407,7 @@ class SessionUser
          }
       }
    }
-   
+
    function avatar($imagename)
    {
    		if (!file_exists(PATHROOT.'/engine/res/avatars/'.$imagename.'.gif'))
@@ -423,7 +415,7 @@ class SessionUser
 		else
 		return './engine/res/avatars/'.$imagename.'.gif';
    }
-   
+
    /**
     * isAdmin - Returns true if currently logged in user is
     * an administrator, false otherwise.
@@ -432,7 +424,8 @@ class SessionUser
       return ($this->userlevel == ADMIN_LEVEL ||
               $this->username  == ADMIN_NAME);
    }
-   	/**
+
+    /**
     * generateRandID - Generates a string made up of randomized
     * letters (lower and upper case) and digits and returns
     * the md5 hash of it to be used as a userid.
@@ -460,94 +453,4 @@ class SessionUser
       }
       return $randstr;
    }
-   
-	
-
 };
-
-
-
-
-/**
- * Form.php
- *
- * The Form class is meant to simplify the task of keeping
- * track of errors in user submitted forms and the form
- * field values that were entered correctly.
- *
- * Written by: Jpmaster77 a.k.a. The Grandmaster of C++ (GMC)
- * Last Updated: August 19, 2004
- */
- 
-class Form
-{
-   var $values = array();  //Holds submitted form field values
-   var $errors = array();  //Holds submitted form error messages
-   var $num_errors;   //The number of errors in submitted form
-
-   /* Class constructor */
-   function _Form(){
-      /**
-       * Get form value and error arrays, used when there
-       * is an error with a user-submitted form.
-       */
-      if(isset($_SESSION['value_array']) && isset($_SESSION['error_array'])){
-         $this->values = $_SESSION['value_array'];
-         $this->errors = $_SESSION['error_array'];
-         $this->num_errors = count($this->errors);
-
-         unset($_SESSION['value_array']);
-         unset($_SESSION['error_array']);
-      }
-      else{
-         $this->num_errors = 0;
-      }
-   }
-
-   /**
-    * setValue - Records the value typed into the given
-    * form field by the user.
-    */
-   function setValue($field, $value){
-      $this->values[$field] = $value;
-   }
-
-   /**
-    * setError - Records new form error given the form
-    * field name and the error message attached to it.
-    */
-   function setError($field, $errmsg){
-      $this->errors[$field] = $errmsg;
-      $this->num_errors = count($this->errors);
-   }
-
-   /**
-    * value - Returns the value attached to the given
-    * field, if none exists, the empty string is returned.
-    */
-   function value($field){
-      if(array_key_exists($field,$this->values)){
-         return htmlspecialchars(stripslashes($this->values[$field]));
-      }else{
-         return "";
-      }
-   }
-
-   /**
-    * error - Returns the error message attached to the
-    * given field, if none exists, the empty string is returned.
-    */
-   function error($field){
-      if(array_key_exists($field,$this->errors)){
-         return "<font size=\"2\" color=\"#ff0000\">".$this->errors[$field]."</font>";
-      }else{
-         return "";
-      }
-   }
-
-   /* getErrorArray - Returns the array of error messages */
-   function getErrorArray(){
-      return $this->errors;
-   }
-};
-$form = new Form;

@@ -1,5 +1,5 @@
 <?php 
-global $user,$db,$form,$lang,$config;
+global $user,$db,$lang,$config;
 
 /**
 * This part of website is executed before any output is given
@@ -15,14 +15,14 @@ if(isset($proccess) && $proccess == TRUE){
 	* index.php page.
     */
 	function Process(){
-	   global $user, $form;
+	   global $user;
 	   
 	  /* Login attempt */
       $retval = $user->login($_POST['user'], $_POST['pass'], isset($_POST['remember']));
       /* Login failed */
       if(!$retval){
          $_SESSION['value_array'] = $_POST;
-         $_SESSION['error_array'] = $form->getErrorArray();
+			$_SESSION['error_array'] = Form::getErrorArray();
       }
 	  else
 	  	header("Location: index.php");
@@ -40,7 +40,7 @@ if(isset($proccess) && $proccess == TRUE){
 	}
 	
 	/* Reinitilaze 'form' proccess with latest session data */
-	$form->_Form();
+	Form::_Form();
 	return;
 	
 }

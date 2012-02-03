@@ -1,5 +1,5 @@
 <?php
-global $user,$db,$form,$lang,$config,$Html;
+global $user,$db,$lang,$config;
 
 /**
 * This part of website is executed before any output is given
@@ -25,7 +25,7 @@ if (isset($user))
 			array_push($exclude_modulenames, 'shoutbox.php');
 			$config['module_userpanel'] = implode('|', $exclude_modulenames);
 		}
-		if($Html->moduleinstall('shoutbox',
+		if(Html::moduleinstall('shoutbox',
 			array('shoutbox_refresh_time','shoutbox_idle_time'),
 			array('30','120'),
 			array('How often should the shoutbox update (in seconds)','When should shoutbox stop updating  (in seconds.. 0 = off)'),
@@ -54,7 +54,7 @@ if (isset($user))
 		}
 
 		/* Reinitilaze 'form' proccess with latest session data */
-		$form->_Form();
+		Form::_Form();
 		return;
 	}
 	return;

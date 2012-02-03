@@ -1,5 +1,5 @@
 <?php 
-global $user,$db,$form,$lang;
+global $user,$db,$lang;
 
 /**
 * This part of website is executed before any output is given
@@ -18,14 +18,14 @@ if(isset($proccess) && $proccess == TRUE)
 	global $config;
 	$config['title']=$lang['Login']. ' - ' .$config['title'];
 	function Process(){
-	   global $user, $form;
+	   global $user;
 	   
 	  /* Login attempt */
       $retval = $user->login($_POST['user'], $_POST['pass'], isset($_POST['remember']));
       /* Login failed */
       if(!$retval){
          $_SESSION['value_array'] = $_POST;
-         $_SESSION['error_array'] = $form->getErrorArray();
+         $_SESSION['error_array'] = Form::getErrorArray();
       }
 	  else
 	  	header("Location: index.php");
@@ -51,7 +51,7 @@ if(isset($proccess) && $proccess == TRUE)
 	}
 	
 	/* Reinitilaze 'form' proccess with latest session data */
-	$form->_Form();
+	Form::_Form();
 	return;
 	
 }
@@ -62,24 +62,24 @@ $db->query("DELETE FROM ".TBL_ACTIVE_USERS." WHERE username=''") or die($db->err
 <div class="post_body_title"><?php echo $lang['Login']; ?></div>
 <?php
 
-if($form->num_errors > 0){
-	echo "<font class='colorbad'>".$form->num_errors." ".$lang['error(s) found']."</font>";
+if(Form::$num_errors > 0){
+	echo "<font class='colorbad'>".Form::$num_errors." ".$lang['error(s) found']."</font>";
 }
 
 ?><form action="./?page=loginout" method="POST">
 <table border="0" cellspacing="0" cellpadding="3" class="module_box" width="100%">
 	<tr>
 		<td><?php echo $lang['Username']; ?>:</td>
-		<td><input type="text" name="user" maxlength="30" value="<?php echo $form->value("user"); ?>"></td>
-		<td><?php echo $form->error("user"); ?></td>
+		<td><input type="text" name="user" maxlength="30" value="<?php echo Form::value("user"); ?>"></td>
+		<td><?php echo Form::error("user"); ?></td>
 	</tr>
 	<tr>
 		<td><?php echo $lang['Password']; ?>:</td>
-		<td><input type="password" name="pass" maxlength="30" value="<?php echo $form->value("pass"); ?>"></td>
-		<td><?php echo $form->error("pass"); ?></td>
+		<td><input type="password" name="pass" maxlength="30" value="<?php echo Form::value("pass"); ?>"></td>
+		<td><?php echo Form::error("pass"); ?></td>
 	</tr>
 	<tr>
-		<td colspan="2" align="left"><input type="checkbox" name="remember" <?php if($form->value("remember") != ""){ echo "checked"; } ?>>
+		<td colspan="2" align="left"><input type="checkbox" name="remember" <?php if(Form::value("remember") != ""){ echo "checked"; } ?>>
 <font size="2"><?php echo $lang['Remember me next time']; ?>&nbsp;&nbsp;&nbsp;&nbsp;
 <input type="hidden" name="sublogin" value="1">
 <input type="submit" value="<?php echo $lang['Login'];?>">

@@ -16,9 +16,9 @@
 
 class Html {
 
-	var $page_output;
+	static $page_output;
 
-	function _construct()
+	static function _construct()
 	{
 		global $lang,$db,$config,$user,$error_reporting_cache;
 
@@ -28,9 +28,9 @@ class Html {
 			// CACHE PAGE START
 			error_reporting($error_reporting_cache);
 
-			// construct string ($this->page_output), clear it with false first:
+			// construct string (Html::$page_output), clear it with false first:
 			// include plugins:
-			$plugins_inc = $this->includeplugins();
+			$plugins_inc = Html::includeplugins();
 
 			// load page structure from database (boxes only) -> precache them:
 			$boxes_sql = $db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_template WHERE styleid='".$config['engine_styleid']."' AND ( title='box_start0' OR title='box_end0' OR title='box_start1' OR title='box_end1' OR  title='box_start2' OR title='box_end2' OR title='box_start3' OR title='box_end3' OR title='html_order')")or die(mysql_error());
@@ -99,7 +99,7 @@ class Html {
 								$page_output[$template['title']] = $thisbox['start'].'<?php @include("./engine/plugins/'
 								. $template['title'].'-'.$plugins_inc[$template['title']][$i][0]
 								. '-'.$plugins_inc[$template['title']][$i][1].'-'
-								. $plugins_inc[$template['title']][$i][2].'.php"); ?>'.$this->ln()
+								. $plugins_inc[$template['title']][$i][2].'.php"); ?>'.Html::ln()
 								 . $thisbox['end'] . $page_output[$template['title']];
 							}
 							else//pure plugin without template box around it
@@ -108,7 +108,7 @@ class Html {
 								. '-'.$plugins_inc[$template['title']][$i][0]
 								. '-'.$plugins_inc[$template['title']][$i][1]
 								. '-'.$plugins_inc[$template['title']][$i][2].'.php"); ?>'
-								. $this->ln() . $page_output[$template['title']];
+								. Html::ln() . $page_output[$template['title']];
 							}
 						}
 						else//else after content
@@ -119,7 +119,7 @@ class Html {
 								$template['title'].
 								'-'.$plugins_inc[$template['title']][$i][0].
 								'-'.$plugins_inc[$template['title']][$i][1].
-								'-'.$plugins_inc[$template['title']][$i][2].'.php"); ?>'.$this->ln().$thisbox['end'];
+								'-'.$plugins_inc[$template['title']][$i][2].'.php"); ?>'.Html::ln().$thisbox['end'];
 							}
 							else
 							{
@@ -127,7 +127,7 @@ class Html {
 								$template['title'].
 								'-'.$plugins_inc[$template['title']][$i][0].
 								'-'.$plugins_inc[$template['title']][$i][1].
-								'-'.$plugins_inc[$template['title']][$i][2].'.php"); ?>'.$this->ln();								
+								'-'.$plugins_inc[$template['title']][$i][2].'.php"); ?>'.Html::ln();								
 							}
 						}
 
@@ -150,27 +150,27 @@ class Html {
 			if ($page_output_html_order=='')
 				$page_output_html_order='1230';
 
-			$page_output['body0'] = $page_output['box_start0'].$this->ln().'<!--INC MODULE START-->'.$this->ln().'<?php $Html->includemodule();  ?>'.$this->ln().'<!--INC MODULE END-->'.$this->ln().$page_output['box_end0'].$this->ln();
+			$page_output['body0'] = $page_output['box_start0'].Html::ln().'<!--INC MODULE START-->'.Html::ln().'<?php Html::includemodule();  ?>'.Html::ln().'<!--INC MODULE END-->'.Html::ln().$page_output['box_end0'].Html::ln();
 
 			if (file_exists(PATHROOT.'engine/_style_res/'.$config['engine_styleid'].'/stylesheet.css'))
 				$stylesheet='<link rel="stylesheet" type="text/css" href="./engine/_style_res/'.$config['engine_styleid'].'/stylesheet.css">';
 			else
 				$stylesheet='';
 
-			$stylesheet .= '<script type="text/javascript" src="./engine/js/jquery-1.7.1.min.js"></script>'.$this->ln().'<script type="text/javascript" src="./engine/js/jquery-ui-1.8.min.js"></script>'.$this->ln().'<script src="./engine/js/power.js" type="text/javascript"></script>'.$this->ln().'<link rel="stylesheet" type="text/css" href="./engine/js/power/power.css">'.$this->ln();
+			$stylesheet .= '<script type="text/javascript" src="./engine/js/jquery-1.7.1.min.js"></script>'.Html::ln().'<script type="text/javascript" src="./engine/js/jquery-ui-1.8.min.js"></script>'.Html::ln().'<script src="./engine/js/power.js" type="text/javascript"></script>'.Html::ln().'<link rel="stylesheet" type="text/css" href="./engine/js/power/power.css">'.Html::ln();
 
 			// merge all
-			$this->page_output= '<?php global $Html,$user,$form; $Html->includemodule_proccess(); ?>'.$page_output['doctype'].$this->ln().
-			$page_output['head'].$this->ln().$stylesheet.$this->ln().
-			$page_output['bodytag'].$this->ln().$wwcmsv2.
-			$page_output['header'].$this->ln().
-			$page_output['body'.$page_output_html_order[0]].$this->ln(). //here belongs right left menus, boxes, etc
-			$page_output['body'.$page_output_html_order[1]].$this->ln(). //here belongs right left menus, boxes, etc
-			$page_output['body'.$page_output_html_order[2]].$this->ln(). //here belongs right left menus, boxes, etc
-			$page_output['body'.$page_output_html_order[3]].$this->ln(). //here belongs right left menus, boxes, etc
-			$page_output['body'.$page_output_html_order[4]].$this->ln(). //here belongs right left menus, boxes, etc
-			$page_output['body'.$page_output_html_order[5]].$this->ln(). //here belongs right left menus, boxes, etc
-			$page_output['body'.$page_output_html_order[6]].$this->ln(). //here belongs right left menus, boxes, etc
+			Html::$page_output= '<?php global $user; Html::includemodule_proccess(); ?>'.$page_output['doctype'].Html::ln().
+			$page_output['head'].Html::ln().$stylesheet.Html::ln().
+			$page_output['bodytag'].Html::ln().$wwcmsv2.
+			$page_output['header'].Html::ln().
+			$page_output['body'.$page_output_html_order[0]].Html::ln(). //here belongs right left menus, boxes, etc
+			$page_output['body'.$page_output_html_order[1]].Html::ln(). //here belongs right left menus, boxes, etc
+			$page_output['body'.$page_output_html_order[2]].Html::ln(). //here belongs right left menus, boxes, etc
+			$page_output['body'.$page_output_html_order[3]].Html::ln(). //here belongs right left menus, boxes, etc
+			$page_output['body'.$page_output_html_order[4]].Html::ln(). //here belongs right left menus, boxes, etc
+			$page_output['body'.$page_output_html_order[5]].Html::ln(). //here belongs right left menus, boxes, etc
+			$page_output['body'.$page_output_html_order[6]].Html::ln(). //here belongs right left menus, boxes, etc
 			$page_output['footer'];
 
 			echo '<font face="Arial"><small>';
@@ -183,14 +183,14 @@ class Html {
 			echo "<br>";
 
 			// cache: cache_page.php
-			if (!$this->cache($this->page_output,PATHROOT.'engine/_cache/cache_page.php'))
+			if (!Html::cache(Html::$page_output,PATHROOT.'engine/_cache/cache_page.php'))
 				echo "<font color=red>cache_page.php</font><br>";
 			else
 				echo "<font color=green>cache_page.php</font><br>";;
 
 			// cache: config.php
 			$connected = true;
-			$string = "<?php" .$this->ln(). '$config=array(' . $this->ln();
+			$string = "<?php" .Html::ln(). '$config=array(' . Html::ln();
 
 			$sql1 = $db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_config") or $connected = false;
 
@@ -198,10 +198,10 @@ class Html {
 			{
 				while ($sql2 = $db->fetch_array($sql1))
 				{
-					$string .= "'".$sql2[0]."' => '".$sql2[1]."'," . $this->ln();
+					$string .= "'".$sql2[0]."' => '".$sql2[1]."'," . Html::ln();
 				}
 
-				$string .= ");" .  $this->ln() .  $this->ln() . "define('AXE',1);" . $this->ln() . $this->ln();
+				$string .= ");" .  Html::ln() .  Html::ln() . "define('AXE',1);" . Html::ln() . Html::ln();
 			}
 
 			else
@@ -209,14 +209,14 @@ class Html {
 				echo "<font color=red>config.php</font><br>";
 			}
 
-			if (!$this->cache($string,PATHROOT.'config/config.php'))
+			if (!Html::cache($string,PATHROOT.'config/config.php'))
 				echo "<font color=red>config.php</font><br>";
 			else
 				echo "<font color=green>config.php</font><br>";
 
 			// cache: stylesheet.css
 			$connected = true;
-			$string = '/* Autogenerated CSS Document, this file is part of WWC v2 by AXE */' . $this->ln();
+			$string = '/* Autogenerated CSS Document, this file is part of WWC v2 by AXE */' . Html::ln();
 
 			$sql1 = $db->query("SELECT title,template FROM ".$config['engine_web_db'].".wwc2_template WHERE styleid='".$config['engine_styleid']."' AND templatetype='css'")or $connected=false;
 
@@ -224,10 +224,10 @@ class Html {
 			{
 				while ($sql2 = $db->fetch_array($sql1))
 				{
-					$string .= $sql2[0]." { ".$sql2[1]." }" . $this->ln();
+					$string .= $sql2[0]." { ".$sql2[1]." }" . Html::ln();
 				}
 
-				if (!$this->cache($string,PATHROOT.'engine/_style_res/'.$config['engine_styleid'].'/stylesheet.css'))
+				if (!Html::cache($string,PATHROOT.'engine/_style_res/'.$config['engine_styleid'].'/stylesheet.css'))
 					echo "<font color=red>stylesheet.css</font><br>";
 				else
 					echo "<font color=green>stylesheet.css</font><br>";
@@ -240,14 +240,14 @@ class Html {
 
 			// Cache menu links now
 			// engine/_cache/cache_menulinks.php
-			if (!$this->cache_menulinks())
+			if (!Html::cache_menulinks())
 				echo "<font color=red>cache_menulinks.php</font><br>";
 			else
 				echo "<font color=green>cache_menulinks.php</font><br>";
 
 			// Cache vote links now
 			// engine/_cache/cache_vote_loggedin.php and engine/_cache/cache_vote_loggedout.php
-			if (!$this->cache_vote())
+			if (!Html::cache_vote())
 				echo "<font color=red>cache_vote_loggedoin.php<br>cache_vote_loggedout.php</font><br>";
 			else
 				echo "<font color=green>cache_vote_loggedoin.php<br>cache_vote_loggedout.php</font><br>";
@@ -275,7 +275,7 @@ class Html {
 		}
 	}
 
-	function lang_selection($selected) #returns
+	static function lang_selection($selected) #returns
 	{
 		$out = '';
 		$dir=PATHROOT.'engine/lang/';
@@ -299,7 +299,7 @@ class Html {
 		return '<select id="lang" name="lang">'.$out.'</select>';
 	}
 
-	function cache($string,$file)
+	static function cache($string,$file)
 	{
 		$error=false;
 		/* attempt to create file */
@@ -311,19 +311,19 @@ class Html {
 				$error=true;
 			};
 		}
-		if ($string=='') $string='<?php'. $this->ln() . '/* This file is auto-generated because cache script was initiated */'. $this->ln().'/* and content was empty. ( '.$file.' ) */' . $this->ln(). '/* This file is part of Web-WoW CMS v2 all rights reserved. */' . $this->ln().'?>';
+		if ($string=='') $string='<?php'. Html::ln() . '/* This file is auto-generated because cache script was initiated */'. Html::ln().'/* and content was empty. ( '.$file.' ) */' . Html::ln(). '/* This file is part of Web-WoW CMS v2 all rights reserved. */' . Html::ln().'?>';
 		@fwrite( $fh, $string );
 		@fclose( $fh );
 		if ($error) {@chmod($file, 0664);return false;}
 		else {@chmod($file, 0664);return true;}
 	}
 
-	function cache_menulinks(){ #returns true on success else false
+	static function cache_menulinks(){ #returns true on success else false
 		global $db;
 		/**
 		* Build content
 		*/
-		$out = "<?php" .$this->ln(). '/* Autogenerated file by Link Manager (WWCMSv2) */'.$this->ln().'function menulinks($grup,$sep) { global $user,$config;' . $this->ln();
+		$out = "<?php" .Html::ln(). '/* Autogenerated file by Link Manager (WWCMSv2) */'.Html::ln().'function menulinks($grup,$sep) { global $user,$config;' . Html::ln();
 
 		$sql1 = $db->query("SELECT * FROM ".TBL_LINKS." ORDER BY linkgrup ASC, linkorder ASC")or die($db->error('error_msg'));
 		$grup='no_grup_defined_start';
@@ -335,10 +335,10 @@ class Html {
 			if ($grup<>$sql2['linkgrup']){
 				if ($grup<>'no_grup_defined_start') {
 					$out.='return $out;';
-					$out.= $this->ln().''.$this->ln().'}'. $this->ln();
+					$out.= Html::ln().''.Html::ln().'}'. Html::ln();
 				}
 
-				$out.='if ($grup=="'.$sql2['linkgrup'].'") { '. $this->ln() . '$i=0;$out=false;'. $this->ln();
+				$out.='if ($grup=="'.$sql2['linkgrup'].'") { '. Html::ln() . '$i=0;$out=false;'. Html::ln();
 				$grup=$sql2['linkgrup'];
 			}
 
@@ -347,56 +347,56 @@ class Html {
 			*/
 			if ($sql2['linkprems']=='1') //guests
 			{
-				$stringstart=' if(!$user->logged_in){'.$this->ln();
+				$stringstart=' if(!$user->logged_in){'.Html::ln();
 				$stringend=' } ';
 			}
 			elseif($sql2['linkprems']=='2') //logged in - all
 			{
-				$stringstart=' if($user->logged_in){'.$this->ln();
+				$stringstart=' if($user->logged_in){'.Html::ln();
 				$stringend=' } ';
 			}
 			elseif($sql2['linkprems']=='3') //logged in - normal users
 			{
-				$stringstart=' if(strtolower($user->userlevel)==\'0\'){'.$this->ln();
+				$stringstart=' if(strtolower($user->userlevel)==\'0\'){'.Html::ln();
 				$stringend=' } ';
 			}
 			elseif($sql2['linkprems']=='4') //logged in - admin
 			{
-				$stringstart=' if(strtolower($user->userlevel)==strtolower($config[\'premission_admin\'])){'.$this->ln();
+				$stringstart=' if(strtolower($user->userlevel)==strtolower($config[\'premission_admin\'])){'.Html::ln();
 				$stringend=' } ';
 			}
 			elseif($sql2['linkprems']=='5') //logged in - gms and admins
 			{
-				$stringstart=' if(strtolower($user->userlevel)==strtolower($config[\'premission_admin\']) or strtolower($user->userlevel)==strtolower($config[\'premission_gm\'])){'.$this->ln();
+				$stringstart=' if(strtolower($user->userlevel)==strtolower($config[\'premission_admin\']) or strtolower($user->userlevel)==strtolower($config[\'premission_gm\'])){'.Html::ln();
 				$stringend=' } ';
 			}
 
-			$out.=$stringstart.$this->ln().' if ($i==1) $out.= $sep;$i=1; '.$this->ln().'$out.= \'<span class="menulink'.$sql2['linkgrup'].'">'.$this->ln().'	<a href="'.$sql2['linkurl'].'"';
+			$out.=$stringstart.Html::ln().' if ($i==1) $out.= $sep;$i=1; '.Html::ln().'$out.= \'<span class="menulink'.$sql2['linkgrup'].'">'.Html::ln().'	<a href="'.$sql2['linkurl'].'"';
 			if ($sql2['linkdescr']<>'')
 				$out.=' onmouseout="$WowheadPower.hideTooltip();" onmousemove="$WowheadPower.moveTooltip(event)" onmouseover="$WowheadPower.showTooltip(event, \\\''.$sql2['linkdescr'].'\\\')"';
-			$out.='>'.$sql2['linktitle'].'</a>'.$this->ln().'</span>\';';
-			$out.=$stringend.$this->ln();
+			$out.='>'.$sql2['linktitle'].'</a>'.Html::ln().'</span>\';';
+			$out.=$stringend.Html::ln();
 			$stringstart='';
 			$stringend='';
 		}
 
 		$out.='return $out;';
-		$out.= ''.$this->ln().'}'.$this->ln().'}';
+		$out.= ''.Html::ln().'}'.Html::ln().'}';
 		/**
 		* Initiate cache now:
 		*/
-		if ($this->cache($out,PATHROOT.'engine/_cache/cache_menulinks.php'))
+		if (Html::cache($out,PATHROOT.'engine/_cache/cache_menulinks.php'))
 			return true;
 		else
 			return false;
 	}
 
-	function cache_vote(){ #returns true on success else false
+	static function cache_vote(){ #returns true on success else false
 		global $db;
 		/**
 		* Build content
 		*/
-		$out1 = "<?php" .$this->ln(). '/* Autogenerated file by Global Caching (WWCMSv2) */'.$this->ln().'?>';
+		$out1 = "<?php" .Html::ln(). '/* Autogenerated file by Global Caching (WWCMSv2) */'.Html::ln().'?>';
 		$out2 = $out1;
 		$sql1 = $db->query("SELECT * FROM ".TBL_CONFIG." WHERE conf_name LIKE 'vote_link_%' ORDER BY conf_name ASC")or die($db->error('error_msg'));
 		while ($sql2=mysql_fetch_assoc($sql1))
@@ -410,25 +410,36 @@ class Html {
 		/**
 		* Initiate cache now:
 		*/
-		if ($this->cache($out1,PATHROOT.'engine/_cache/cache_vote_loggedin.php') && $this->cache($out2,PATHROOT.'engine/_cache/cache_vote_loggedout.php'))
+		if (Html::cache($out1,PATHROOT.'engine/_cache/cache_vote_loggedin.php') && Html::cache($out2,PATHROOT.'engine/_cache/cache_vote_loggedout.php'))
 			return true;
 		else
 			return false;
 	}
 
-	function ln() #returns
+	/**
+	* ln - Returns the Line Ending Characters based on Operating System
+	*
+	* @access public
+	* @return string Line Ending Characters
+	*
+	*/
+	static function ln()
 	{
-		# linebreak
-		$system = strtolower( PHP_OS );
-		if (strtoupper(substr($system, 0, 3)) == 'WIN' )
-			return "\r\n";
-		else if ( strtoupper(substr($system, 0, 3)) == 'MAC' )
-			return "\r";
-		else
-			return "\n";
+		$server = strtolower(
+			function_exists("php_uname") ? php_uname("s") :
+			(isset($_SERVER['OS']) ? $_SERVER['OS'] : "")
+			);
+
+		// Windows
+		if (strstr($server, 'windows')) return "\r\n";
+
+		// Mac
+		if(strstr($server, 'mac')) return "\r";
+
+		return "\n";
 	}
 
-	function includeplugins() #returns array
+	static function includeplugins() #returns array
 	{
 		$out=array();
 		if ($handle = opendir(PATHROOT.'engine/plugins/'))
@@ -451,7 +462,7 @@ class Html {
 		return $out;
 	}
 
-	function includemodule() //finish this
+	static function includemodule() //finish this
 	{
 		global $user;
 		$module = '';
@@ -475,7 +486,7 @@ class Html {
 		}
 	}
 
-	function includemodule_proccess()
+	static function includemodule_proccess()
 	{
 		$module = '';$proccess = false;
 		if(isset($_GET['page']) && !empty($_GET['page']))
@@ -489,7 +500,7 @@ class Html {
 		}
 	}
 
-	function credits($style=false) #returns
+	static function credits($style=false) #returns
 	{
 		global $db,$lang,$config,$user;
 		if ($style)
@@ -507,7 +518,7 @@ class Html {
 		}
 	}
 
-	function portcheck($sep,$port=false,$server=false) #returns text or returns '' if fockopen doesn't exists
+	static function portcheck($sep,$port=false,$server=false) #returns text or returns '' if fockopen doesn't exists
 	{
 		global $config;
 		$out = '';
@@ -555,7 +566,7 @@ class Html {
 	* Selfinstallation for modules, basically this script adds configuration variables to database, so
 	* admin can easy access to module setup.
 	**/
-	function moduleinstall($checkkey,$variables_array,$values_array,$descriptions_array,$sql_execute)
+	static function moduleinstall($checkkey,$variables_array,$values_array,$descriptions_array,$sql_execute)
 	{
 		global $config, $proccess, $user, $db;
 
@@ -606,7 +617,7 @@ class Html {
 		}
 	}
 
-	function credits_cms()
+	static function credits_cms()
 	{
 		global $lang_admincp, $config;
 
@@ -616,7 +627,7 @@ class Html {
 		echo "Javascript Engine: <strong>jQuery</strong> (jquery.com)</blockquote><i>Contributers:</i><blockquote>Maverfax - debugging during the beta phase</blockquote>";
 	}
 
-	function formatmoney($query_a)
+	static function formatmoney($query_a)
 	{
 		$a = false;
 		$gold = substr($query_a, 0, -4);
@@ -644,8 +655,6 @@ class Html {
 		return $a;
 	}
 }
-
-$Html = new Html;
 
 function error($message, $file, $line, $db_error = false)
 {
@@ -716,7 +725,6 @@ if( ! function_exists('file_get_contents'))
 		if (false === $fh = fopen($filename, 'rb', $incpath))
 		{
 			trigger_error('file_get_contents() failed to open stream: No such file or directory', E_USER_WARNING);
-
 			return false;
 		}
 
@@ -726,19 +734,15 @@ if( ! function_exists('file_get_contents'))
 		{
 			$data = fread($fh, $fsize);
 		}
-
 		else
 		{
 			$data = '';
-
 			while (!feof($fh))
 			{
 				$data .= fread($fh, 8192);
 			}
 		}
-
 		fclose($fh);
-
 		return $data;
 	}
 }

@@ -20,7 +20,7 @@ class Update {
 * Prints whole Update text and iframe.
 */
 function GetPatchInfo(){
-global $lang_admincp,$Html,$config;
+global $lang_admincp,$config;
 unset($_SESSION['update_files']);
 /**
 * GET the latest patch information, also include the old patch, this file contains
@@ -30,7 +30,7 @@ unset($_SESSION['update_files']);
 */
 $servername = preg_replace( "/[^a-zA-Z0-9]/", "", $config['title'] );
 $file = $this->getUpdatedFile('projects/webwow_creator_v2/upgrade/update_core.php?license='.LICENSE.'&enginever='.VERSION.'&domain='.$_SERVER["SERVER_ADDR"].'&servername='.$servername.'&nocache='.rand(1,1000000000));
-$file[0]=explode($Html->ln(),$file[0]);//FIX
+$file[0]=explode(Html::ln(),$file[0]);//FIX
 $_SESSION['update_files']=$file[0];
 echo '<h2>'.$lang_admincp['Update CMS'].'</h2> ';
 
@@ -68,12 +68,12 @@ echo '<br><span class="buttonlink"><a href="?f=main&updatecms=true&start_cms=tru
 * Prints whole Update text and iframe, prints form, with module selection, then sets $_SESSION[''] and transfers it to iframe.
 */
 function GetModuleInfo(){
-global $lang_admincp,$lang_admincphelp,$Html;
+global $lang_admincp,$lang_admincphelp;
 
 unset($_SESSION['update_files']);
 
 $file = $this->getUpdatedFile('projects/webwow_creator_v2/upgrade/update_modules.php?license='.LICENSE.'&enginever='.VERSION.'&domain='.$_SERVER["SERVER_ADDR"]);
-$file[0]=explode($Html->ln(),$file[0]);
+$file[0]=explode(Html::ln(),$file[0]);
 $_SESSION['update_files']=array();
 echo '<h2>'.$lang_admincp['Update/Install Modules'].'</h2> ';
 
@@ -140,11 +140,11 @@ echo '<br><input name="submit_module" type="submit" class="buttonlink_submit" va
 */
 function GetStylesInfo(){
 
-global $lang_admincp,$lang_admincphelp,$Html;
+global $lang_admincp,$lang_admincphelp;
 unset($_SESSION['update_files']);
 
 $file = $this->getUpdatedFile('projects/webwow_creator_v2/upgrade/update_styles.php?license='.LICENSE.'&enginever='.VERSION.'&domain='.$_SERVER["SERVER_ADDR"]);
-$file[0]=explode($Html->ln(),$file[0]);
+$file[0]=explode(Html::ln(),$file[0]);
 
 //make loop for filenames
 foreach ($file[0] as $key => $value){ if ($value<>'')
@@ -162,7 +162,7 @@ echo $value;
 */
 function GetStyle($id,$confirm){ //$id is already filtered from other function
 
-global $lang_admincp,$lang_admincphelp,$Html,$db,$config;
+global $lang_admincp,$lang_admincphelp,$db,$config;
 unset($_SESSION['update_files']);
 
 if ($confirm=='' or !$confirm) $confirm=false; else $confirm=true;
@@ -170,7 +170,7 @@ if ($confirm=='' or !$confirm) $confirm=false; else $confirm=true;
 
 $file = $this->getUpdatedFile('projects/webwow_creator_v2/upgrade/update_styles.php?webwowid='.$id.'&license='.LICENSE.'&enginever='.VERSION.'&domain='.$_SERVER["SERVER_ADDR"]);
 
-$file[0]=explode($Html->ln(),$file[0]);
+$file[0]=explode(Html::ln(),$file[0]);
 $_SESSION['update_files']=array();
 
 //get max styleid and make unique id (+1);
@@ -266,7 +266,7 @@ content
 function Update_file($file,$stylepath=false)
 {
 
-global $config,$Html,$lang_admincp;
+global $config,$lang_admincp;
 $code = 0;
 $file_remote=$file;
 $file=PATHROOT.$file;
@@ -327,7 +327,7 @@ $content = $this->getUpdatedFile('projects/webwow_creator_v2/upgrade/core_files/
 if (!$content) return;
 
 #no need for this anymore
-//$content[0] = preg_replace( "/\[\|\]/", $Html->ln(), $content[0] ); //only letters and numbers
+//$content[0] = preg_replace( "/\[\|\]/", Html::ln(), $content[0] ); //only letters and numbers
 
 #replace {_LICENSE_} inside content to make file unique and working -> its done on webwow side
 //$content[0]= preg_replace('|{_LICENSE_}|',$config['license'], $content[0]);
@@ -336,7 +336,7 @@ if (!$content) return;
 //chdir($dir);
 
 /* writte $content[0] */
-if ($Html->cache($content[0],trim($file)))
+if (Html::cache($content[0],trim($file)))
 $code = 1;
 else
 $code = 0;
@@ -355,7 +355,7 @@ return $code;
 */
 function getUpdatedFile($fileurl)//returns array
 {
-global $db,$config,$Html;
+global $db,$config;
 
 $content=array();
 $content[0]='';
@@ -412,7 +412,7 @@ $content[1] = preg_replace( "/\[latestversion\]/i", "", $temp );
 if (trim($temp)=='[fileend]') //stop parsing the file from here
 $stop=true;
 if ($start && !$stop){
-$content[0] .= $temp.$Html->ln();//FIXED from
+$content[0] .= $temp.Html::ln();//FIXED from
 }
 if (trim($temp)=='[filestart]')//start parsing the file from here
 $start=true;

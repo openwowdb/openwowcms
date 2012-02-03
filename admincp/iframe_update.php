@@ -84,8 +84,8 @@ $tobody .= "Writting failed there might be problem with update server try again 
 }
 else{
 if ($v<>'' && $v<>'0'){
-$version_str='<?php'.$Html->ln().'define(\'VERSION\',\''.$v.'\');'.$Html->ln().'define(\'LASTUPDATE\',\''.date("m/j/Y").'\');'.$Html->ln().'?>';
-if ($Html->cache($version_str,PATHROOT.'engine/version.php'))
+$version_str='<?php'.Html::ln().'define(\'VERSION\',\''.$v.'\');'.Html::ln().'define(\'LASTUPDATE\',\''.date("m/j/Y").'\');'.Html::ln().'?>';
+if (Html::cache($version_str,PATHROOT.'engine/version.php'))
 {
 $tbody2='&nbsp;';
 $tobody= "<br>All files are updated.".'<script type="text/javascript">parent.document.getElementById("filelist'.($num_totalfiles-2).'").style.color="green"</script>';

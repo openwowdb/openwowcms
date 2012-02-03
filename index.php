@@ -32,4 +32,4 @@
 |
 */
 	require_once './engine/init.php';
-	$Html->_construct();
+	Html::_construct();

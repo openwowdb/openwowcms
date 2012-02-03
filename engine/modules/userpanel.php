@@ -3,7 +3,7 @@
 #
 #END SETUP
 #
-global $user,$db,$form,$lang,$config;
+global $user,$db,$lang,$config;
 /**
 * Access premission:
 **/
@@ -22,7 +22,7 @@ if(isset($proccess) && $proccess == TRUE){
 	* index.php page.
     */
 	function Process(){
-	   global $user, $form;
+	   global $user;
 	 
 	 
 	 
@@ -38,7 +38,7 @@ if(isset($proccess) && $proccess == TRUE){
 	}
 	
 	/* Reinitilaze 'form' proccess with latest session data */
-	$form->_Form();
+	Form::_Form();
 	return;
 	
 }

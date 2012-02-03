@@ -170,9 +170,9 @@ echo '<tr>
 <?php echo $lang_admincphelp[21]; ?>:
 <blockquote>
 <i><?php echo $lang_admincphelp[22]; ?>:</i>
-<pre>&lt;?php echo echo $Html->portcheck('Realmname1: |&lt;br&gt;Realmname2: '); ?&gt;</pre>
+<pre>&lt;?php echo echo Html::portcheck('Realmname1: |&lt;br&gt;Realmname2: '); ?&gt;</pre>
 <i><?php echo $lang_admincphelp[23]; ?>:</i>
-<pre>&lt;?php echo echo $Html->portcheck('','80','127.0.0.1'); ?&gt;</pre>
+<pre>&lt;?php echo echo Html::portcheck('','80','127.0.0.1'); ?&gt;</pre>
 </blockquote><?php echo $installer_lang['Mail sending']; ?>
 <blockquote>
 <pre>echo sendmail($charname, $charguid, $subject, $item, $realmid=0, $stack=1, $money=0, $externaltext=false)</pre>

@@ -1,5 +1,5 @@
 <?php
-global $user,$db,$form,$lang;
+global $user,$db,$lang;
 
 /**
 * This part of website is executed before any output is given
@@ -19,7 +19,7 @@ if(isset($proccess) && $proccess == TRUE)
 	$config['title']=$lang['Register']. ' - ' .$config['title'];
 	
 	function Process(){
-	   global $user, $form;
+	   global $user;
 	
 	
 	  /* Registration attempt */
@@ -34,7 +34,7 @@ if(isset($proccess) && $proccess == TRUE)
 	  /* Error found with form */
 	  else if($retval == 1){
 		 $_SESSION['value_array'] = $_POST;
-		 $_SESSION['error_array'] = $form->getErrorArray();
+			$_SESSION['error_array'] = Form::getErrorArray();
 		 
 		 
 	  }
@@ -50,7 +50,7 @@ if(isset($proccess) && $proccess == TRUE)
 		/* Initialize process */
 		Process();
 	/* Reinitilaze 'form' proccess with latest session data */
-	$form->_Form();
+	Form::_Form();
 	return;
 }
 ?>
@@ -95,18 +95,18 @@ else if(isset($_SESSION['regsuccess'])){
  */
 else{
 
-	if($form->num_errors > 0){
-	   echo "<font color=\"#ff0000\">".$form->num_errors." ".$lang['error(s) found']."</font>";
+	if(Form::$num_errors > 0){
+		echo "<font color=\"#ff0000\">".Form::$num_errors." ".$lang['error(s) found']."</font>";
 	}
 
 ?><form action="./?page=register" method="POST">
 <table  border="0" cellspacing="0" cellpadding="3">
-<tr><td><?php echo $lang['Username']; ?>:</td><td><input type="text" name="user_name" maxlength="30" value="<?php echo $form->value("user_name"); ?>"></td>
-<td><?php echo $form->error("user_name"); ?></td></tr>
-<tr><td><?php echo $lang['Password']; ?>:</td><td><input type="password" name="pass_word" maxlength="30" value="<?php echo $form->value("pass_word"); ?>"></td>
-<td><?php echo $form->error("pass_word"); ?></td></tr>
-<tr><td>Email:</td><td><input type="text" name="email" maxlength="50" value="<?php echo $form->value("email"); ?>"></td>
-<td><?php echo $form->error("email"); ?></td></tr>
+<tr><td><?php echo $lang['Username']; ?>:</td><td><input type="text" name="user_name" maxlength="30" value="<?php echo Form::value("user_name"); ?>"></td>
+<td><?php echo Form::error("user_name"); ?></td></tr>
+<tr><td><?php echo $lang['Password']; ?>:</td><td><input type="password" name="pass_word" maxlength="30" value="<?php echo Form::value("pass_word"); ?>"></td>
+<td><?php echo Form::error("pass_word"); ?></td></tr>
+<tr><td>Email:</td><td><input type="text" name="email" maxlength="50" value="<?php echo Form::value("email"); ?>"></td>
+<td><?php echo Form::error("email"); ?></td></tr>
 <tr><td colspan="2" align="right">
 <input type="hidden" name="subjoin" value="1">
 <input type="submit" value="<?php echo $lang['OK']; ?>"></td></tr>

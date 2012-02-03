@@ -1,5 +1,5 @@
 <?php
-global $user,$db,$form,$lang,$config;
+global $user,$db,$lang,$config;
 
 /**
 * Access premission:
@@ -22,7 +22,7 @@ if(isset($proccess) && $proccess == TRUE){
 	$config['title']=$lang['Profile']. ' - ' .$config['title'];
 	
 	function Process(){
-	   global $user, $form,$db,$config;
+	   global $user, $db,$config;
 	   //get info
 	   $userid = preg_replace( "/[^0-9]/", "", $_GET['id'] );
 		if ($userid=='') $userid=$user->userinfo['guid'];
@@ -89,7 +89,7 @@ if(isset($proccess) && $proccess == TRUE){
 	}
 	
 	/* Reinitilaze 'form' proccess with latest session data */
-	$form->_Form();
+	Form::_Form();
 	
 	return;
 	
