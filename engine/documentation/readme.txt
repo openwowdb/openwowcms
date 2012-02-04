@@ -9,7 +9,7 @@ Character databases can be on different SQL hosts.
 Example: Connecting to realm DB (realm 0 - this means its 1st realm)
 $db2=connect_realm(0);
 $a=$db2->query("SELECT * FROM characters where name ='Axe' LIMIT 1") or die($db2->error('error_msg'));
-$b=$db2->fetch_array($a);
+$b=$db2->getRow($a);
 print_r($b);
 
 

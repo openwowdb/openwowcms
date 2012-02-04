@@ -27,19 +27,19 @@ if ($_GET['id'] && trim ($_GET['id'])<>'')
 	elseif(isset($_GET['gettitle']))
 	{
 		$sql1 = $db->query("SELECT title FROM ".$config['engine_web_db'].".wwc2_news WHERE id='".$newsid."' LIMIT 1")or die($db->error('error_msg'));
-		$sql2=$db->fetch_array($sql1);
+		$sql2=$db->getRow($sql1);
 		echo $sql2[0];
 	}
 	elseif(isset($_GET['getbody']))
 	{
 		$sql1 = $db->query("SELECT content FROM ".$config['engine_web_db'].".wwc2_news WHERE id='".$newsid."' LIMIT 1")or die($db->error('error_msg'));
-		$sql2=$db->fetch_array($sql1);
+		$sql2=$db->getRow($sql1);
 		echo $sql2[0];
 	}
 	elseif(isset($_GET['getbodyparsed']))
 	{
 		$sql1 = $db->query("SELECT content FROM ".$config['engine_web_db'].".wwc2_news WHERE id='".$newsid."' LIMIT 1")or die($db->error('error_msg'));
-		$sql2=$db->fetch_array($sql1);
+		$sql2=$db->getRow($sql1);
 		echo parse_message($sql2[0]);
 	}
 	else

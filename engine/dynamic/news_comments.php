@@ -37,15 +37,15 @@ echo '<div id="comments_first'.$newsid.'_'.$start.'"></div>';
 if (isset($_POST['comment'.$newsid]))
 {
 	if($user->logged_in && trim($_POST['comment'.$newsid])<>'')
-		$db->query("INSERT INTO ".$config['engine_web_db'].".wwc2_news_c (poster,content,newsid,timepost,datepost) VALUES ('".$db->escape($user->username)."','".$db->escape($_POST['comment'.$newsid])."','".$newsid."','".date("U")."','')") or die(mysql_error());
+		$db->query("INSERT INTO ".$config['engine_web_db'].".wwc2_news_c (poster,content,newsid,timepost,datepost) VALUES ('".$db->escape($user->username)."','".$db->escape($_POST['comment'.$newsid])."','".$newsid."','".date("U")."','')") or die($db->getLastError());
 	exit;
 }
 if (isset($_GET['latest']))
 {
 	//just a quick display fix... if there is no last comment by user (he posted empty box) then just exit
 	// this still will display double post if latest poster were user itself.. oh well who cares...
-	$comments_sql=$db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news_c WHERE newsid='".$newsid."' ORDER by id DESC LIMIT 1") or die(mysql_error());
-	$comments=$db->fetch_array($comments_sql);
+	$comments_sql=$db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news_c WHERE newsid='".$newsid."' ORDER by id DESC LIMIT 1") or die($db->getLastError());
+	$comments=$db->getRow($comments_sql);
 	if (strtoupper($comments['poster']) <> strtoupper($user->username))
 		exit;
 	$start='0';$comments_per_page='1';
@@ -53,22 +53,22 @@ if (isset($_GET['latest']))
 elseif(isset($_GET['delete']))
 {
 	//we have to get comment with his id and check poster.... oh god help us all...
-	$comments_sql=$db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news_c WHERE id='".$newsid."' LIMIT 1") or die(mysql_error());
-	$comments=$db->fetch_array($comments_sql);
+	$comments_sql=$db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news_c WHERE id='".$newsid."' LIMIT 1") or die($db->getLastError());
+	$comments=$db->getRow($comments_sql);
 	if($user->logged_in && strtoupper($comments['poster']) == strtoupper($user->username) or (strtolower($user->userlevel)==strtolower($config['premission_admin']) or strtolower($user->userlevel)==strtolower($config['premission_gm']))){
-		$db->query("DELETE FROM ".$config['engine_web_db'].".wwc2_news_c WHERE id='".$newsid."' LIMIT 1") or die(mysql_error());
+		$db->query("DELETE FROM ".$config['engine_web_db'].".wwc2_news_c WHERE id='".$newsid."' LIMIT 1") or die($db->getLastError());
 
 	}
 	exit;
 }
-$comments_sql=$db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news_c WHERE newsid='".$newsid."' ORDER BY id DESC LIMIT ".$start." , ".$comments_per_page) or die(mysql_error());
+$comments_sql=$db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news_c WHERE newsid='".$newsid."' ORDER BY id DESC LIMIT ".$start." , ".$comments_per_page) or die($db->getLastError());
 //echo "SELECT * FROM ".$config['engine_web_db'].".wwc2_news_c WHERE newsid='".$newsid."' ORDER BY id DESC LIMIT ".$start." , ".$comments_per_page;
 $start=$start+$comments_per_page;
 //if no commments
-if ($db->num_rows($comments_sql)<>'0')
+if ($db->numRows()<>'0')
 {
 	//if yes comments
-	while ($comments=$db->fetch_array($comments_sql))
+	while ($comments=$db->getRow($comments_sql))
 	{
 		//get poster ID
 		$userinfo=$user->getUserInfo($comments['poster']);

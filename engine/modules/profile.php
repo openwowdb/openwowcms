@@ -187,8 +187,8 @@ if ($user->userinfo['guid']==$userid or strtolower($user->userinfo['gmlevel'])==
 	  <tr>
 		<td><?php
 		//get gm level on website
-		$gmlevelweb_sql=$db->query("SELECT gmlevel FROM ".TBL_USERS." WHERE acc_login='".$db->escape($userinfo['username'])."' LIMIT 1")or die(mysql_error());
-		$gmlevelweb=$db->fetch_array($gmlevelweb_sql); 
+		$gmlevelweb_sql=$db->query("SELECT gmlevel FROM ".TBL_USERS." WHERE acc_login='".$db->escape($userinfo['username'])."' LIMIT 1")or die($db->getLastError());
+		$gmlevelweb=$db->getRow($gmlevelweb_sql);
 		echo $lang['GM level']; ?>:</td>
 		<td><input type="text" name="gm" style="width:10%" maxlength="50" value="<?php echo $user->getUserGM($userinfo['guid']); ?>" id="gm" disabled="disabled" /> <input type="text" id="realm" name="realm" style="width:10%" maxlength="50" value="---" onmouseout="$WowheadPower.hideTooltip();" onmousemove="$WowheadPower.moveTooltip(event)" onmouseover="$WowheadPower.showTooltip(event, 'Realm ID')" /> <select style="width:70%" id="gmrealm" name="gmrealm" onchange="javascript:realm112()"><option value="---" selected="selected">---</option>
 		<option value=""><?php echo $lang['All realms']; ?></option>
@@ -201,7 +201,8 @@ if ($user->userinfo['guid']==$userid or strtolower($user->userinfo['gmlevel'])==
 				foreach($config['engine_char_dbs2'] as $realms)
 				{
 					$realm_data=explode("|",$realms);
-					$out.= '<option value="'.$i.'">(ID: '.$i.') '.substr($realm_names2[($i-1)],0,15).'</option>';
+					if (isset($realm_names2[($i-1)]))
+						$out.= '<option value="'.$i.'">(ID: '.$i.') '.substr($realm_names2[($i-1)],0,15).'</option>';
 					$i++;
 				}
 				echo $out;

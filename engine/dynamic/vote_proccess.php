@@ -20,7 +20,7 @@ $id = preg_replace( "/[^0-9]/", "", $_GET['id'] );
 */
 
 $sql1 = $db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_vote_data WHERE siteid = '".$id."' AND timevoted>='".date("U")."' AND (userid='".$user->userinfo['guid']."' OR voteip='".$_SERVER['REMOTE_ADDR']."') LIMIT 1")or die($db->error('error_msg'));//select data that is still under vote ban
-if ($db->num_rows($sql1)=='1')
+if ($db->numRows()=='1')
 {
 echo "<center><span style='position:absolute' class='colorbad'>X</span></center><img src='./engine/_style_res/".$config['engine_styleid']."/images/voteimg/".$id.".gif' alt='[".$lang['Vote']."]'>";
 

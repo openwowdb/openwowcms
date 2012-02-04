@@ -48,7 +48,12 @@ if (file_exists(PATHROOT . 'config/config.php') && file_exists(PATHROOT . 'confi
 	// Include mysql engine and start connection if configs are valid
 	if (defined('AXE_db') && defined('AXE'))
 	{
-		require_once (PATHROOT . 'engine/db/mysql.php');
+		//require_once (PATHROOT . 'engine/db/mysql.php');
+		if (!class_exists("library"))
+			include $_SERVER["DOCUMENT_ROOT"]. "/library/library.php";
+
+		library::create_dblink($db, "mysql");
+		$db->init($db_host, $db_user, $db_pass) or die('Unable to connect to MySQL server.<br>' . $db->getLastError());
 	}
 }
 
@@ -80,7 +85,6 @@ if (!defined('AXE_db'))
 
 // Include language (not user specific)
 require_once (PATHROOT . 'engine/lang/' . strtolower($config['engine_lang']) . '/common.php');
-
 
 // Include necessary libraries
 require_once (PATHROOT."engine/func/session.php");

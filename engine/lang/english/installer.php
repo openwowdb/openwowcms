@@ -11,6 +11,7 @@
     "Not Writable"=>"Not Writable",
     "please chmod this file to 777"=>"please chmod this file to 777",
     "Click Here to Test Connection"=>"Click Here to Test Connection",
+	"Database Type" => "Database Type",
     "Database Host" => "Database Host",
     "Database Username"=>"Database Username",
     "Database Password"=>"Database Password",

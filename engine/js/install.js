@@ -5,10 +5,11 @@ function db_con(busy, nextstep, failed, success) {
     var host = $("#db_host").val();
     var user = $("#db_user").val();
     var pass = $("#db_pass").val();
+    var dbtype = $("#db_type").val();
     $('#db_con').html(busy + "...");
     $('#db_con').fadeIn('slow', function () { });
     $.post("./engine/installer/dynamic/db_con.php?l=" + nextstep + "&f=" + failed + "&s=" + success,
-        { host: host, user: user, pass: pass },
+        { host: host, user: user, pass: pass, dbtype: dbtype },
         function (data) { $("#db_con").html(data); }
     );
 }

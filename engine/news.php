@@ -18,11 +18,11 @@ $canEdit = strtolower($user->userlevel) == strtolower($config['premission_admin'
 <?php
 $news_sql = $db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news WHERE hidden='0' ORDER BY stickied DESC,id DESC LIMIT 20") or die( $db->error('error_msg') );
 
-while ($news = $db->fetch_assoc($news_sql))
+while ($news = $db->getRow($news_sql))
 {
 	//get comment count
 	$comments_count_sql=$db->query("SELECT count(*) FROM ".$config['engine_web_db'].".wwc2_news_c WHERE newsid='".$news['id']."'") or die( $db->error('error_msg') );
-	$comments_count = $db->fetch_array($comments_count_sql);
+	$comments_count = $db->getRow($comments_count_sql);
 	//print news structure
 	echo '
 	<div class="newstitle" id="newstitle'.$news['id'].'">

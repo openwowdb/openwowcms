@@ -21,6 +21,9 @@ error_reporting(0);
 // Include common functions
 require_once ("./engine/func/required.php");
 
+if (!class_exists("library"))
+	include $_SERVER["DOCUMENT_ROOT"]. "/library/library.php";
+
 /**
 * Removes all characters that are not alphabetical nor numerical
 *
@@ -251,6 +254,16 @@ class Install {
 		elseif ($step=='4') // Database Connection
 		{
 			echo "<script src=\"./engine/js/install.js\"></script>";
+			echo $installer_lang['Database Type'].":<br>";
+			$dbtypes = library::supported_databases();
+			echo "<select id='db_type' name='db_type'>";
+			foreach ($dbtypes as $dbtype)
+			{
+				echo "<option value='" . $dbtype . "' ";
+				if ($_SESSION['wwcmsv2install']['db_type'] == $dbtype) echo "selected = 'selected'";
+				echo ">" . $dbtype . "</option>";
+			}
+			echo "</select><br><br>";
 			echo $installer_lang['Database Host'].":";
 			$this->Input("db_host",'localhost');echo '<br>';
 			echo $installer_lang['Database Username'].":";
@@ -265,20 +278,18 @@ class Install {
 		{
 			echo "<script src=\"./engine/js/install.js\"></script>";
 			// Check $_SESSION values
-			$db_host = isset($_SESSION['wwcmsv2install']['db_host']) ? $_SESSION['wwcmsv2install']['db_host'] : "localhost";
+			$db_host = isset($_SESSION['wwcmsv2install']['db_host']) ? $_SESSION['wwcmsv2install']['db_host'] : "";
 			$db_user = isset($_SESSION['wwcmsv2install']['db_user']) ? $_SESSION['wwcmsv2install']['db_user'] : "";
 			$db_pass = isset($_SESSION['wwcmsv2install']['db_pass']) ? $_SESSION['wwcmsv2install']['db_pass'] : "";
-			if ($db_host && $db_user)
+			$db_type = isset($_SESSION['wwcmsv2install']['db_type']) ? $_SESSION['wwcmsv2install']['db_type'] : "";
+			if ($db_host && $db_user && library::supported_databases($db_type))
 			{
-				if ($connect = mysql_connect($db_host, $db_user, $db_pass))
+				library::create_dblink($connect, $db_type);
+				if ($connect->init($db_host, $db_user, $db_pass))
 				{
 					// Get all database names and store into $databases
-					$dbquery = mysql_query("SHOW DATABASES");
-					$databases = array();
-					while ($row = mysql_fetch_assoc($dbquery))
-					{
-						array_push($databases, $row['Database']);
-					}
+					$dbquery = $connect->query("SHOW DATABASES");
+					$databases = $connect->getArray();
 
 					#
 					# ACC DB DETECTION:
@@ -288,10 +299,10 @@ class Install {
 
 					foreach ($databases as $database)
 					{
-						if ($this->checkTable($database.'.'.$p_db[0]) && $this->checkTable($database.'.'.$p_db[1]))
+						if ($this->checkTable($connect, $database['Database'].'.'.$p_db[0]) && $this->checkTable($connect, $database['Database'].'.'.$p_db[1]))
 						{
 							$i++;
-							$curr_db = $database;
+							$curr_db = $database['Database'];
 						}
 					}
 
@@ -331,7 +342,7 @@ class Install {
 					echo "lang = " . json_encode($installer_lang).";";
 					foreach ($databases as $database)
 					{
-						echo "addfromdb('$database', '3306');";
+						echo "addfromdb('".$database['Database']."', '3306');";
 						$j++;
 						continue;
 					}
@@ -350,27 +361,27 @@ class Install {
 					#do loop:
 					foreach ($databases as $database)
 					{
-						if ($this->checkForEmptyDB($database))
+						if ($this->checkForEmptyDB($connect, $database['Database']))
 						{
 							$j++;
-							$curr_db = $database;
+							$curr_db = $database['Database'];
 						}
 					}
 					$this->Input("web_db", $curr_db, false, '<small> '.$installer_lang['If DB does not exists, it will be created'] . '</small>');
-					mysql_close($connect);
+					$connect->close();
 
 					echo '<small style="font-size:10px; color:gray">('.$installer_lang['Compatible Database is Autodetected'].', '.$j.' '.$installer_lang['found'].')</small>';
 					echo '</div></div><br><br>';
 				}
 				else
 				{
-					echo $installer_lang['Connection Failed'].' ('.mysql_error().')';
+					echo $installer_lang['Connection Failed'].' ('.$connect->getLastError().')';
 					$stop = true;
 				}
 			}
 			else
 			{
-				echo $installer_lang['Connection Failed'].' (host/user)';
+				echo $installer_lang['Connection Failed'].' (host/user/database type)';
 				$stop = true;
 			}
 		}
@@ -393,29 +404,36 @@ class Install {
 		}
 		elseif ($step=='7')
 		{
-			$db_host = isset($_SESSION['wwcmsv2install']['db_host']) ? $_SESSION['wwcmsv2install']['db_host'] : "localhost";
+			// Check $_SESSION values
+			$db_host = isset($_SESSION['wwcmsv2install']['db_host']) ? $_SESSION['wwcmsv2install']['db_host'] : "";
 			$db_user = isset($_SESSION['wwcmsv2install']['db_user']) ? $_SESSION['wwcmsv2install']['db_user'] : "";
 			$db_pass = isset($_SESSION['wwcmsv2install']['db_pass']) ? $_SESSION['wwcmsv2install']['db_pass'] : "";
-			if ($connect = mysql_connect($db_host, $db_user, $db_pass))
+			$db_type = isset($_SESSION['wwcmsv2install']['db_type']) ? $_SESSION['wwcmsv2install']['db_type'] : "";
+			if ($db_host && $db_user && library::supported_databases($db_type))
 			{
-				echo "<script src=\"./engine/js/install.js\"></script>";
-				echo '<script type="text/javascript">';
-				echo "lang = " . json_encode($installer_lang).";";
-				echo '</script>';
-?>
-				<input name="host" id="host" type="hidden" value="<?php echo $_SESSION['wwcmsv2install']['db_host']; ?>">
-				<input name="user" id="user" type="hidden" value="<?php echo $_SESSION['wwcmsv2install']['db_user']; ?>">
-				<input name="pass" id="pass" type="hidden" value="<?php echo $_SESSION['wwcmsv2install']['db_pass']; ?>">
-<?php
-				echo $installer_lang['Admin Username'].':';
-				$this->Input("admin_username",'');
-				echo '<br>';
-				echo $installer_lang['Admin Password'].':';
-				$this->Input("admin_password",'');
-				echo '<br>';
-				echo "<br><span id='checkadmin'>
-				<input type='button' onclick='checkadmin();return false' value='".$installer_lang['Save']."'><br></span>";
-				$stop = true;
+				library::create_dblink($connect, $db_type);
+				if ($connect->init($db_host, $db_user, $db_pass))
+				{
+					$jsonLang = json_encode($installer_lang);
+					echo <<<EOB
+					<script src="./engine/js/install.js"></script>
+					<script type="text/javascript">
+					lang = {$jsonLang};
+					</script>
+					
+					<input name="host" id="host" type="hidden" value="{$db_host}">
+					<input name="user" id="user" type="hidden" value="{$db_user}">
+					<input name="pass" id="pass" type="hidden" value="{$db_pass}">
+EOB;
+					echo $installer_lang['Admin Username'].':';
+					$this->Input("admin_username",'');
+					echo '<br>';
+					echo $installer_lang['Admin Password'].':';
+					$this->Input("admin_password",'');
+					echo '<br>';
+					echo "<br><span id='checkadmin'><input type='button' onclick='checkadmin();return false' value='".$installer_lang['Save']."'><br></span>";
+					$stop = true;
+				}
 			}
 		}
 		elseif ($step=='8')
@@ -423,13 +441,16 @@ class Install {
 			$db_host = isset($_SESSION['wwcmsv2install']['db_host']) ? $_SESSION['wwcmsv2install']['db_host'] : "localhost";
 			$db_user = isset($_SESSION['wwcmsv2install']['db_user']) ? $_SESSION['wwcmsv2install']['db_user'] : "";
 			$db_pass = isset($_SESSION['wwcmsv2install']['db_pass']) ? $_SESSION['wwcmsv2install']['db_pass'] : "";
-			if ($connect = mysql_connect($db_host, $db_user, $db_pass))
+			$db_type = isset($_SESSION['wwcmsv2install']['db_type']) ? $_SESSION['wwcmsv2install']['db_type'] : "";
+			library::create_dblink($connect, $db_type);
+			if ($connect->init($db_host, $db_user, $db_pass))
 			{
 				$string = "<?php" . $ln. '$config=array(' . $ln;
-				$result = mysql_query("SELECT * FROM ".$_SESSION['wwcmsv2install']['web_db'].".wwc2_config");
-				while ($row = mysql_fetch_array($result))
+				$result = $connect->query("SELECT * FROM ".$_SESSION['wwcmsv2install']['web_db'].".wwc2_config");
+				$array = $connect->getArray();
+				foreach ($array as $row)
 				{
-					$string .= "'".$row[0]."' => '".$row[1]."'," . $ln;
+					$string .= "'".$row['conf_name']."' => '".$row['conf_value']."'," . $ln;
 				}
 
 				$string .= ");" . $ln . $ln . "define('AXE',1);" . $ln . $ln;
@@ -440,6 +461,7 @@ class Install {
 				$string .= '$db_pass="'.$_SESSION['wwcmsv2install']['db_pass'].'";' . $ln;
 				$string .= "define('AXE_db',1);" . $ln . $ln;
 				$this->writefile($string,'./config/config_db.php');
+				$connect->close();
 			}
 			else
 			{
@@ -505,9 +527,9 @@ class Install {
 	* @param string
 	* @return boolean
 	*/
-	function checkTable($table)
+	function checkTable(&$con, $table)
 	{
-		$result = @mysql_query("SELECT * FROM $table");
+		$result = $con->query("SELECT * FROM $table");
 
 		// I could just cast this, but I feel as if this is safer approach
 		return (!$result) ? FALSE : TRUE;
@@ -522,15 +544,15 @@ class Install {
 	* @param string
 	* @return boolean
 	*/
-	function checkForEmptyDB($database)
+	function checkForEmptyDB(&$con, $database)
 	{
 		$query = 'SELECT count(*) TABLES, table_schema ';
 		$query .= 'FROM information_schema.TABLES ';
 		$query .= 'WHERE table_schema= \'' . $database . '\' ';
 		$query .= 'GROUP BY table_schema';
 
-		$result = @mysql_query($query);
-		$result = mysql_fetch_array($result);
+		$result = $con->query($query);
+		$result = $con->getRow();
 
 		return ($result == '0') ? TRUE : FALSE;
 	}

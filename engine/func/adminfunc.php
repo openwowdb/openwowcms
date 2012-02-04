@@ -139,7 +139,7 @@ echo "<h2>".$lang_admincp['User Manager'].'</h2>';
 if (isset($_POST['submit']))
 {
 $sql1 = $db->query($user->CoreSQL(0,$_POST['user']))or die($db->error('error_msg'));
-while ($sql2=$db->fetch_assoc($sql1))
+while ($sql2=$db->getRow($sql1))
 {
 echo '<a href="'.PATHROOT.'?page=profile&id='.$sql2['id'].'">'.$sql2['username'].'</a><br>';
 }
@@ -232,11 +232,11 @@ $_SESSION['error_array'] = Form::getErrorArray();
 }
 ?><form name="adminform" id="adminform" action="./?f=cssmanager<?php echo $javascript; ?>" method="POST">
 <?php
-$sql1 = $db->query("SELECT * FROM ".TBL_TEMPLATE." WHERE templatetype='css' AND styleid='".$config['engine_styleid']."' ORDER BY title ASC")or die(mysql_error());
+$sql1 = $db->query("SELECT * FROM ".TBL_TEMPLATE." WHERE templatetype='css' AND styleid='".$config['engine_styleid']."' ORDER BY title ASC")or die($db->getLastError());
 $i=0;
 echo '<table width="100%" border="0" cellpadding="2"><tr><td width="200px">'.$lang_admincp['CSS element'].':</td><td>'.$lang_admincp['CSS proprety'].':</td></tr>';
 $fulledit='';
-while ($sql2=mysql_fetch_assoc($sql1)){
+while ($sql2=$db->getRow($sql1)){
 ?><tr>
 <td valign="top" width="200px"><?php echo Form::error('title'.$i);?><input style="width:96%;font-family:consolas,'courier new',courier,monospace" type="text" name="title[]" value="<?php
 if ($_SESSION['value_array']['title'][$i]<>'')
@@ -382,10 +382,10 @@ $_SESSION['error_array'] = Form::getErrorArray();
 
 ?><h2><?php echo $name; ?></h2><?php echo $descr;
 /* Insert configuration variable for trinity new version, used for RA string selector */
-$trin_conf_var=$db->query("SELECT conf_name FROM ".TBL_CONFIG." WHERE conf_name='trinity_version'")or die(mysql_error());
-if ($db->num_rows($trin_conf_var)=='0'){
+$trin_conf_var=$db->query("SELECT conf_name FROM ".TBL_CONFIG." WHERE conf_name='trinity_version'")or die($db->getLastError());
+if ($db->numRows()=='0'){
 $trin_conf_var = $db->query("INSERT INTO ".TBL_CONFIG." (conf_name,conf_value,conf_descr,conf_stickied,conf_dropdown) VALUES
-('trinity_version','Older','Select RA method used, for compatibility with Trinity Core.','1','Older|Newer')")or die(mysql_error());
+('trinity_version','Older','Select RA method used, for compatibility with Trinity Core.','1','Older|Newer')")or die($db->getLastError());
 echo "<div style='border:solid 1px orange;background-color:#f3d7a3;padding: 4px'><center>
 \"trinity_version\" variable is added to configuration, please configure and recache your cms.</center></div>";
 }
@@ -394,9 +394,9 @@ echo "<div style='border:solid 1px orange;background-color:#f3d7a3;padding: 4px'
 ?><br /><br /><form name="adminform" id="adminform" action="./?f=updateconfig" method="POST">
 <table border="0" cellspacing="0" cellpadding="3"><tr><td><strong><?php echo $lang_admincp['Config Name']; ?></strong></td><td><strong><?php echo $lang_admincp['Config Value']; ?></strong></td><td></td></tr>
 <?php
-$sql1 = $db->query("SELECT * FROM ".TBL_CONFIG)or die(mysql_error());
+$sql1 = $db->query("SELECT * FROM ".TBL_CONFIG)or die($db->getLastError());
 $i=0;
-while ($sql2=mysql_fetch_assoc($sql1)){
+while ($sql2=$db->getRow($sql1)){
 
 ?>
 <tr><td  valign="top">
@@ -513,10 +513,10 @@ echo $lang_admincp['Action report'].": <font color='green'>".$lang_admincp['New 
 if (Html::cache_menulinks()) echo ' '.$lang_admincp['and cached'].'.'; else echo ', '.$lang_admincp['links not cached'].'.';
 echo "</font>";
 }
-$sql1 = $db->query("SELECT * FROM ".TBL_LINKS." ORDER BY linkgrup ASC, linkorder ASC")or die(mysql_error());
+$sql1 = $db->query("SELECT * FROM ".TBL_LINKS." ORDER BY linkgrup ASC, linkorder ASC")or die($db->getLastError());
 $i='nothing';$color="#C9C9C9";
 echo '<form action="./?f=links" method="post">';
-while ($sql2=mysql_fetch_assoc($sql1)){
+while ($sql2=$db->getRow($sql1)){
 if ($i<>$sql2['linkgrup']) {
 echo "<h3>".$lang_admincp['Group']." ".$sql2['linkgrup'].'</h3>'.$lang_admincp['Code to print links in this group'].': <input style="width:400px;font-family: consolas,\'courier new\',courier,monospace;" type="text" value="&lt;?php echo menulinks(&quot;'.$sql2['linkgrup'].'&quot;,&quot; | &quot;); ?&gt;" /> <small>('.$lang_admincp['second argument is link seperator in HTML code'].')</small><div style="height:6px"></div>';
 $i=$sql2['linkgrup'];
@@ -745,7 +745,7 @@ return;
 }
 
 $sql3 = $db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news WHERE id='".$id."' LIMIT 1")or die($db->error('error_msg'));
-$sql4 = $db->fetch_assoc($sql3);
+$sql4 = $db->getRow($sql3);
 ?>
 <form action="./?f=announcements" method="post">
 <input type="text" name="title" style="width:95%" maxlength="254" value="<?php echo $sql4['title']; ?>" /><br />
@@ -760,7 +760,7 @@ $sql4 = $db->fetch_assoc($sql3);
 </form><blockquote>
 <?php
 $sql1 = $db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news ORDER BY stickied DESC,id DESC")or die($db->error('error_msg'));
-while ($sql2=$db->fetch_assoc($sql1))
+while ($sql2=$db->getRow($sql1))
 {
 if ($id==$sql2['id']){
 if ($sql2['stickied']=='1')
@@ -797,11 +797,11 @@ echo '<h2>'.$lang_admincp['Vote Manager'].'</h2>';
 
 <?php
 $sql1 = $db->query("SELECT * FROM ".TBL_CONFIG." WHERE conf_name LIKE 'vote_link_%' ORDER BY conf_name ASC")or die($db->error('error_msg'));
-if ($db->num_rows($sql1)=='0') echo '<tr>
+if ($db->numRows()=='0') echo '<tr>
 <td colspan="2"><a href="./?f=updateconfig">'.$lang_admincp['Configuration Variables'].'</a></td>
 
 </tr>';
-while ($sql2=$db->fetch_array($sql1))
+while ($sql2=$db->getRow($sql1))
 {
 ?>
 

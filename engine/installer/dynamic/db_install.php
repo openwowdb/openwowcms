@@ -49,18 +49,8 @@ function is_valid_lang($language = '')
 	return FALSE;
 }
 
-function _htmlspecialchars($str)
-{
-	$str = preg_replace('/&(?!#[0-9]+;)/s', '&amp;', $str);
-	$str = str_replace(array('<', '>', '"'), array('&lt;', '&gt;', '&quot;'), $str);
-	return $str;
-}
-
-function doQuery($sql)
-{
-	$result = mysql_query($sql);
-	return $result;
-}
+if (!class_exists("library"))
+	include $_SERVER["DOCUMENT_ROOT"]. "/library/library.php";
 
 define('PATHROOT', '../../../');
 
@@ -100,7 +90,7 @@ $errorCount = 0;
 * @param	string
 * @return	boolean
 */
-function mysql_import_file($filename, &$errmsg)
+function mysql_import_file(&$con, $filename, &$errmsg)
 {
 	// Read the file
 	$lines = file($filename);
@@ -122,9 +112,9 @@ function mysql_import_file($filename, &$errmsg)
 			continue;
 		}
 
-		if(!mysql_query($query.';'))
+		if(!$con->query($query.';'))
 		{
-			$errmsg = "<strong>Query</strong> " . htmlspecialchars($query) . " <b>FAILED</b><br>REPORT: " . mysql_error() . "<br>";
+			$errmsg = "<strong>Query</strong> " . htmlspecialchars($query) . " <b>FAILED</b><br>REPORT: " . $con->getLastError() . "<br>";
 			return FALSE;
 		}
 	}
@@ -147,15 +137,16 @@ if (!isset($wwcms['db_test']) || $wwcms['db_test'] == false)
 				// Host, User, Pass - Only if the host is set
 				if (isset($wwcms['char_host']) && trim($wwcms['char_host'][$char_counter])!='' )
 				{
-					if ($con = @mysql_connect($wwcms['char_host'][$char_counter], $wwcms['char_dbuser'][$char_counter], $wwcms['char_dbpass'][$char_counter]))
+					library::create_dblink($con, $wwcms['db_type']);
+					if ($con->init($wwcms['char_host'][$char_counter], $wwcms['char_dbuser'][$char_counter], $wwcms['char_dbpass'][$char_counter]))
 					{
-						mysql_close($con);
+						$con->close();
 						$validHost = true;
 					}
 					else
 					{
 						$errorCount++;
-						echo '<span id="db_error'.$errorCount.'"><br>&nbsp;&nbsp;<font color="red">'.$sess_chardb.' - '.$installer_lang['Connection Failed'].'</font> ('.mysql_error().")";
+						echo '<span id="db_error'.$errorCount.'"><br>&nbsp;&nbsp;<font color="red">'.$sess_chardb.' - '.$installer_lang['Connection Failed'].'</font> ('.$con->getLastError().")";
 						echo "<br>&nbsp;&nbsp;&nbsp;<span class='innerlinks'><a href='javascript:void()' onclick='db_ignore($errorCount);return false'>".$installer_lang['Ignore Message']."</a></span></span>";
 						$char_counter++;
 						continue;
@@ -203,12 +194,13 @@ if (!isset($wwcms['db_test']) || $wwcms['db_test'] == false)
 
 if ($step <= 5)
 {
-	if ($con = mysql_connect($wwcms['db_host'], $wwcms['db_user'], $wwcms['db_pass']))
+	library::create_dblink($con, $wwcms['db_type']);
+	if ($con->init($wwcms['db_host'], $wwcms['db_user'], $wwcms['db_pass']))
 	{
 		if ($step == 1)
 		{
 			echo "<fieldset><legend>Step 1 / 5</legend>";
-			$result = doQuery("CREATE DATABASE `" . $wwcms['web_db'] . "`");
+			$result = $con->query("CREATE DATABASE `" . $wwcms['web_db'] . "`");
 			if ($result)
 			{
 				echo "<br>".$installer_lang['Create'] . " DB " . $_SESSION['wwcmsv2install']['web_db'];
@@ -219,7 +211,7 @@ if ($step <= 5)
 			echo "</fieldset>";
 		}
 		else
-			mysql_select_db($wwcms['web_db']);
+			$con->select_db($wwcms['web_db']);
 
 		$tables = array(
 			"`wwc2_active_guests`"=>"CREATE TABLE `wwc2_active_guests` (`ip` varchar(15) NOT NULL,`timestamp` int(11) unsigned NOT NULL,PRIMARY KEY (`ip`)) ENGINE=MyISAM DEFAULT CHARSET=latin1;",
@@ -240,7 +232,7 @@ if ($step <= 5)
 			echo "<fieldset><legend>Step 2 / 5</legend>";
 			foreach ($tables as $table => $createSql)
 			{
-				if(doQuery("DROP TABLE IF EXISTS $table"))
+				if($con->query("DROP TABLE IF EXISTS $table"))
 					echo "<br>".$installer_lang['Delete']." ".$table;
 			}
 			echo "</fieldset>";
@@ -252,14 +244,13 @@ if ($step <= 5)
 			echo "<fieldset><legend>Step 3 / 5</legend>";
 			foreach ($tables as $table => $createSql)
 			{
-				$success = doQuery($createSql);
-				if ($success)
+				if ($con->query($createSql))
 				{
 					echo "<br>".$installer_lang['Create']." ".$table;
 				}
 				else
 				{
-					echo "<br>".$installer_lang['Failed to create tables']." ".$table;
+					echo "<br>".$installer_lang['Failed to create tables']." ".$table." (".$con->getLastError().")";
 				}
 			}
 			echo "</fieldset>";
@@ -300,7 +291,7 @@ if ($step <= 5)
 					",('engine_styleid','1','Change style ID to change style.','1','')".
 					",('trinity_soap_port','".$trinity_soap_port."','TrintyCore: SOAP Port (for sending ingame mail)<br><small>realm1_SOAP_port|realm2_SOAP_port</small>','1','')".
 					",('mangos_soap_port','".$mangos_soap_port."','MaNGOS: Soap Port (for sending ingame mail)<br><small>realm1_SOAP_port|realm2_SOAP_port</small>','1','')".
-					",('trinity_ra_port',$trinity_ra_port,'TrintyCore: Remote Access Port (for sending ingame mail)<br><small>realm1_RA_port|realm2_RA_port</small>','1','')".
+					",('trinity_ra_port','$trinity_ra_port','TrintyCore: Remote Access Port (for sending ingame mail)<br><small>realm1_RA_port|realm2_RA_port</small>','1','')".
 					($mangos_soap_userpass == null ? "" : ",('mangos_soap_userpass','$mangos_soap_userpass','MaNGOS: SOAP Username and Password (for sending ingame mail)<br><small>SOAP_username|SOAP_password</small>','1','')").
 					($trinity_soap_userpass == null ? "" : ",('trinity_soap_userpass','$trinity_soap_userpass','TrintyCore: SOAP Username and Password (for sending ingame mail)<br><small>SOAP_username|SOAP_password</small>','1','')").
 					($trinity_ra_userpass == null ? "" : ",('trinity_ra_userpass','$trinity_ra_userpass','TrintyCore: RA Username and Password (for sending ingame mail)<br><small>RA_username|RA_password</small>','1','')").
@@ -324,11 +315,10 @@ Go to [b]administration panel[/b] to manage CMS.',0, '".@date("U")."',0, 0,'WebW
 
 			foreach ($insertQueries as $table => $insert)
 			{
-				$success = doQuery("INSERT INTO $table VALUES $insert");
-				if ($success)
+				if ($con->query("INSERT INTO $table VALUES $insert"))
 					echo "<br>".$installer_lang['Inserting data to']." ".$table;
 				else
-					echo "<br><strong>Query</strong> " . htmlspecialchars($insert) . " <b>FAILED</b><br>REPORT: " . mysql_error() . "<br>";
+					echo "<br><strong>Query</strong> " . htmlspecialchars($insert) . " <b>FAILED</b><br>REPORT: " . $con->getLastError() . "<br>";
 			}
 			echo "</fieldset>";
 		}
@@ -336,26 +326,25 @@ Go to [b]administration panel[/b] to manage CMS.',0, '".@date("U")."',0, 0,'WebW
 		if ($step == 5)
 		{
 			echo "<fieldset><legend>Step 5 / 5</legend>";
-			mysql_import_file('../sql/wwc2_template.sql', $errmsg);
+			mysql_import_file($con, '../sql/wwc2_template.sql', $errmsg);
 			echo $errmsg;
 			$errmsg='';
 			echo "<br>".$installer_lang['Inserting data to']." `wwc2_template`";
-			mysql_import_file('../sql/wwc2_links.sql', $errmsg);
+			mysql_import_file($con, '../sql/wwc2_links.sql', $errmsg);
 			echo $errmsg;
 			echo "<br>".$installer_lang['Inserting data to']." `wwc2_links`<br>";
 			echo "</fieldset>";
 			echo "<br><font color=green>".$installer_lang['Tables are created successfully']."</font>";
 			echo '<br><br><input name="next" type="submit" value="'.$installer_lang['Next Step'].' (6/8)"></form>';
 			echo '<script type="text/javascript">$("#db_install").remove();</script>';
-			$_SESSION['wwcmsv2install']['sqlstep'] = 1;
+			$_SESSION['wwcmsv2install']['sqlstep'] = 0;
 			$_SESSION['wwcmsv2install']['db_test'] = false;
-			return;
 		}
-		mysql_close($con);
+		$con->close();
 	}
 	else
 	{
-		echo '&nbsp;&nbsp;<font color="red">'.$installer_lang['Connection Failed'].'</font> ('.mysql_error().")";
+		echo '&nbsp;&nbsp;<font color="red">'.$installer_lang['Connection Failed'].'</font> ('.$con->getLastError().")";
 		return;
 	}
 }

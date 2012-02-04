@@ -93,16 +93,16 @@ if (isset($_POST['message']))
 		$username = $db->escape($user->username);
 		$message = $db->escape($_POST['message']);
 		$date = date("U");
-		$db->query("INSERT INTO ".$config['engine_web_db'].".mod_shoutbox (poster,message,timepost) VALUES ('".$username."','".$message."','".$date."')") or die(mysql_error());
-		$id = $db->insert_id();
+		$db->query("INSERT INTO ".$config['engine_web_db'].".mod_shoutbox (poster,message,timepost) VALUES ('".$username."','".$message."','".$date."')") or die($db->getLastError());
+		$id = $db->insertId();
 		echo_shout(array('id'=>$id, 'poster'=>$username, 'message'=>$message, 'timepost'=>$date));
 	}
 }
 
 if (isset($_POST['latest']))
 {
-	$shouts_sql = $db->query("SELECT * FROM ".$config['engine_web_db'].".mod_shoutbox WHERE id > " .$db->escape($_POST['latest'])."  ORDER by id DESC") or die(mysql_error());
-	while ($row = $db->fetch_array($shouts_sql))
+	$shouts_sql = $db->query("SELECT * FROM ".$config['engine_web_db'].".mod_shoutbox WHERE id > " .$db->escape($_POST['latest'])."  ORDER by id DESC") or die($db->getLastError());
+	while ($row = $db->getRow($shouts_sql))
 		echo_shout($row);
 }
 ?>

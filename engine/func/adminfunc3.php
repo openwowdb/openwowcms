@@ -20,53 +20,53 @@ global $db,$config,$lang_admincp,$lang_admincphelp,$user,$lang,$installer_lang;
 
 if (isset($_GET['createnew']))
 {
-echo "<h2>".$lang_admincp['Template Editor'].'</h2>';
-//get max style id from db
-$newstyleid_sql=$db->query("SELECT MAX(styleid) FROM ".TBL_TEMPLATE."")or die($db->error('error_msg'));
-$newstyleid=$db->fetch_array($newstyleid_sql);
+	echo "<h2>".$lang_admincp['Template Editor'].'</h2>';
+	//get max style id from db
+	$newstyleid_sql=$db->query("SELECT MAX(styleid) FROM ".TBL_TEMPLATE."")or die($db->error('error_msg'));
+	$newstyleid=$db->getRow($newstyleid_sql);
 
-//copy all variables
-$newstyle_sql=$db->query("SELECT * FROM ".TBL_TEMPLATE." WHERE styleid='".$config['engine_styleid']."'")or die($db->error('error_msg'));
-while ($newstyle=$db->fetch_array($newstyle_sql))
-{
-$db->query("INSERT INTO ".TBL_TEMPLATE." (styleid,title,template,template_un,templatetype,username,version) VALUES ('".($newstyleid[0]+1)."','".$newstyle['title']."','".$db->escape($newstyle['template'])."','".$db->escape($newstyle['template'])."','".$newstyle['templatetype']."','".$user->username."','1')")or die($db->error('error_msg'));
+	//copy all variables
+	$newstyle_sql=$db->query("SELECT * FROM ".TBL_TEMPLATE." WHERE styleid='".$config['engine_styleid']."'")or die($db->error('error_msg'));
+	while ($newstyle=$db->getRow($newstyle_sql))
+	{
+		$db->query("INSERT INTO ".TBL_TEMPLATE." (styleid,title,template,template_un,templatetype,username,version) VALUES ('".($newstyleid[0]+1)."','".$newstyle['title']."','".$db->escape($newstyle['template'])."','".$db->escape($newstyle['template'])."','".$newstyle['templatetype']."','".$user->username."','1')")or die($db->error('error_msg'));
 
-}
-//copy style dir FINISH THIS
-//$this->smartCopy(PATHROOT.'engine/_style_res/'.$config['engine_styleid'].'', PATHROOT.'engine/_style_res/'.($newstyleid[0]+1).'');
-echo "Please copy ".PATHROOT.'engine/_style_res/'.$config['engine_styleid'].' to '.PATHROOT.'engine/_style_res/'.($newstyleid[0]+1).'<br>';
-$db->query("UPDATE ".TBL_CONFIG." SET conf_value='".($newstyleid[0]+1)."' WHERE conf_name='engine_styleid' LIMIT 1")or die($db->error('error_msg'));
-echo $lang_admincp['Your new styleid is'].': '.($newstyleid[0]+1);
-return;
+	}
+	//copy style dir FINISH THIS
+	//$this->smartCopy(PATHROOT.'engine/_style_res/'.$config['engine_styleid'].'', PATHROOT.'engine/_style_res/'.($newstyleid[0]+1).'');
+	echo "Please copy ".PATHROOT.'engine/_style_res/'.$config['engine_styleid'].' to '.PATHROOT.'engine/_style_res/'.($newstyleid[0]+1).'<br>';
+	$db->query("UPDATE ".TBL_CONFIG." SET conf_value='".($newstyleid[0]+1)."' WHERE conf_name='engine_styleid' LIMIT 1")or die($db->error('error_msg'));
+	echo $lang_admincp['Your new styleid is'].': '.($newstyleid[0]+1);
+	return;
 }
 /**
 * Deletes style ID if <> 1
 */
 elseif(isset($_GET['delete']))
 {
-echo "<h2>".$lang_admincp['Template Editor'].'</h2>';
-$delete = preg_replace( "/[^0-9]/", "", $_GET['delete'] ); //only letters and numbers
-if ($delete=='1') {echo $lang_admincp['Locked']; return;}
-$db->query("DELETE FROM ".TBL_TEMPLATE." WHERE styleid='".$delete."'") or die($db->error('error_msg'));
-//FINISH THIS, delete style folder
-echo $lang_admincp['Style'].' '.$delete.' '.$lang_admincp['is deleted'].'.';
-return;
+	echo "<h2>".$lang_admincp['Template Editor'].'</h2>';
+	$delete = preg_replace( "/[^0-9]/", "", $_GET['delete'] ); //only letters and numbers
+	if ($delete=='1') {echo $lang_admincp['Locked']; return;}
+	$db->query("DELETE FROM ".TBL_TEMPLATE." WHERE styleid='".$delete."'") or die($db->error('error_msg'));
+	//FINISH THIS, delete style folder
+	echo $lang_admincp['Style'].' '.$delete.' '.$lang_admincp['is deleted'].'.';
+	return;
 }
 /*save order if set*/
 if ($_GET['html_order']<>'')
-$db->query("UPDATE ".TBL_TEMPLATE." SET template='".preg_replace( "/[^0-9]/", "", $_GET['html_order'] )."' WHERE title='html_order' AND styleid='".$config['engine_styleid']."'") or die($db->error('error_msg'));
+	$db->query("UPDATE ".TBL_TEMPLATE." SET template='".preg_replace( "/[^0-9]/", "", $_GET['html_order'] )."' WHERE title='html_order' AND styleid='".$config['engine_styleid']."'") or die($db->error('error_msg'));
 /*save form*/
 $post_templatename = preg_replace( "/[^A-Za-z0-9_]/", "", $_POST['template'] ); //only letters and numbers
 if (isset($_POST['submit']))
 {
-$db->query("UPDATE ".TBL_TEMPLATE." SET template='".$db->escape($_POST['code'])."', template_un='".$db->escape($_POST['backup'])."' WHERE title='".$post_templatename."' AND styleid='".$config['engine_styleid']."'") or die($db->error('error_msg'));
-echo $lang_admincp['Action report'].": <font color='green'>".$lang_admincp['Template is saved'].".</font>";
+	$db->query("UPDATE ".TBL_TEMPLATE." SET template='".$db->escape($_POST['code'])."', template_un='".$db->escape($_POST['backup'])."' WHERE title='".$post_templatename."' AND styleid='".$config['engine_styleid']."'") or die($db->error('error_msg'));
+	echo $lang_admincp['Action report'].": <font color='green'>".$lang_admincp['Template is saved'].".</font>";
 }
 /*undo form*/
 if (isset($_POST['undo']))
 {
-$db->query("UPDATE ".TBL_TEMPLATE." SET template=template_un WHERE title='".$post_templatename."' AND styleid='".$config['engine_styleid']."'") or die($db->error('error_msg'));
-echo $lang_admincp['Action report'].": <font color='green'>".$lang_admincp['Template is reversed'].".</font>";
+	$db->query("UPDATE ".TBL_TEMPLATE." SET template=template_un WHERE title='".$post_templatename."' AND styleid='".$config['engine_styleid']."'") or die($db->error('error_msg'));
+	echo $lang_admincp['Action report'].": <font color='green'>".$lang_admincp['Template is reversed'].".</font>";
 }
 
 /*h2 start*/
@@ -84,18 +84,18 @@ echo "</h2>";
 /*REMOTE UPDATE start*/
 if(function_exists("fsockopen") && isset($_GET['getmorestyles']))
 {
-include_once(PATHROOT."engine/func/admin_update.php");
-if (isset($_GET['webwowid'])){
-$updateclass->GetStyle( preg_replace( "/[^0-9]/", "", $_GET['webwowid'] ),$_GET['confirm']);
+	include_once(PATHROOT."engine/func/admin_update.php");
+	if (isset($_GET['webwowid'])){
+		$updateclass->GetStyle( preg_replace( "/[^0-9]/", "", $_GET['webwowid'] ),$_GET['confirm']);
 
-}
-else
-$updateclass->GetStylesInfo();
-return;
+	}
+	else
+		$updateclass->GetStylesInfo();
+	return;
 }
 else if(!function_exists("fsockopen") && isset($_GET['getmorestyles']) )
 {
-echo $lang_admincp["PHP fsockopen() is disabled, update is not possible using this method."].'<br><br>';return;
+	echo $lang_admincp["PHP fsockopen() is disabled, update is not possible using this method."].'<br><br>';return;
 }
 /*REMOTE UPDATE end*/
 
@@ -103,26 +103,26 @@ echo $lang_admincp["PHP fsockopen() is disabled, update is not possible using th
 /*do query for template elements*/
 
 $sql1 = $db->query("SELECT * FROM ".TBL_TEMPLATE." WHERE (templatetype='template' or templatetype='other') AND styleid='".$config['engine_styleid']."'") or die($db->error('error_msg'));
-if ($db->num_rows($sql1)<=19)
-{echo $lang_admincp['There is some template elements missing on current selected style, change to style 1.']; return;}
+if ($db->numRows()<=19)
+	{echo $lang_admincp['There is some template elements missing on current selected style, change to style 1.']; return;}
 
 /*do loop trough page elements*/
-while ($template=$db->fetch_assoc($sql1))
+while ($template=$db->getRow($sql1))
 {
-if ($template['templatetype']=='template'){
-$tpl[$template['title']][0]=htmlspecialchars($template['template']);
-$tpl[$template['title']][1]=$template['template_un'];
-}
-else
-$tpl[$template['title']][0]=$template['template'];
+	if ($template['templatetype']=='template'){
+		$tpl[$template['title']][0]=htmlspecialchars($template['template']);
+		$tpl[$template['title']][1]=$template['template_un'];
+	}
+	else
+		$tpl[$template['title']][0]=$template['template'];
 }
 
 
 /*editing style now*/
 if (isset($_GET['template']))
 {
-$tpl_info[0]=preg_replace( "/[^A-Za-z0-9_]/", "", $_GET['template'] );
-$tpl_info[1]=$tpl[preg_replace( "/[^A-Za-z0-9_]/", "", $_GET['template'] )][0];
+	$tpl_info[0]=preg_replace( "/[^A-Za-z0-9_]/", "", $_GET['template'] );
+	$tpl_info[1]=$tpl[preg_replace( "/[^A-Za-z0-9_]/", "", $_GET['template'] )][0];
 ?>
 <form method="post" action="./?f=stylemanager&template=<?php echo $tpl_info[0]; ?>">
 <input type="hidden" value="<?php echo $tpl_info[1]; ?>" name="backup" />
@@ -141,7 +141,7 @@ $tpl_info[1]=$tpl[preg_replace( "/[^A-Za-z0-9_]/", "", $_GET['template'] )][0];
 </tr>
 <?php
 if ($tpl_info[0]=='head' && file_exists(PATHROOT.'engine/_style_res/'.$config['engine_styleid'].'/stylesheet.css'))
-echo '<tr>
+	echo '<tr>
 <td class="dark" style="text-align:right;">'.$lang_admincp['Stylesheet'].':</td>
 <td>'.$lang_admincphelp[6].':
 <pre>&lt;link rel="stylesheet" type="text/css" href="./engine/_style_res/'.$config['engine_styleid'].'/stylesheet.css" /&gt;</pre></td>
@@ -193,57 +193,57 @@ echo '<tr>
 
 /*viewing style list*/
 else{
-$i=0;if ( !$tpl['html_order'][0] or strlen($tpl['html_order'][0])<=6 ) {$tpl['html_order'][0]='4015263';
-/*save order if set*/
-$db->query("UPDATE ".TBL_TEMPLATE." SET template='".$tpl['html_order'][0]."' WHERE title='html_order' AND styleid='".$config['engine_styleid']."'") or die($db->error('error_msg'));
-}
+	$i=0;if ( !$tpl['html_order'][0] or strlen($tpl['html_order'][0])<=6 ) {$tpl['html_order'][0]='4015263';
+		/*save order if set*/
+		$db->query("UPDATE ".TBL_TEMPLATE." SET template='".$tpl['html_order'][0]."' WHERE title='html_order' AND styleid='".$config['engine_styleid']."'") or die($db->error('error_msg'));
+	}
 
 
-while ($i<=6)
-{
-/*make ordering links*/
+	while ($i<=6)
+	{
+		/*make ordering links*/
 
-$tplorder[$i]=$tpl['html_order'][0][($i+1)];
-$tplorder[($i+1)]=$tpl['html_order'][0][$i];
+		$tplorder[$i]=$tpl['html_order'][0][($i+1)];
+		$tplorder[($i+1)]=$tpl['html_order'][0][$i];
 
-$tplorder2[$i]=$tpl['html_order'][0][($i-1)];
-$tplorder2[($i-1)]=$tpl['html_order'][0][$i];
+		$tplorder2[$i]=$tpl['html_order'][0][($i-1)];
+		$tplorder2[($i-1)]=$tpl['html_order'][0][$i];
 
-$orderlinks_num_down=
-$tpl['html_order'][0][($i-5)].
-$tpl['html_order'][0][($i-4)].
-$tpl['html_order'][0][($i-3)].
-$tpl['html_order'][0][($i-2)].
-$tpl['html_order'][0][($i-1)].
-$tplorder[$i].
-$tplorder[($i+1)].
-$tpl['html_order'][0][($i+2)].
-$tpl['html_order'][0][($i+3)].
-$tpl['html_order'][0][($i+4)].
-$tpl['html_order'][0][($i+5)].
-$tpl['html_order'][0][($i+6)];
+		$orderlinks_num_down=
+			$tpl['html_order'][0][($i-5)].
+			$tpl['html_order'][0][($i-4)].
+			$tpl['html_order'][0][($i-3)].
+			$tpl['html_order'][0][($i-2)].
+			$tpl['html_order'][0][($i-1)].
+			$tplorder[$i].
+			$tplorder[($i+1)].
+			$tpl['html_order'][0][($i+2)].
+			$tpl['html_order'][0][($i+3)].
+			$tpl['html_order'][0][($i+4)].
+			$tpl['html_order'][0][($i+5)].
+			$tpl['html_order'][0][($i+6)];
 
-$orderlinks_num_up=
-$tpl['html_order'][0][($i-6)].
-$tpl['html_order'][0][($i-5)].
-$tpl['html_order'][0][($i-4)].
-$tpl['html_order'][0][($i-3)].
-$tpl['html_order'][0][($i-2)].
-$tplorder2[($i-1)].
-$tplorder2[$i].
-$tpl['html_order'][0][($i+1)].
-$tpl['html_order'][0][($i+2)].
-$tpl['html_order'][0][($i+3)].
-$tpl['html_order'][0][($i+4)].
-$tpl['html_order'][0][($i+5)];
+		$orderlinks_num_up=
+			$tpl['html_order'][0][($i-6)].
+			$tpl['html_order'][0][($i-5)].
+			$tpl['html_order'][0][($i-4)].
+			$tpl['html_order'][0][($i-3)].
+			$tpl['html_order'][0][($i-2)].
+			$tplorder2[($i-1)].
+			$tplorder2[$i].
+			$tpl['html_order'][0][($i+1)].
+			$tpl['html_order'][0][($i+2)].
+			$tpl['html_order'][0][($i+3)].
+			$tpl['html_order'][0][($i+4)].
+			$tpl['html_order'][0][($i+5)];
 
-$orderlinks='<span style="float:left"><a href="./?f=stylemanager&html_order='.$orderlinks_num_up.'">&#9650;</a><a href="./?f=stylemanager&html_order='.$orderlinks_num_down.'">&#9660;</a></span>';
+		$orderlinks='<span style="float:left"><a href="./?f=stylemanager&html_order='.$orderlinks_num_up.'">&#9650;</a><a href="./?f=stylemanager&html_order='.$orderlinks_num_down.'">&#9660;</a></span>';
 
-if ($i==0) $orderlinks='<span style="float:left"><a href="./?f=stylemanager&html_order='.$orderlinks_num_down.'">&#9660;</a></span>';
-if ($i==6) $orderlinks='<span style="float:left"><a href="./?f=stylemanager&html_order='.$orderlinks_num_up.'">&#9650;</a></span>';
-/*end ordering links*/
-if ($tpl['html_order'][0][$i]=='0')//if (content)
-$parts_order[$i]='
+		if ($i==0) $orderlinks='<span style="float:left"><a href="./?f=stylemanager&html_order='.$orderlinks_num_down.'">&#9660;</a></span>';
+		if ($i==6) $orderlinks='<span style="float:left"><a href="./?f=stylemanager&html_order='.$orderlinks_num_up.'">&#9650;</a></span>';
+		/*end ordering links*/
+		if ($tpl['html_order'][0][$i]=='0')//if (content)
+			$parts_order[$i]='
 
 <tr>
 <td align="right">&nbsp;</td>
@@ -265,10 +265,10 @@ $parts_order[$i]='
 <td align="left">'.$lang_admincp['Template content <strong>after</strong> included module'].'.</td>
 </tr>
 ';
-else //if bodies
-{
-if ($tpl['html_order'][0][$i]<=3)
-$parts_order[$i]='
+		else //if bodies
+		{
+			if ($tpl['html_order'][0][$i]<=3)
+				$parts_order[$i]='
 <tr>
 <td align="right" width="22px">&nbsp;</td>
 <td style="padding:0px; margin-top:5px"><div style="height:4px"></div>
@@ -280,8 +280,8 @@ $parts_order[$i]='
 <td style="border:solid 1px #24FF24; background:#CCFFCC;" class="templateboxes">
 <a href="./?f=stylemanager&template=body'.$tpl['html_order'][0][$i].'"><strong>'.$lang_admincp['Body'].' '. $tpl['html_order'][0][$i] .'</strong></a></td>
 <td align="left">';
-else
-$parts_order[$i]='<tr><td height="4px"></td></tr>
+			else
+				$parts_order[$i]='<tr><td height="4px"></td></tr>
 <td align="right" class="templateboxes">'.$orderlinks.'</td>
 <td style="border:solid 1px #BBDDFF; background:#F0F8FF;" class="templateboxes">
 <a href="./?f=stylemanager&template=body'.$tpl['html_order'][0][$i].'"><strong>'.$lang_admincp['Body'].' '. $tpl['html_order'][0][$i] .'</strong></a></td>
@@ -289,18 +289,18 @@ $parts_order[$i]='<tr><td height="4px"></td></tr>
 
 
 
-if ($tpl['html_order'][0][$i]<=3)
-$parts_order[$i].=$lang_admincp['Suggested for table independent content'].'.';
-else
-$parts_order[$i].=$lang_admincp['Suggested for table elements'].'.';
+			if ($tpl['html_order'][0][$i]<=3)
+				$parts_order[$i].=$lang_admincp['Suggested for table independent content'].'.';
+			else
+				$parts_order[$i].=$lang_admincp['Suggested for table elements'].'.';
 
 
 
 
-$parts_order[$i].='</td>
+			$parts_order[$i].='</td>
 </tr>';
-if ($tpl['html_order'][0][$i]<=3)
-$parts_order[$i].='<tr>
+			if ($tpl['html_order'][0][$i]<=3)
+				$parts_order[$i].='<tr>
 <td align="right" width="22px">&nbsp;</td>
 <td width="300px" style="padding:0px">
 <div class="pluginbox" style="border-top:none"><a href="./?f=stylemanager&template=box_start'.$tpl['html_order'][0][$i].'">'.$lang_admincp['Template Wrapper top'].'</a><br><a href="./?f=plugins&x=body'. $tpl['html_order'][0][$i] .'&z=1&boxed=1">Plugin here</a><br><a href="./?f=stylemanager&template=box_end'.$tpl['html_order'][0][$i].'">Template Wrapper bottom</a></div><div style="height:4px"></div>
@@ -308,10 +308,10 @@ $parts_order[$i].='<tr>
 <td align="left"></td>
 </tr>
 ';
-else $parts_order[$i].='<tr><td height="4px"></td></tr>';
-}
-$i++;
-}
+			else $parts_order[$i].='<tr><td height="4px"></td></tr>';
+		}
+		$i++;
+	}
 ?>
 <table width="100%" border="0" cellspacing="0" style="text-align:center">
 <tr>
@@ -410,13 +410,13 @@ $i++;
 <?php
 $stylelist=$sql1 = $db->query("SELECT styleid FROM ".TBL_TEMPLATE." GROUP BY styleid")or die($db->error('error_msg'));
 echo "<blockquote>";
-while ($stylelist2=$db->fetch_array($stylelist))
+while ($stylelist2=$db->getRow($stylelist))
 {
-if ($stylelist2[0]==$config['engine_styleid'])
-echo '<b>'.$lang['Style'].' '.$stylelist2[0].' (<a href="./?f=stylemanager&delete='.$stylelist2[0].'">'. $lang_admincp['Delete'].'</a>)</b>';
-else
-echo $lang['Style'].' '.$stylelist2[0].' (<a href="./?f=stylemanager&delete='.$stylelist2[0].'">'. $lang_admincp['Delete'].'</a>)';
-echo '<br>';
+	if ($stylelist2[0]==$config['engine_styleid'])
+		echo '<b>'.$lang['Style'].' '.$stylelist2[0].' (<a href="./?f=stylemanager&delete='.$stylelist2[0].'">'. $lang_admincp['Delete'].'</a>)</b>';
+	else
+		echo $lang['Style'].' '.$stylelist2[0].' (<a href="./?f=stylemanager&delete='.$stylelist2[0].'">'. $lang_admincp['Delete'].'</a>)';
+	echo '<br>';
 }
 echo "</blockquote>";
 }
