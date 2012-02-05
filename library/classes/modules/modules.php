@@ -13,6 +13,7 @@ class module_base  {
 	var $configFields = array();
 	var $sqlQueries = array();
 	var $proccess = false;
+	var $showInUserpanel = true;
 
 	function process() {
 		/* Reinitilaze 'form' proccess with latest session data */
@@ -51,13 +52,20 @@ class module_base  {
 		}
 
 		if (!isset($config['installed_modules']))
-		{
 			$config['installed_modules'] = $this->uniqueid."|";
-			array_push($this->sqlQueries, 'INSERT INTO '.$config['engine_web_db'].'.wwc2_config(conf_name,conf_value,conf_descr) VALUES ("installed_modules", "'.$config['installed_modules'].'", "Names of installed modules, seperated by |");');
-		}
 		else
-		{
 			$config['installed_modules'] .= $this->uniqueid."|";
+		array_push($this->sqlQueries, 'REPLACE INTO '.$config['engine_web_db'].'.wwc2_config(conf_name,conf_value,conf_descr) VALUES ("installed_modules", "'.$config['installed_modules'].'", "Names of installed modules, seperated by |");');
+
+		if ($this->showInUserpanel == false)
+		{
+			$exclude_modulenames = explode('|',$config['module_userpanel']);
+			if (array_search($this->uniqueid.".php", $exclude_modulenames) === false)
+			{
+				array_push($exclude_modulenames, 'shoutbox.php');
+				$config['module_userpanel'] .= "|".$this->uniqueid.".php";
+				array_push($this->sqlQueries, 'UPDATE '.$config['engine_web_db'].'.wwc2_config SET conf_value="'.$config['module_userpanel'].'" WHERE conf_name="module_userpanel"');
+			}
 		}
 
 		$db->select_db($config['engine_web_db']);
@@ -71,7 +79,8 @@ class module_base  {
 
 		echo '<div style="padding:4px;  background:white;color:black;text-align:center; border:solid 1px black">';
 		echo 'This module is now installed, please go to:<br>Administration Panel &gt; Configuration Variables<br />';
-		echo 'and setup variables for this module.<br />After you recache page this message will go away.</div>';
+		echo 'and setup variables for this module.</div>';
+		Html::recache_cachefile();
 	}
 }
 

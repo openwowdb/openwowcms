@@ -291,6 +291,21 @@ class Html {
 		return '<select id="lang" name="lang">'.$out.'</select>';
 	}
 
+	static function recache_cachefile() {
+		global $db, $config;
+		// cache: config.php
+		$string = "<?php" .Html::ln(). '$config=array(' . Html::ln();
+
+		$sql1 = $db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_config");
+		while ($sql2 = $db->getRow())
+		{
+			$string .= "'".$sql2['conf_name']."' => '".$sql2['conf_value']."'," . Html::ln();
+		}
+		$string .= ");" .  Html::ln() .  Html::ln() . "define('AXE',1);" . Html::ln() . Html::ln();
+		// Recache config
+		Html::cache($string, PATHROOT.'config/config.php');
+	}
+
 	static function cache($string, $file) {
 		$error=false;
 		/* attempt to create file */

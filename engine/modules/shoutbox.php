@@ -21,13 +21,7 @@ if (!class_exists("shoutbox"))
 				'DROP TABLE '.$config['engine_web_db'].'.mod_shoutbox;',
 				'CREATE TABLE '.$config['engine_web_db'].'.mod_shoutbox (`id` bigint(20) NOT NULL AUTO_INCREMENT, `poster` varchar(255) COLLATE latin1_general_ci NOT NULL, `message` text COLLATE latin1_general_ci NOT NULL,`timepost` varchar(100) COLLATE latin1_general_ci NOT NULL,PRIMARY KEY (`id`)) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;',
 				);
-			$exclude_modulenames=explode('|',$config['module_userpanel']);
-				if (array_search("shoutbox.php", $exclude_modulenames) !== false)
-			{
-				array_push($exclude_modulenames, 'shoutbox.php');
-				$config['module_userpanel'] = implode('|', $exclude_modulenames);
-				array_push($this->sqlQueries, 'UPDATE '.$config['engine_web_db'].'.wwc2_config SET conf_value="'.$config['module_userpanel'].'" WHERE conf_name="module_userpanel")');
-			}
+			$this->showInUserpanel = false;
 		}
 
 		function process() {
