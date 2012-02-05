@@ -40,7 +40,7 @@ class Html {
 
 				if ($template_boxes['title'] == 'html_order')
 				{
-					$page_output_html_order = $template_boxes['template'];	
+					$page_output_html_order = $template_boxes['template'];
 				}
 			}
 
@@ -60,11 +60,11 @@ class Html {
 				*/
 				$page_output[$template['title']] = $template['template'];
 
-				if ($plugins_inc[$template['title']][0] != false) // yes plugin
+				if (isset($plugins_inc[$template['title']][0]) && $plugins_inc[$template['title']][0] != false) // yes plugin
 				{
 					$i=0;
 
-					while ($plugins_inc[$template['title']][$i] != false)// make loop trough plugins in same block
+					while (isset($plugins_inc[$template['title']][$i]) && $plugins_inc[$template['title']][$i] != false)// make loop trough plugins in same block
 					{
 						$plugins_inc[$template['title']][$i] = explode('-',$plugins_inc[$template['title']][$i]); //make array from order-updown
 
@@ -126,7 +126,7 @@ class Html {
 								$template['title'].
 								'-'.$plugins_inc[$template['title']][$i][0].
 								'-'.$plugins_inc[$template['title']][$i][1].
-								'-'.$plugins_inc[$template['title']][$i][2].'.php"); ?>'.Html::ln();								
+								'-'.$plugins_inc[$template['title']][$i][2].'.php"); ?>'.Html::ln();
 							}
 						}
 
@@ -252,7 +252,7 @@ class Html {
 			echo $lang['Caching done in']." ".round((microtime()-TIMESTART),3)."s!</small></font><br>";
 
 			if (!isset($_GET['noreload']))
-				echo '<meta http-equiv="refresh" content="0;url=./?cache=true&noreload=1" />';
+				echo '<meta http-equiv="refresh" content="0;url=index.php/?cache=true&noreload=1" />';
 
 			return;
 		}
@@ -376,6 +376,11 @@ class Html {
 				$stringstart=' if(strtolower($user->userlevel)==strtolower($config[\'premission_admin\']) or strtolower($user->userlevel)==strtolower($config[\'premission_gm\'])){'.Html::ln();
 				$stringend=' } ';
 			}
+			else
+			{
+				$stringstart = '';
+				$stringend = '';
+			}
 
 			$out.=$stringstart.Html::ln().' if ($i==1) $out.= $sep;$i=1; '.Html::ln().'$out.= \'<span class="menulink'.$sql2['linkgrup'].'">'.Html::ln().'	<a href="'.$sql2['linkurl'].'"';
 			if ($sql2['linkdescr']<>'')
@@ -454,11 +459,10 @@ class Html {
 				if (substr($file,-4,4)=='.php')
 				{
 					$file = preg_replace( "/.php/", "", $file );
-					$file= explode("-",$file); #we have array now
-					if ($out[$file[0]][0] == false)
-						$out[$file[0]][0] = $file[1].'-'.$file[2].'-'.$file[3];
-					else
-						$out[$file[0]][count($out[$file[0]])]=$file[1].'-'.$file[2].'-'.$file[3];
+					$file = explode("-",$file); #we have array now
+					if (!isset($out[$file[0]])) $out[$file[0]] = array();
+					array_push($out[$file[0]], $file[1].'-'.$file[2].'-'.$file[3]);
+						//$out[$file[0]][count($out[$file[0]])] = $file[1].'-'.$file[2].'-'.$file[3];
 				}
 			}
 			closedir($handle);
@@ -511,11 +515,11 @@ class Html {
 
 		if ($config['footer_detail'] == '1' or ($config['footer_detail'] == '2' && $user->userlevel == $config['premission_admin']))
 		{
-			return $lang['Page generated'].': '.round((microtime()-TIMESTART),2).' | '.$lang['Queries executed'].': '.$db->num_queries.' | '.$lang['Copyright'].' &copy; 2010-2011 | '.$style.$lang['Powered by'].': <a href="./?page=credits" title="">WWCv2</a>  | <a href="tos.php">'.$lang['Terms of Use'].'</a>';
+			return $lang['Page generated'].': '.round((microtime()-TIMESTART),2).' | '.$lang['Queries executed'].': '.$db->num_queries.' | '.$lang['Copyright'].' &copy; 2010-2011 | '.$style.$lang['Powered by'].': <a href="index.php?page=credits" title="">WWCv2</a>  | <a href="tos.php">'.$lang['Terms of Use'].'</a>';
 		}
 		else
 		{
-			return $lang['Copyright'].' &copy; 2010-2011 | '.$style.$lang['Powered by'].': <a target="_blank" href="http://www.web-wow.net/" title="">WWCv2</a>  | <a href="tos.php">'.$lang['Terms of Use'].'</a>';	
+			return $lang['Copyright'].' &copy; 2010-2011 | '.$style.$lang['Powered by'].': <a target="_blank" href="http://www.web-wow.net/" title="">WWCv2</a>  | <a href="tos.php">'.$lang['Terms of Use'].'</a>';
 		}
 	}
 
@@ -581,7 +585,7 @@ class Html {
 
 					if ($db->numRows()=='0')
 					{
-						$db->query("INSERT INTO ".TBL_CONFIG." (conf_name,conf_value,conf_descr) VALUES ('".$variables_array2."','".$values_array[$i]."','".$descriptions_array[$i]."')")or die($db->error('error_msg'));	
+						$db->query("INSERT INTO ".TBL_CONFIG." (conf_name,conf_value,conf_descr) VALUES ('".$variables_array2."','".$values_array[$i]."','".$descriptions_array[$i]."')")or die($db->error('error_msg'));
 					}
 
 					$i++;
@@ -593,7 +597,7 @@ class Html {
 				{
 					if ($sql_execute2!='')
 					{
-						$db->query($sql_execute2)or print("SQL REPORT: ".$db->error('error_msg')."<br>");	
+						$db->query($sql_execute2)or print("SQL REPORT: ".$db->error('error_msg')."<br>");
 					}
 				}
 
@@ -661,7 +665,7 @@ function error($message, $file, $line, $db_error = false)
 	// "Restart" output buffering if we are using ob_gzhandler (since the gzip header is already sent)
 	if (!empty($pun_config['o_gzip']) && extension_loaded('zlib') && (strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') !== false || strpos($_SERVER['HTTP_ACCEPT_ENCODING'], 'deflate') !== false))
 	{
-		ob_start('ob_gzhandler');	
+		ob_start('ob_gzhandler');
 	}
 
 ?>
@@ -687,7 +691,7 @@ if (defined('PUN_DEBUG'))
 
 		if ($db_error['error_sql'] != '')
 		{
-			echo "\t\t".'<br /><br /><strong>Failed query:</strong> '.pun_htmlspecialchars($db_error['error_sql'])."\n";	
+			echo "\t\t".'<br /><br /><strong>Failed query:</strong> '.pun_htmlspecialchars($db_error['error_sql'])."\n";
 		}
 	}
 }

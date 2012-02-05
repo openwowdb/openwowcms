@@ -206,6 +206,7 @@ class User extends SessionUser
 		if(!get_magic_quotes_gpc()) {
 			$username = addslashes($username);
 		}
+		error_reporting(-1);
 
 		/* Verify that user is in database */
 		$q = "SELECT sha_pass_hash FROM ".TBL_ACCOUNT." WHERE username = '$username'";
@@ -217,7 +218,7 @@ class User extends SessionUser
 		/* Retrieve password from result, strip slashes */
 		$dbarray = $db->getRow($result);
 		$dbarray[0] = stripslashes($dbarray[0]);
-		$password = $this->convertPass($username,$password);
+		$password = strtoupper($this->convertPass($username,$password));
 
 		/* Validate that password is correct */
 		if($password == $dbarray[0]){
@@ -346,7 +347,7 @@ class User extends SessionUser
 	function sendmail($playername, $playerguid, $subject, $item, $realmid=0, $stack=1, $money=0, $externaltext=false)
 	{
 		global $config,$db_host,$db;
-		set_time_limit(60);
+		@set_time_limit(60);
 
 		/**
 		* VARIABLE FILTERING:

@@ -732,7 +732,7 @@ return;
 }
 if (isset($_POST['submit']))
 {
-$db->query("INSERT INTO ".$config['engine_web_db'].".wwc2_news (title,content,stickied,timepost,hidden,author) VALUES ('".$db->escape(htmlspecialchars($_POST['title']))."','".$db->escape($_POST['content'])."','".$db->escape($_POST['stickied'])."','".date("U")."','".$db->escape($_POST['hidden'])."','".$user->username."')")or die($db->error('error_msg'));
+$db->query("INSERT INTO ".$config['engine_web_db'].".wwc2_news (title,content,stickied,timepost,hidden,author) VALUES ('".$db->escape(htmlspecialchars($_POST['title']))."','".$db->escape($_POST['content'])."','".$db->escape($_POST['stickied'])."','".@date("U")."','".$db->escape($_POST['hidden'])."','".$user->username."')")or die($db->error('error_msg'));
 echo ucwords($lang_admincp['is saved']).'.';
 return;
 }

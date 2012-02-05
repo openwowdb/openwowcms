@@ -2,7 +2,7 @@
 // Prevent duplicate loading
 if (class_exists("database_mysql")) return;
 // Include required class database
-if (!class_exists("database")) include __DIR__. "/database.php";
+if (!class_exists("database")) include "database.php";
 
 /**
 * class database_mysql
@@ -52,6 +52,7 @@ class database_mysql extends database {
 
 	function getArray() {
 		$array = array();
+		if (!$this->query_result) return $array;
 		while ($row = mysql_fetch_assoc($this->query_result))
 		{
 			array_push($array, $row);

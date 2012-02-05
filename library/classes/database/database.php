@@ -287,7 +287,7 @@ abstract class database  {
 
 	static function addBan($username){
 		global $db;
-		$q = "INSERT INTO ".TBL_BANNED_USERS." (username,timestamp) VALUES ('".$username."','".date("U")."')";
+		$q = "INSERT INTO ".TBL_BANNED_USERS." (username,timestamp) VALUES ('".$username."','".@date("U")."')";
 		$result = $db->query($q) or die($db->getLastError());
 		return $result;
 	}

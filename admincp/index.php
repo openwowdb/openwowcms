@@ -22,7 +22,7 @@ else
 define('LICENSE',$config['license']);
 
 /* for large scripts */
-set_time_limit(0);
+@set_time_limit(0);
 
 /* If no premission redirect to main page */
 if(!$user->logged_in){
@@ -142,7 +142,7 @@ document.getElementById('addmorelink'+id).innerHTML='<div style="background-colo
 <b class="menu_round">
 <b class="menu_round_l3"></b><b class="menu_round_l2"></b><b class="menu_round_l1"></b>
 </b>
-<div id="menu_content"><div style="height:5px"></div><center><a href="<?php echo PATHROOT; ?>?cache=true" target="recache">[<?php echo $lang_admincp['Recache Website']; ?>]</a></center><br /><iframe frameborder="0" name="recache" height="170px" width="100%"><?php echo $lang_admincp['Your browser does not support iframes.']; ?></iframe></div>
+<div id="menu_content"><div style="height:5px"></div><center><a href="<?php echo PATHROOT; ?>index.php?cache=true" target="recache">[<?php echo $lang_admincp['Recache Website']; ?>]</a></center><br /><iframe frameborder="0" name="recache" height="170px" width="100%"><?php echo $lang_admincp['Your browser does not support iframes.']; ?></iframe></div>
 <b class="menu_round">
 <b class="menu_round_l1"></b><b class="menu_round_l2"></b><b class="menu_round_l3"></b>
 </b>

@@ -10,7 +10,7 @@
 
 session_start();
 error_reporting(~E_NOTICE);
-if (!isset($_SESSION['wwcmsv2install'])) 
+if (!isset($_SESSION['wwcmsv2install']))
 {
 	echo 'No access.';
 	session_destroy();
@@ -18,7 +18,7 @@ if (!isset($_SESSION['wwcmsv2install']))
 }
 
 if (!class_exists("library"))
-	include $_SERVER["DOCUMENT_ROOT"]. "/library/library.php";
+	include "../../../library/library.php";
 
 if (library::supported_databases($_POST['dbtype']))
 {

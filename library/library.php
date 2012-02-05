@@ -49,7 +49,7 @@ class library  {
 		$className = "database_$type";
 		if (!class_exists($className))
 		{
-			include __DIR__ . "/classes/database/$className.php";
+			include "classes/database/$className.php";
 		}
 		$dblink = new $className;
 	}

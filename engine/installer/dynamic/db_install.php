@@ -49,10 +49,9 @@ function is_valid_lang($language = '')
 	return FALSE;
 }
 
-if (!class_exists("library"))
-	include $_SERVER["DOCUMENT_ROOT"]. "/library/library.php";
-
 define('PATHROOT', '../../../');
+if (!class_exists("library"))
+	include PATHROOT. "library/library.php";
 
 // By default, Web-WoW will run using English
 $lang = 'English';

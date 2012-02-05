@@ -37,7 +37,7 @@ if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())
 	$_POST    = array_map('stripslashes_deep', $_POST);
 	$_GET     = array_map('stripslashes_deep', $_GET);
 	$_COOKIE  = array_map('stripslashes_deep', $_COOKIE);
-	$_REQUEST = array_map('stripslashes_deep', $_REQUEST); 
+	$_REQUEST = array_map('stripslashes_deep', $_REQUEST);
 }
 
 if (file_exists(PATHROOT . 'config/config.php') && file_exists(PATHROOT . 'config/config_db.php'))
@@ -50,7 +50,7 @@ if (file_exists(PATHROOT . 'config/config.php') && file_exists(PATHROOT . 'confi
 	{
 		//require_once (PATHROOT . 'engine/db/mysql.php');
 		if (!class_exists("library"))
-			include $_SERVER["DOCUMENT_ROOT"]. "/library/library.php";
+			include PATHROOT."library/library.php";
 
 		library::create_dblink($db, "mysql");
 		$db->init($db_host, $db_user, $db_pass) or die('Unable to connect to MySQL server.<br>' . $db->getLastError());
@@ -71,7 +71,7 @@ if (version_compare(PHP_VERSION, '5.3.0') >= 0)
 {
 	if(function_exists("date_default_timezone_set") and function_exists("date_default_timezone_get"))
 	{
-		@date_default_timezone_set(@date_default_timezone_get()); 
+		@date_default_timezone_set(@date_default_timezone_get());
 	}
 }
 

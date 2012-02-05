@@ -1,6 +1,11 @@
 <?php
+if (!defined('PATHROOT'))
+{
+	define('PATHROOT', '../../');
+}
+
 if (!class_exists("module_base"))
-	include $_SERVER["DOCUMENT_ROOT"]. "/library/classes/modules/modules.php";
+	include PATHROOT."library/classes/modules/modules.php";
 
 if (!class_exists("profile"))
 {
@@ -14,7 +19,7 @@ if (!class_exists("profile"))
 			if ($user->userinfo['guid'] != $userid && strtolower($user->userinfo['gmlevel']) != strtolower($config['premission_admin']))
 				return;
 			?>
-			<form action="./?page=profile&id=<?php echo $userid; ?>" method="post">
+			<form action="index.php?page=profile&id=<?php echo $userid; ?>" method="post">
 				<table width="100%" border="0" class="profile_advenced">
 					<tr><td><?php echo $lang['Avatar']; ?>:</td><td width="70%">
 					<select name="avatar" id="avatar" onchange="preview();">
@@ -23,9 +28,10 @@ if (!class_exists("profile"))
 						$folder = "engine/res/avatars";
 						$handle = @opendir($folder);
 						# Making an array containing the files in the current directory:
+						$files = array();
 						while ($file = @readdir($handle)) $files[] = $file;
 						@closedir($handle);
-
+						sort($files);
 						#echo the files
 						foreach ($files as $file)
 						{
@@ -106,7 +112,7 @@ if (!class_exists("profile"))
 			if ($userid == '') $userid = $user->userinfo['guid'];
 			$userinfo = $user->getUserInfo($userid, true);
 			//end info
-			
+
 			if ($user->userinfo['guid'] == $userid or strtolower($user->userinfo['gmlevel']) == strtolower($config['premission_admin']))
 			{
 				$avatar = preg_replace( "/[^A-Za-z0-9-() ]/", "", $_POST['avatar']);
@@ -165,7 +171,7 @@ if (!class_exists("profile"))
 
 		function process() {
 			global $user, $lang, $config, $db;
-			if(!isset($user) || !$user->logged_in) { if (!$this->proccess) echo "<a href='./?page=loginout'>".$lang['Login']."</a>"; return; }
+			if(!isset($user) || !$user->logged_in) { if (!$this->proccess) echo "<a href='index.php?page=loginout'>".$lang['Login']."</a>"; return; }
 			$config['title'] = $lang['Profile']. ' - ' .$config['title'];
 			if ($this->proccess == true) {
 				global $user, $db, $config;

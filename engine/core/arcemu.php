@@ -205,6 +205,7 @@ class User extends SessionUser
 	function confirmUserPass($username, $password){//TODO
 		global $db;
 		/* Add slashes if necessary (for query) */
+		error_reporting(-1);
 		if(!get_magic_quotes_gpc()) {
 			$username = addslashes($username);
 		}
@@ -337,7 +338,7 @@ class User extends SessionUser
 	function sendmail($playername, $playerguid, $subject, $item, $realmid=0, $stack=1, $money=0, $externaltext=false)
 	{
 		global $config,$db_host,$db;
-		set_time_limit(20);
+		@set_time_limit(20);
 
 		/**
 		* VARIABLE FILTERING:

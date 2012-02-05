@@ -90,7 +90,7 @@ if (Form::$num_errors > 0) {
 	echo "<font color=\"#ff0000\">".Form::$num_errors." ".$lang['error(s) found']."</font>";
 }
 ?>
-<form action="./?page=register" method="POST">
+<form action="index.php?page=register" method="POST">
 	<table  border="0" cellspacing="0" cellpadding="3">
 		<tr>
 			<td><?php echo $lang['Username']; ?>:</td><td><input type="text" name="user_name" maxlength="30" value="<?php echo Form::value("user_name"); ?>"></td>

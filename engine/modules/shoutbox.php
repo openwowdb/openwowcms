@@ -4,8 +4,14 @@
 * so every post data is processed here then using Header(Location:)
 * we simply call normal site and display errors
 **/
+error_reporting(-1);
+if (!defined('PATHROOT'))
+{
+	define('PATHROOT', '../../');
+}
+
 if (!class_exists("module_base"))
-	include $_SERVER["DOCUMENT_ROOT"]. "/library/classes/modules/modules.php";
+	include PATHROOT."library/classes/modules/modules.php";
 
 if (!class_exists("shoutbox"))
 {
@@ -26,7 +32,7 @@ if (!class_exists("shoutbox"))
 
 		function process() {
 			global $user, $lang;
-			if(!isset($user) || !$user->logged_in) { if (!$this->proccess) echo "<a href='./?page=loginout'>".$lang['Login']."</a>"; return; }
+			if(!isset($user) || !$user->logged_in) { if (!$this->proccess) echo "<a href='index.php?page=loginout'>".$lang['Login']."</a>"; return; }
 			if ($this->DoInstall()) return;
 			if ($this->proccess == true) {
 				if (isset($_POST['module'])){
@@ -44,7 +50,7 @@ if (!class_exists("shoutbox"))
 				{
 					$username = $db->escape($user->username);
 					$message = $db->escape($_POST['message']);
-					$date = date("U");
+					$date = @date("U");
 					$db->query("INSERT INTO ".$config['engine_web_db'].".mod_shoutbox (poster,message,timepost) VALUES ('".$username."','".$message."','".$date."')") or die($db->getLastError());
 					$id = $db->insertId();
 					$this->echo_shout(array('id'=>$id, 'poster'=>$username, 'message'=>$message, 'timepost'=>$date));
@@ -112,7 +118,6 @@ if (isset($isplugin))
 // Accessed via Ajax.post/.get
 if ($shoutbox->isAjaxRequest())
 {
-	define('PATHROOT', "../../");
 	include(PATHROOT . "engine/init.php");
 	include(PATHROOT . "engine/func/nicetime.php");
 	return $shoutbox->processAjaxRequest();

@@ -22,7 +22,7 @@ error_reporting(0);
 require_once ("./engine/func/required.php");
 
 if (!class_exists("library"))
-	include $_SERVER["DOCUMENT_ROOT"]. "/library/library.php";
+	include PATHROOT."library/library.php";
 
 /**
 * Removes all characters that are not alphabetical nor numerical
@@ -49,7 +49,7 @@ function is_valid_lang($language = '')
 {
 	if(!empty($language))
 	{
-		if(file_exists('./engine/lang/' . $language . '/installer.php'))
+		if(file_exists(PATHROOT.'engine/lang/' . $language . '/installer.php'))
 		{
 			return TRUE;
 		}
@@ -73,7 +73,7 @@ if (is_valid_lang($requested_lang))
 }
 
 // Load the language file
-require ('./engine/lang/' . strtolower($lang) . '/installer.php');
+require (PATHROOT.'engine/lang/' . strtolower($lang) . '/installer.php');
 
 /*******************************************************************************
 *				INSTALLER
@@ -154,7 +154,7 @@ class Install {
 		}
 
 
-		echo '<form action="./?step='.($step+1).'&lang='.$lang.'" method="post">';
+		echo '<form action="index.php?step='.($step+1).'&lang='.$lang.'" method="post">';
 		if ($step == '1')
 		{
 			//
@@ -246,7 +246,7 @@ class Install {
 			foreach ($cores as $core)
 			{
 				echo "<option value='" . $core . "' ";
-				if ($_SESSION['wwcmsv2install']['core'] == $core) echo "selected = 'selected'";
+				if (isset($_SESSION['wwcmsv2install']['core']) && $_SESSION['wwcmsv2install']['core'] == $core) echo "selected = 'selected'";
 				echo ">" . $core . "</option>";
 			}
 			echo "</select>";
@@ -260,7 +260,7 @@ class Install {
 			foreach ($dbtypes as $dbtype)
 			{
 				echo "<option value='" . $dbtype . "' ";
-				if ($_SESSION['wwcmsv2install']['db_type'] == $dbtype) echo "selected = 'selected'";
+				if (isset($_SESSION['wwcmsv2install']['db_type']) && $_SESSION['wwcmsv2install']['db_type'] == $dbtype) echo "selected = 'selected'";
 				echo ">" . $dbtype . "</option>";
 			}
 			echo "</select><br><br>";
@@ -420,7 +420,7 @@ class Install {
 					<script type="text/javascript">
 					lang = {$jsonLang};
 					</script>
-					
+
 					<input name="host" id="host" type="hidden" value="{$db_host}">
 					<input name="user" id="user" type="hidden" value="{$db_user}">
 					<input name="pass" id="pass" type="hidden" value="{$db_pass}">

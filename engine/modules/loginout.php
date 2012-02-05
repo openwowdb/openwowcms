@@ -1,4 +1,4 @@
-<?php 
+<?php
 global $user, $db, $lang;
 /**
 * This part of website is executed before any output is given
@@ -10,7 +10,7 @@ if (isset($proccess) && $proccess == TRUE) {
 	* Processes the user submitted login form, if errors
 	* are found, the user is redirected to correct the information,
 	* if not, the user is effectively logged in to the system.
-	* If user is logged in, he will be logged out and redirected to 
+	* If user is logged in, he will be logged out and redirected to
 	* index.php page.
 	*/
 	global $config;
@@ -57,7 +57,7 @@ if(Form::$num_errors > 0){
 	echo "<font class='colorbad'>".Form::$num_errors." ".$lang['error(s) found']."</font>";
 }
 ?>
-<form action="./?page=loginout" method="POST">
+<form action="index.php?page=loginout" method="POST">
 <table border="0" cellspacing="0" cellpadding="3" class="module_box" width="100%">
 	<tr>
 		<td><?php echo $lang['Username']; ?>:</td>

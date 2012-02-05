@@ -24,8 +24,9 @@ if ($_POST['admin_username'] == '' or $_POST['admin_password'] == '')
 	exit;
 }
 
+define('PATHROOT', '../../../');
 if (!class_exists("library"))
-	include $_SERVER["DOCUMENT_ROOT"]. "/library/library.php";
+	include PATHROOT . "library/library.php";
 
 if (!library::supported_databases($_POST['dbtype'])) die('Unknown database type');
 
@@ -57,18 +58,18 @@ if ($core == 'arcemu')
 		$con->query("SELECT * FROM ". $_SESSION['wwcmsv2install']['logon_db'] .".accounts WHERE login='".$_POST['admin_username']."' LIMIT 1") or die($con->getLastError());
 		$row = $con->getRow();
 		$con->query("INSERT INTO ". $_SESSION['wwcmsv2install']['web_db'] .".wwc2_users_more (acc_login,vp,userid,dp,gmlevel) VALUES ('".$row['login']."','0','".$row['acct']."','0','az')") or die($con->getLastError());
-			
+
 	}
 }
 elseif($core == 'trinity' or $core == 'mangos')
 {
 	$enc_pass = strtoupper(sha1(strtoupper($_POST['admin_username'].':'.$_POST['admin_password'])));
-	$con->query("SELECT * FROM ". $_SESSION['wwcmsv2install']['logon_db'] .".account WHERE username='".$_POST['admin_username']."' LIMIT 1") or die($db->getLastError());
+	$con->query("SELECT * FROM ". $_SESSION['wwcmsv2install']['logon_db'] .".account WHERE username='".$_POST['admin_username']."' LIMIT 1") or die($con->getLastError());
 	if ($con->numRows() == '1')//account is found
 	{
 		//check password
 		$row = $con->getRow();
-			
+
 		if (strtoupper($row['sha_pass_hash']) == $enc_pass)
 		{
 			//user if confirmed, add him to website db with admin privilages
@@ -86,7 +87,7 @@ elseif($core == 'trinity' or $core == 'mangos')
 		$con->query("SELECT * FROM ". $_SESSION['wwcmsv2install']['logon_db'] .".account WHERE username='".$_POST['admin_username']."' LIMIT 1") or die($con->getLastError());
 		$row = $con->getRow();
 		$con->query("INSERT INTO ". $_SESSION['wwcmsv2install']['web_db'] .".wwc2_users_more (acc_login,vp,userid,dp,gmlevel) VALUES ('".$row['username']."','0','".$row['id']."','0','4')") or die($con->getLastError());
-			
+
 	}
 }
 else

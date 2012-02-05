@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 #
 #END SETUP
@@ -7,7 +7,7 @@ global $user,$db,$lang,$config;
 /**
 * Access premission:
 **/
-if(!$user->logged_in){ if (!isset($proccess)) echo "<a href='./?page=loginout'>".$lang['Login']."</a>"; return; }
+if(!$user->logged_in){ if (!isset($proccess)) echo "<a href='index.php?page=loginout'>".$lang['Login']."</a>"; return; }
 /**
 * This part of website is executed before any output is given
 * so every post data is processed here then using Header(Location:)
@@ -15,19 +15,19 @@ if(!$user->logged_in){ if (!isset($proccess)) echo "<a href='./?page=loginout'>"
 **/
 if(isset($proccess) && $proccess == TRUE){
 	/**
-    * Processes the user submitted login form, if errors
-    * are found, the user is redirected to correct the information,
-    * if not, the user is effectively logged in to the system.
-	* If user is logged in, he will be logged out and redirected to 
+		* Processes the user submitted login form, if errors
+		* are found, the user is redirected to correct the information,
+		* if not, the user is effectively logged in to the system.
+	* If user is logged in, he will be logged out and redirected to
 	* index.php page.
-    */
+		*/
 	function Process(){
-	   global $user;
-	 
-	 
-	 
+		 global $user;
+
+
+
 	}
-	
+
 	if (isset($_POST['submit'])){
 		/* Initialize process */
 		Process();
@@ -36,11 +36,11 @@ if(isset($proccess) && $proccess == TRUE){
 	{
 		//add code if any
 	}
-	
+
 	/* Reinitilaze 'form' proccess with latest session data */
 	Form::_Form();
 	return;
-	
+
 }
 
 
@@ -61,10 +61,10 @@ while ($file = readdir($handle))
 closedir($handle);
 $cont2=false;
 #echo the files
-foreach ($files as $file) 
+foreach ($files as $file)
 {
-	
-	
+
+
 	if (strstr($file, ".php"))
 	{
 		if (!in_array($file,$exclude_modulenames))
@@ -73,9 +73,9 @@ foreach ($files as $file)
 		$file3=str_replace('_',' ',$file2); //replace "_" with " "
 		$file4=explode("-",$file3);//extract its module name
 		if (!isset($file4[1])) $nameshow=$file4[0]; else $nameshow=$file4[1];
-		$cont2.= '<span class="each_modulelist"><span class="modulelist_'.$file2.'"><a style="font-size:14px" href="./?page='.$file2.'">'.ucwords($nameshow).'</a></span></span><br>';
+		$cont2.= '<span class="each_modulelist"><span class="modulelist_'.$file2.'"><a style="font-size:14px" href="index.php?page='.$file2.'">'.ucwords($nameshow).'</a></span></span><br>';
 		}
-	} 
+	}
 }
 echo $cont2;
 //********************************************

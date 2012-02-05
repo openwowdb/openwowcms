@@ -37,7 +37,7 @@ echo '<div id="comments_first'.$newsid.'_'.$start.'"></div>';
 if (isset($_POST['comment'.$newsid]))
 {
 	if($user->logged_in && trim($_POST['comment'.$newsid])<>'')
-		$db->query("INSERT INTO ".$config['engine_web_db'].".wwc2_news_c (poster,content,newsid,timepost,datepost) VALUES ('".$db->escape($user->username)."','".$db->escape($_POST['comment'.$newsid])."','".$newsid."','".date("U")."','')") or die($db->getLastError());
+		$db->query("INSERT INTO ".$config['engine_web_db'].".wwc2_news_c (poster,content,newsid,timepost,datepost) VALUES ('".$db->escape($user->username)."','".$db->escape($_POST['comment'.$newsid])."','".$newsid."','".@date("U")."','')") or die($db->getLastError());
 	exit;
 }
 if (isset($_GET['latest']))
@@ -83,7 +83,7 @@ if ($db->numRows()<>'0')
 		echo '<table width="100%" border="0" cellspacing="3px">
 <tr>
 <td width="64px"><div class="avatar"><img src="'.$avatarurl.'" /></div></td>
-<td><div class="comments_poster"><a href="./?page=profile&id='.$userinfo['guid'].'">'.$comments['poster'].'</a> ('.nicetime($comments['timepost']).')</div><div class="comments_body">'.do_bbcode($comments['content']).'</div></td>
+<td><div class="comments_poster"><a href="index.php?page=profile&id='.$userinfo['guid'].'">'.$comments['poster'].'</a> ('.nicetime($comments['timepost']).')</div><div class="comments_body">'.do_bbcode($comments['content']).'</div></td>
 </tr>
 </table></div>';
 	}
