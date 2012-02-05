@@ -30,7 +30,7 @@
     "Fail"=>"Fail",
     "Success"=>"Success",
     "Register"=>"Register",
-    "you\'ve already registered"=>"you\'ve already registered",
+    "you've already registered"=>"you've already registered",
     "your information has been added"=>"your information has been added",
     "Thank you"=>"Thank you",
     "Error has occurred and your registration for the"=>"Error has occurred and your registration for the",

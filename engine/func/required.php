@@ -18,8 +18,7 @@ class Html {
 
 	static $page_output;
 
-	static function _construct()
-	{
+	static function _construct() {
 		global $lang,$db,$config,$user,$error_reporting_cache;
 
 		// cache it to file and then just INCLUDE that file (this will allow php)
@@ -96,7 +95,7 @@ class Html {
 							if ($plugins_inc[$template['title']][$i][2] == '1')//if template boxed
 							{
 								//echo \'<span style="border:solid 1px red; width:100px; position:absolute;float:right">Edit plugin</span>\';
-								$page_output[$template['title']] = $thisbox['start'].'<?php @include("./engine/plugins/'
+								$page_output[$template['title']] = $thisbox['start'].'<?php $isplugin = true; @include("./engine/plugins/'
 								. $template['title'].'-'.$plugins_inc[$template['title']][$i][0]
 								. '-'.$plugins_inc[$template['title']][$i][1].'-'
 								. $plugins_inc[$template['title']][$i][2].'.php"); ?>'.Html::ln()
@@ -104,7 +103,7 @@ class Html {
 							}
 							else//pure plugin without template box around it
 							{
-								$page_output[$template['title']] = '<?php @include("./engine/plugins/'.$template['title']
+								$page_output[$template['title']] = '<?php $isplugin = true; @include("./engine/plugins/'.$template['title']
 								. '-'.$plugins_inc[$template['title']][$i][0]
 								. '-'.$plugins_inc[$template['title']][$i][1]
 								. '-'.$plugins_inc[$template['title']][$i][2].'.php"); ?>'
@@ -115,7 +114,7 @@ class Html {
 						{
 							if ($plugins_inc[$template['title']][$i][2]=='1')//if template boxed
 							{
-								$page_output[$template['title']]=$page_output[$template['title']].$thisbox['start'].'<?php @include("./engine/plugins/'.
+								$page_output[$template['title']]=$page_output[$template['title']].$thisbox['start'].'<?php $isplugin = true; @include("./engine/plugins/'.
 								$template['title'].
 								'-'.$plugins_inc[$template['title']][$i][0].
 								'-'.$plugins_inc[$template['title']][$i][1].
@@ -123,7 +122,7 @@ class Html {
 							}
 							else
 							{
-								$page_output[$template['title']]=$page_output[$template['title']].'<?php @include("./engine/plugins/'.
+								$page_output[$template['title']]=$page_output[$template['title']].'<?php $isplugin = true; @include("./engine/plugins/'.
 								$template['title'].
 								'-'.$plugins_inc[$template['title']][$i][0].
 								'-'.$plugins_inc[$template['title']][$i][1].
@@ -139,12 +138,6 @@ class Html {
 				#  END  CONSTRUCTING PAGE: #
 				############################
 			}
-
-			// wwcmsv2
-			if (file_exists(PATHROOT.'engine/note.php'))
-				$wwcmsv2='<?php include_once(PATHROOT.\'engine/note.php\'); ?>';
-			else
-				$wwcmsv2='';
 
 			// mainparts order
 			if ($page_output_html_order=='')
@@ -162,7 +155,7 @@ class Html {
 			// merge all
 			Html::$page_output= '<?php global $user; Html::includemodule_proccess(); ?>'.$page_output['doctype'].Html::ln().
 			$page_output['head'].Html::ln().$stylesheet.Html::ln().
-			$page_output['bodytag'].Html::ln().$wwcmsv2.
+			$page_output['bodytag'].Html::ln().
 			$page_output['header'].Html::ln().
 			$page_output['body'.$page_output_html_order[0]].Html::ln(). //here belongs right left menus, boxes, etc
 			$page_output['body'.$page_output_html_order[1]].Html::ln(). //here belongs right left menus, boxes, etc
@@ -275,8 +268,7 @@ class Html {
 		}
 	}
 
-	static function lang_selection($selected) #returns
-	{
+	static function lang_selection($selected) {
 		$out = '';
 		$dir=PATHROOT.'engine/lang/';
 		if (is_dir($dir)) {
@@ -299,8 +291,7 @@ class Html {
 		return '<select id="lang" name="lang">'.$out.'</select>';
 	}
 
-	static function cache($string,$file)
-	{
+	static function cache($string, $file) {
 		$error=false;
 		/* attempt to create file */
 		$fh = @fopen( $file, "w" ) or $error=true;
@@ -423,8 +414,7 @@ class Html {
 	* @return string Line Ending Characters
 	*
 	*/
-	static function ln()
-	{
+	static function ln() {
 		$server = strtolower(
 			function_exists("php_uname") ? php_uname("s") :
 			(isset($_SERVER['OS']) ? $_SERVER['OS'] : "")
@@ -439,8 +429,7 @@ class Html {
 		return "\n";
 	}
 
-	static function includeplugins() #returns array
-	{
+	static function includeplugins() {
 		$out=array();
 		if ($handle = opendir(PATHROOT.'engine/plugins/'))
 		{
@@ -462,8 +451,7 @@ class Html {
 		return $out;
 	}
 
-	static function includemodule() //finish this
-	{
+	static function includemodule() {
 		global $user;
 		$module = '';
 
@@ -486,8 +474,7 @@ class Html {
 		}
 	}
 
-	static function includemodule_proccess()
-	{
+	static function includemodule_proccess() {
 		$module = '';$proccess = false;
 		if(isset($_GET['page']) && !empty($_GET['page']))
 		{
@@ -500,8 +487,7 @@ class Html {
 		}
 	}
 
-	static function credits($style=false) #returns
-	{
+	static function credits($style=false) {
 		global $db,$lang,$config,$user;
 		if ($style)
 		{
@@ -518,8 +504,7 @@ class Html {
 		}
 	}
 
-	static function portcheck($sep,$port=false,$server=false) #returns text or returns '' if fockopen doesn't exists
-	{
+	static function portcheck($sep,$port=false,$server=false) {
 		global $config;
 		$out = '';
 
@@ -566,8 +551,7 @@ class Html {
 	* Selfinstallation for modules, basically this script adds configuration variables to database, so
 	* admin can easy access to module setup.
 	**/
-	static function moduleinstall($checkkey,$variables_array,$values_array,$descriptions_array,$sql_execute)
-	{
+	static function moduleinstall($checkkey,$variables_array,$values_array,$descriptions_array,$sql_execute) {
 		global $config, $proccess, $user, $db;
 
 		if (!array_key_exists($checkkey, $config) && $checkkey != '')
@@ -613,13 +597,12 @@ class Html {
 
 		else
 		{
-			return false;	
+			return false;
 		}
 	}
 
-	static function credits_cms()
-	{
-		global $lang_admincp, $config;
+	static function credits_cms() {
+		global $lang_admincp;
 
 		echo "<h2>".$lang_admincp['Credits']."</h2><i>".$lang_admincp['Main'].":</i><blockquote>Website is made by <strong>Axe</strong> from <strong>".WEBWOW."</strong></blockquote><i>";
 		echo $lang_admincp['Used 3rd party scripts'].":</i><blockquote>Code highlight script: <strong>CodeMirror</strong> written by Franciszek Wawrzak<br>";
@@ -627,8 +610,7 @@ class Html {
 		echo "Javascript Engine: <strong>jQuery</strong> (jquery.com)</blockquote><i>Contributers:</i><blockquote>Maverfax - debugging during the beta phase</blockquote>";
 	}
 
-	static function formatmoney($query_a)
-	{
+	static function formatmoney($query_a) {
 		$a = false;
 		$gold = substr($query_a, 0, -4);
 

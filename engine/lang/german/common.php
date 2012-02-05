@@ -30,7 +30,7 @@
     "Fail"=>"Fehlgeschlagen",
     "Success"=>"Erfolgreich",
     "Register"=>"Registrieren",
-    "you\'ve already registered"=>"Du bist bereits registriert",
+    "you've already registered"=>"Du bist bereits registriert",
     "your information has been added"=>"Deine Information wurden Hinzugef&uuml;gt",
     "Thank you"=>"Danke",
     "Error has occurred and your registration for the"=>"Es ist ein Fehler aufgetreten und deine Registrierung f&uuml;r die",
