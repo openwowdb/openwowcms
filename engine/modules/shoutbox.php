@@ -4,11 +4,8 @@
 * so every post data is processed here then using Header(Location:)
 * we simply call normal site and display errors
 **/
-error_reporting(-1);
 if (!defined('PATHROOT'))
-{
 	define('PATHROOT', '../../');
-}
 
 if (!class_exists("module_base"))
 	include PATHROOT."library/classes/modules/modules.php";
@@ -44,6 +41,9 @@ if (!class_exists("shoutbox"))
 
 		function processAjaxRequest() {
 			global $db, $config, $user;
+			// NEEDED TO VALIDATE AJAX REQUEST!
+			if (!parent::processAjaxRequest()) return;
+
 			if (isset($_POST['message']))
 			{
 				if($user->logged_in && trim($_POST['message']) <> '')
@@ -61,7 +61,7 @@ if (!class_exists("shoutbox"))
 			{
 				$shouts_sql = $db->query("SELECT * FROM ".$config['engine_web_db'].".mod_shoutbox WHERE id > " .$db->escape($_POST['latest'])."  ORDER by id DESC") or die($db->getLastError());
 				while ($row = $db->getRow($shouts_sql))
-				$this->echo_shout($row);
+					$this->echo_shout($row);
 			}
 		}
 
@@ -85,6 +85,7 @@ if (!class_exists("shoutbox"))
 			echo 'shoutbox.refresh_time = '.($config['shoutbox_refresh_time'] * 1000).';';
 			echo 'shoutbox.idle_time = '.($config['shoutbox_idle_time'] * 1000).';';
 			echo '</script>';
+			parent::plugin();
 		}
 
 		function echo_shout($arr) {
@@ -115,7 +116,7 @@ if (isset($isplugin))
 	return;
 }
 
-// Accessed via Ajax.post/.get
+// Accessed via Ajax.post
 if ($shoutbox->isAjaxRequest())
 {
 	include(PATHROOT . "engine/init.php");

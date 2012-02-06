@@ -1,4 +1,6 @@
 <?php
+if (!class_exists("ajaxkey"))
+	include PATHROOT."/library/classes/security/ajaxkey.php";
 
 /**
  * class module_base
@@ -7,22 +9,39 @@
  *
  * @author:
 */
-class module_base  {
+class module_base {
 	var $uniqueid;
 	// array(config name => array(value, description))
 	var $configFields = array();
 	var $sqlQueries = array();
 	var $proccess = false;
 	var $showInUserpanel = true;
+	var $sessionTimeout = 300;
 
 	function process() {
 		/* Reinitilaze 'form' proccess with latest session data */
 		Form::_Form();
 	}
 
-	function processAjaxRequest() {}
+	function plugin() {
+		global $user;
+		ajaxkey::createkey($user->userid, $this->sessionTimeout, $this->uniqueid);
+	}
 
-	function isAjaxRequest() { if($_SERVER['REQUEST_METHOD']=='POST') return true; }
+	function processAjaxRequest() {
+		global $user;
+		if (!isset($user)) return false;
+		if (ajaxkey::verifykey($user->userid, $this->sessionTimeout, $this->uniqueid))
+			return true;
+		//Session has expired
+		return false;
+	}
+
+	function isAjaxRequest() {
+		if ($_SERVER['REQUEST_METHOD'] != 'POST') return false;
+		if (!isset($_SERVER['HTTP_REFERER'])) return false;
+		return true;
+	}
 
 	function DoInstall() {
 		global $config, $user, $db;
