@@ -7,10 +7,6 @@ $comments_per_page=5;
 * End Configuration
 */
 
-
-
-
-
 define('PATHROOT', '../../');
 include (PATHROOT.'engine/init.php');
 include_once(PATHROOT."engine/func/parser.php");
@@ -51,10 +47,11 @@ if (isset($_GET['latest']))
 }
 elseif(isset($_GET['delete']))
 {
+	if (!$user->logged_in) exit;
 	//we have to get comment with his id and check poster.... oh god help us all...
 	$comments_sql=$db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news_c WHERE id='".$newsid."' LIMIT 1") or die($db->getLastError());
 	$comments=$db->getRow($comments_sql);
-	if($user->logged_in && (strtoupper($comments['poster']) == strtoupper($user->username) or $user->isAdmin() or $user->isGM())) {
+	if(strtoupper($comments['poster']) == strtoupper($user->username) or $user->isAdmin() or $user->isGM()) {
 		$db->query("DELETE FROM ".$config['engine_web_db'].".wwc2_news_c WHERE id='".$newsid."' LIMIT 1") or die($db->getLastError());
 	}
 	exit;

@@ -42,7 +42,5 @@ if ($_GET['id'] && trim ($_GET['id'])<>'')
 		$sql2=$db->getRow($sql1);
 		echo parse_message($sql2[0]);
 	}
-	else
 	exit;
-
 }

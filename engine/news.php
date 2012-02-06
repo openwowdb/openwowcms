@@ -11,7 +11,6 @@
 global $lang,$db,$config;
 include_once("./engine/func/parser.php");
 include_once("./engine/func/nicetime.php");
-$canEdit = strtolower($user->userlevel) == strtolower($config['premission_admin']);
 ?>
 <!-- This element is important, must be at beginning of module output, dont change it, except module name -->
 <div class="post_body_title"><?php echo $lang['News']; ?></div>
@@ -30,7 +29,7 @@ while ($news = $db->getRow($news_sql))
 	</div>
 	<div class="newscontent">';
 	$message = parse_message($news['content']);
-	echo ($canEdit ? '<span id="newscontent'.$news['id'].'" ondblclick="dy_edit_news(\''.$news['id'].'\');">'.$message.'</span>' : $message);
+	echo ($user->isAdmin() ? '<span id="newscontent'.$news['id'].'" ondblclick="dy_edit_news(\''.$news['id'].'\');">'.$message.'</span>' : $message);
 	echo '</div>';
 	echo '<span class="newsbottom"><span>(<a href="javascript:void();" onclick="ajax_loadContent(\'comments'.$news['id'].'\',\'./engine/dynamic/news_comments.php?newsid='.$news['id'].'&nocache='.rand(1,999999).'\',\'...\');return false;">'.$comments_count[0].' '.$lang['comments'].'</a>)</span>'.$lang['Posted'].' '.nicetime($news['timepost']).'</span><div style="height:10px"></div>';
 
@@ -38,8 +37,7 @@ while ($news = $db->getRow($news_sql))
 	echo '<div id="comments'.$news['id'].'" class="comments_box"></div>';
 }
 
-//Ok this is wierd operator "==" but i fixed it by adding strtolower!
-if (!$canEdit)
+if (!$user->isAdmin())
 	return;
 ?>
 <script type="text/javascript" src="./engine/js/bbcode_buttons.js"></script>
@@ -48,17 +46,17 @@ function dy_edit_news(id)
 {
 	var b = $('#newscontent'+id).html();
 	$('#newscontent'+id).html('<textarea name="newscontent'+id+'" id="textarea_newscontent'+id+'" style="width:99%; height:200px"><?php echo $lang['Loading']; ?>...</textarea><span style="float:right"><a href="javascript:void();" onclick="insert_text(\'[code]\',\'[/code]\',\'textarea_newscontent'+id+'\');return false;"><img src="./engine/res/CODE.png"></a>&nbsp;<a href="javascript:void();" onclick="insert_text(\'[item=30312]\',\'[/item]\',\'textarea_newscontent'+id+'\');return false;"><img src="./engine/res/ITEM.png"></a>&nbsp;<a href="javascript:void();" onclick="insert_text(\'[img]\',\'[/img]\',\'textarea_newscontent'+id+'\');return false;"><img src="./engine/res/IMG.png"></a>&nbsp;<a href="javascript:void();" onclick="insert_text(\'[url]\',\'[/url]\',\'textarea_newscontent'+id+'\');return false;"><img src="./engine/res/URL.png"></a>&nbsp;<a href="javascript:void();" onclick="insert_text(\'[u]\',\'[/u]\',\'textarea_newscontent'+id+'\');return false;"><img src="./engine/res/U.png"></a>&nbsp;<a href="javascript:void();" onclick="insert_text(\'[i]\',\'[/i]\',\'textarea_newscontent'+id+'\');return false;"><img src="./engine/res/I.png"></a>&nbsp;<a href="javascript:void();" onclick="insert_text(\'[b]\',\'[/b]\',\'textarea_newscontent'+id+'\');return false;"><img src="./engine/res/B.png"></a>&nbsp;<img src="./engine/res/spacer.png">&nbsp;<a href="javascript:void();" onclick="dy_edit_save('+id+');return false;"><img src="./engine/res/OK.png"></a>&nbsp;<a href="javascript:void();" onclick="dy_edit_cancel('+id+');return false;"><img src="./engine/res/CANCEL.png"></a></span><div style="height:30px"></div>');
-	jQuery(function($) {  $('#textarea_newscontent'+id).load("./engine/dynamic/news_save.php?getbody&id="+id);});
+	$('#textarea_newscontent'+id).load("./engine/dynamic/news_save.php?getbody&id="+id, function() {$('#newscontent'+id).attr("ondblclick", "");});
 }
 function dy_edit_cancel(id,b)
 {
-	jQuery(function($) {  $('#newscontent'+id).load("./engine/dynamic/news_save.php?getbodyparsed&id="+id);});
+	$('#newscontent'+id).load("./engine/dynamic/news_save.php?getbodyparsed&id="+id, function() {$('#newscontent'+id).attr("ondblclick", "dy_edit_news(" + id + ")");});
 }
 function dy_edit_save(id)
 {
 	$.post("./engine/dynamic/news_save.php?save&id="+id,
-		{message: $("#textarea_newscontent"+id).val(),},
-		function(data) {  $('#newscontent'+id).html(data);}
+		{message: $("#textarea_newscontent"+id).val()},
+		function(data) {$('#newscontent'+id).html(data); $('#newscontent'+id).attr("ondblclick", "dy_edit_news(" + id + ")");}
 	);
 }
 </script>
