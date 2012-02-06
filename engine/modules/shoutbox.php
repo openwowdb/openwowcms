@@ -57,6 +57,15 @@ if (!class_exists("shoutbox"))
 				}
 			}
 
+			if (isset($_POST['del']) && isset($_POST['shoutid']))
+			{
+				// GM required
+				if (strtolower($user->userinfo['gmlevel']) != strtolower($config['premission_admin']))
+					return;
+				$db->query("DELETE FROM ".$config['engine_web_db'].".mod_shoutbox WHERE id = ".$db->escape($_POST['shoutid'])) or die($db->getLastError());
+				echo '$("#shoutmsg' . $_POST['shoutid'].'").remove()';
+			}
+
 			if (isset($_POST['latest']))
 			{
 				$shouts_sql = $db->query("SELECT * FROM ".$config['engine_web_db'].".mod_shoutbox WHERE id > " .$db->escape($_POST['latest'])."  ORDER by id DESC") or die($db->getLastError());
@@ -89,7 +98,7 @@ if (!class_exists("shoutbox"))
 		}
 
 		function echo_shout($arr) {
-			global $user;
+			global $user, $config, $lang;
 			if (is_array($arr) && isset($arr[0]) && is_array($arr[0]))
 			{
 				array_map("self::echo_shout", $arr);
@@ -102,6 +111,9 @@ if (!class_exists("shoutbox"))
 			echo $arr['poster'].": ";
 			echo '<font color="#00FFFF">'.$arr['message'].'</font><br> <small class="comments_poster" id="time_'.$arr['id'].'_update">('. nicetime($arr['timepost']).')</small>';
 			echo '<var id="time_' . $arr['id'] . '" style="display:none;">'.$arr['timepost'].'</var>';
+			// GM required
+			if (strtolower($user->userinfo['gmlevel']) == strtolower($config['premission_admin']))
+				echo ' <a href="javascript:void(0);" onclick="shoutbox.delshout('.$arr['id'].');">'.$lang['Delete'].'</a>';
 			echo '</div>';
 		}
 	}
