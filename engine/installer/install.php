@@ -340,11 +340,14 @@ class Install {
 					echo '<div id="addmore"><script type="text/javascript">';
 					echo "core = '" . $_SESSION['wwcmsv2install']['core'] . "';";
 					echo "lang = " . json_encode($installer_lang).";";
+
 					foreach ($databases as $database)
 					{
-						echo "addfromdb('".$database['Database']."', '3306');";
-						$j++;
-						continue;
+						if ($this->checkTable($connect, $database['Database'].'.'.$p_db[2]) && $this->checkTable($connect, $database['Database'].'.'.$p_db[3]))
+						{
+							echo "addfromdb('".$database['Database']."', '3306');";
+							$j++;
+						}
 					}
 
 					echo '</script><a id="addmorebtn" href="javascript:void();" onclick="javascript:addmore();return false;">[+'.$installer_lang['add more'].']</a></div>';
