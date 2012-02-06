@@ -63,14 +63,14 @@ if ($core == 'arcemu')
 }
 elseif($core == 'trinity' or $core == 'mangos')
 {
-	$enc_pass = strtoupper(sha1(strtoupper($_POST['admin_username'].':'.$_POST['admin_password'])));
+	$enc_pass = sha1(strtoupper($_POST['admin_username'].':'.$_POST['admin_password']));
 	$con->query("SELECT * FROM ". $_SESSION['wwcmsv2install']['logon_db'] .".account WHERE username='".$_POST['admin_username']."' LIMIT 1") or die($con->getLastError());
 	if ($con->numRows() == '1')//account is found
 	{
 		//check password
 		$row = $con->getRow();
 
-		if (strtoupper($row['sha_pass_hash']) == $enc_pass)
+		if (strtoupper($row['sha_pass_hash']) == strtoupper($enc_pass))
 		{
 			//user if confirmed, add him to website db with admin privilages
 			$con->query("INSERT INTO ". $_SESSION['wwcmsv2install']['web_db'] .".wwc2_users_more (acc_login,vp,userid,dp,gmlevel) VALUES ('".$row['username']."','0','".$row['id']."','0','4')") or die($con->getLastError());
