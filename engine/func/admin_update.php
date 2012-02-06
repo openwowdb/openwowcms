@@ -174,7 +174,7 @@ class Update {
 		$_SESSION['update_files']=array();
 
 		//get max styleid and make unique id (+1);
-		$getstyle_sql1=$db->query("SELECT max(styleid) as 'maxid' FROM ".$config['engine_web_db'].".wwc2_template LIMIT 1") or die('CMS: '.$db->error('error_msg'));
+		$getstyle_sql1=$db->query("SELECT max(styleid) as 'maxid' FROM ".$config['engine_web_db'].".wwc2_template LIMIT 1") or die('CMS: '.$db->getLastError());
 		$getstyle_sql2=$db->getRow($getstyle_sql1);
 		$style_gotten_id=$getstyle_sql2['maxid']+1;
 
@@ -242,9 +242,9 @@ class Update {
 		$query_string=substr($query_string, 0, -1);
 		//echo '<br>'.htmlspecialchars($query_string).'<br>';
 
-		$db->query($query_string) or die($db->error('error_msg').'<br>Style might not be allowed for you.');
+		$db->query($query_string) or die($db->getLastError().'<br>Style might not be allowed for you.');
 
-		$db->query("UPDATE ".$config['engine_web_db'].".wwc2_config set conf_value='".$style_gotten_id."' where conf_name='engine_styleid' LIMIT 1") or die($db->error('error_msg'));
+		$db->query("UPDATE ".$config['engine_web_db'].".wwc2_config set conf_value='".$style_gotten_id."' where conf_name='engine_styleid' LIMIT 1") or die($db->getLastError());
 		echo 'Style is imported to database. Do not forget to recache after file installation.<br><br>Installing style files:<br>';
 
 		echo '<iframe src ="./iframe_update.php?i=0&v='.VERSION.'" width="100%" height="150" frameborder="0" style="background: white"><p>Your browser does not support iframes.</p></iframe>';

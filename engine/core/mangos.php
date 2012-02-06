@@ -21,7 +21,7 @@ define("TBL_ACCOUNT", $config['engine_logon_db'].".account");
 define("TBL_CHARACTERS", "characters");
 define("TBL_BANNED_USERS_SERVER", $config['engine_logon_db'].".account_banned");
 
-class User extends SessionUser
+class User extends SessionUser implements BaseUser
 {
 	/**
 	* CoreSQL - Returns Core specific SQL string
@@ -110,7 +110,7 @@ SET  ".TBL_CHARACTERS.".position_X = character_homebind.position_x,
 			/* loop realms then loop characters */
 			$db_realmconnector=connect_realm($key);
 			$q="SELECT name,guid FROM ".$split1[0].".".TBL_CHARACTERS." WHERE account =  '".$accountguid."'";
-			$a = $db_realmconnector->query($q) or die($db->error('error_msg'));
+			$a = $db_realmconnector->query($q) or die($db->getLastError());
 			while ($a2=$db_realmconnector->getRow($a)){
 				echo '<option value="'.$key.'-'.$a2[1].'">'.$split_realmname[$key].' &raquo; '.$a2[0].'</option>';
 			}
@@ -173,7 +173,7 @@ SET  ".TBL_CHARACTERS.".position_X = character_homebind.position_x,
 			$q = "SELECT a.id as guid,a.username as username,joindate,last_ip,locked as banned,expansion,vp,dp,question,answer,b.gmlevel,avatar FROM ".TBL_ACCOUNT." a,".TBL_USERS." b WHERE UPPER(a.username) = '".$db->escape(strtoupper($username))."' AND b.acc_login=a.username";
 
 
-		$result = $db->query($q) or die($db->error('error_msg'));
+		$result = $db->query($q) or die($db->getLastError());
 		/* Error occurred, return given name by default */
 		if(!$result || ($db->numRows() < 1)){
 			return NULL;

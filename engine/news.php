@@ -15,12 +15,12 @@ include_once("./engine/func/nicetime.php");
 <!-- This element is important, must be at beginning of module output, dont change it, except module name -->
 <div class="post_body_title"><?php echo $lang['News']; ?></div>
 <?php
-$news_sql = $db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news WHERE hidden='0' ORDER BY stickied DESC,id DESC LIMIT 20") or die( $db->error('error_msg') );
+$news_sql = $db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news WHERE hidden='0' ORDER BY stickied DESC,id DESC LIMIT 20") or die( $db->getLastError() );
 
 while ($news = $db->getRow($news_sql))
 {
 	//get comment count
-	$comments_count_sql=$db->query("SELECT count(*) FROM ".$config['engine_web_db'].".wwc2_news_c WHERE newsid='".$news['id']."'") or die( $db->error('error_msg') );
+	$comments_count_sql=$db->query("SELECT count(*) FROM ".$config['engine_web_db'].".wwc2_news_c WHERE newsid='".$news['id']."'") or die( $db->getLastError() );
 	$comments_count = $db->getRow($comments_count_sql);
 	//print news structure
 	echo '

@@ -17,13 +17,11 @@ define("TBL_ACCOUNT_ACCESS", $config['engine_logon_db'].".account_access");
 define("TBL_CHARACTERS", "characters");
 define("TBL_BANNED_USERS_SERVER", $config['engine_logon_db'].".account_banned");
 
-class User extends SessionUser
-{
+class User extends SessionUser implements BaseUser {
 	/**
 	* CoreSQL - Returns Core specific SQL string
 	*/
-	function CoreSQL($id, $param1=false,$param2=false,$param3=false,$param4=false,$param5=false,$param6=false,$param7=false)
-	{
+	function CoreSQL($id, $param1=false,$param2=false,$param3=false,$param4=false,$param5=false,$param6=false,$param7=false) {
 		global $config,$user,$db;
 		/**
 		* Special realm data fetching:
@@ -70,8 +68,7 @@ class User extends SessionUser
 	/**
 	* return expansion string for id 0-classic, 1-tbc, 2-wotlk, 3-cata
 	*/
-	function return_expansion($id)
-	{
+	function return_expansion($id) {
 		switch ($id) {
 			case 0:
 				return "0";
@@ -90,12 +87,10 @@ class User extends SessionUser
 		}
 	}
 
-
 	/**
 	* print_Char_Dropdown
 	*/
-	function print_Char_Dropdown($accountguid)
-	{
+	function print_Char_Dropdown($accountguid) {
 		global $config,$db;
 		echo '<select name="character">';
 		$split_realmname=explode('|',$config['engine_realmnames']);//we have data in array
@@ -108,7 +103,7 @@ class User extends SessionUser
 			/* loop realms then loop characters */
 			$db_realmconnector=connect_realm($key);
 			$q="SELECT name,guid FROM ".$split1[0].".".TBL_CHARACTERS." WHERE account =  '".$accountguid."'";
-			$a = $db_realmconnector->query($q) or die($db->error('error_msg'));
+			$a = $db_realmconnector->query($q) or die($db->getLastError());
 			while ($a2=$db_realmconnector->getRow($a)){
 				echo '<option value="'.$key.'-'.$a2[1].'">'.$split_realmname[$key].' &raquo; '.$a2[0].'</option>';
 			}
@@ -116,15 +111,13 @@ class User extends SessionUser
 		echo '</select>';
 	}
 
-
 	/**
 	* getUserGM - Returns the result of logged in user
 	* gm premission value FROM wow accounts!!!
 	* On error returns 0 witch means
 	* no premission (default for normal user).
 	*/
-	function getUserGM($userid)
-	{
+	function getUserGM($userid) {
 		global $db;
 		$q = "SELECT gmlevel FROM ".TBL_ACCOUNT_ACCESS." WHERE id = '".$userid."' LIMIT 1";
 		$result = $db->query($q);
@@ -137,6 +130,7 @@ class User extends SessionUser
 			return 0;
 		return $dbarray['gmlevel'];
 	}
+
 	/**
 	* getUserInfo - Returns the result array from a mysql
 	* query asking for all information stored regarding
@@ -160,8 +154,7 @@ class User extends SessionUser
 	* gmlevel (this one overrides gm status in server db)
 	* avatar
 	*/
-	function getUserInfo($username,$userid=false)
-	{
+	function getUserInfo($username,$userid=false) {
 		global $db;
 
 		if ($userid)
@@ -172,7 +165,7 @@ class User extends SessionUser
 		else
 			$q = "SELECT a.id as guid,a.username as username,joindate,last_ip,locked as banned,online,expansion,vp,dp,question,answer,gmlevel,avatar FROM ".TBL_ACCOUNT." a,".TBL_USERS." b WHERE UPPER(a.username) = '".$db->escape(strtoupper($username))."' AND b.acc_login=a.username";
 
-		$result = $db->query($q) or die($db->error('error_msg'));
+		$result = $db->query($q) or die($db->getLastError());
 		/* Error occurred, return given name by default */
 		if(!$result || ($db->numRows() < 1)){
 			return NULL;
@@ -262,30 +255,30 @@ class User extends SessionUser
 		$result = $db->query($q) or die($q);
 		return ($db->numRows() > 0);
 	}
+
 	/**
 	* convertPass - Uses raw pass and hash it to correct
 	* format.
 	*/
-	function convertPass($username,$passwordraw)
-	{
+	function convertPass($username,$passwordraw) {
 		return sha1(strtoupper($username.':'.$passwordraw));
 	}
+
 	/**
 	* updatePass - Updates user account password.
 	*/
-	function updatePass($username,$password)
-	{
+	function updatePass($username,$password) {
 		global $db;
 		$password=$this->convertPass($username,$password);
 		$q = "UPDATE ".TBL_ACCOUNT." SET sha_pass_hash='".$password."',v='',s='',sessionkey='' WHERE username = '".$db->escape($username)."' LIMIT 1";
 		$result = $db->query($q) or die($q);
 		return $result;
 	}
+
 	/**
 	* updateGMlevel - Updates user account gm level ingame.
 	*/
-	function updateGMlevel($userid,$value,$realm=false)
-	{
+	function updateGMlevel($userid,$value,$realm=false) {
 		global $db;
 		if ($realm=='')$realm='-1';
 		$userid = preg_replace( "/[^0-9]/", "", $userid );
@@ -300,7 +293,6 @@ class User extends SessionUser
 			return false;
 	}
 
-
 	/**
 	* addNewUser - Inserts the given (username, password, email)
 	* info into the database. Appropriate user level is set.
@@ -313,22 +305,22 @@ class User extends SessionUser
 		$q = "INSERT INTO ".TBL_ACCOUNT." (username,sha_pass_hash,v,s,email) VALUES ('$username', '".$this->convertPass($username,$password)."', '','', '$email')";
 		return $db->query($q) or die($q);
 	}
+
 	/**
 	* addIngameBan - Bans user ingame.
 	*/
-	function addIngameBan($userguid)
-	{
+	function addIngameBan($userguid) {
 		global $db;
 		$this->removeIngameBans($userguid);
 		$q = "INSERT INTO ".TBL_BANNED_USERS_SERVER." (id,bannedby,active) VALUES ('".$userguid."','".$this->username."','1')";
 		$result = $db->query($q) or die($q);
 		return $result;
 	}
+
 	/**
 	* removeIngameBans - Removes all bans from ingame for user.
 	*/
-	function removeIngameBans($userguid)
-	{
+	function removeIngameBans($userguid) {
 		global $db;
 
 		$q = "DELETE FROM ".TBL_BANNED_USERS_SERVER." WHERE id='".$userguid."'";
@@ -344,8 +336,7 @@ class User extends SessionUser
 	* realmid-> 0=first realm in config (engine_char_dbs), 1, 2, etc...
 	* money  -> 0= no money is sent (this is by default), if money is stated there will be no item send, you have to send seperately
 	*/
-	function sendmail($playername, $playerguid, $subject, $item, $realmid=0, $stack=1, $money=0, $externaltext=false)
-	{
+	function sendmail($playername, $playerguid, $subject, $item, $realmid=0, $stack=1, $money=0, $externaltext=false) {
 		global $config,$db_host,$db;
 		@set_time_limit(60);
 

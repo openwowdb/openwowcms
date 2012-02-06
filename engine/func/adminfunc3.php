@@ -22,20 +22,20 @@ if (isset($_GET['createnew']))
 {
 	echo "<h2>".$lang_admincp['Template Editor'].'</h2>';
 	//get max style id from db
-	$newstyleid_sql=$db->query("SELECT MAX(styleid) FROM ".TBL_TEMPLATE."")or die($db->error('error_msg'));
+	$newstyleid_sql=$db->query("SELECT MAX(styleid) FROM ".TBL_TEMPLATE."")or die($db->getLastError());
 	$newstyleid=$db->getRow($newstyleid_sql);
 
 	//copy all variables
-	$newstyle_sql=$db->query("SELECT * FROM ".TBL_TEMPLATE." WHERE styleid='".$config['engine_styleid']."'")or die($db->error('error_msg'));
+	$newstyle_sql=$db->query("SELECT * FROM ".TBL_TEMPLATE." WHERE styleid='".$config['engine_styleid']."'")or die($db->getLastError());
 	while ($newstyle=$db->getRow($newstyle_sql))
 	{
-		$db->query("INSERT INTO ".TBL_TEMPLATE." (styleid,title,template,template_un,templatetype,username,version) VALUES ('".($newstyleid[0]+1)."','".$newstyle['title']."','".$db->escape($newstyle['template'])."','".$db->escape($newstyle['template'])."','".$newstyle['templatetype']."','".$user->username."','1')")or die($db->error('error_msg'));
+		$db->query("INSERT INTO ".TBL_TEMPLATE." (styleid,title,template,template_un,templatetype,username,version) VALUES ('".($newstyleid[0]+1)."','".$newstyle['title']."','".$db->escape($newstyle['template'])."','".$db->escape($newstyle['template'])."','".$newstyle['templatetype']."','".$user->username."','1')")or die($db->getLastError());
 
 	}
 	//copy style dir FINISH THIS
 	//$this->smartCopy(PATHROOT.'engine/_style_res/'.$config['engine_styleid'].'', PATHROOT.'engine/_style_res/'.($newstyleid[0]+1).'');
 	echo "Please copy ".PATHROOT.'engine/_style_res/'.$config['engine_styleid'].' to '.PATHROOT.'engine/_style_res/'.($newstyleid[0]+1).'<br>';
-	$db->query("UPDATE ".TBL_CONFIG." SET conf_value='".($newstyleid[0]+1)."' WHERE conf_name='engine_styleid' LIMIT 1")or die($db->error('error_msg'));
+	$db->query("UPDATE ".TBL_CONFIG." SET conf_value='".($newstyleid[0]+1)."' WHERE conf_name='engine_styleid' LIMIT 1")or die($db->getLastError());
 	echo $lang_admincp['Your new styleid is'].': '.($newstyleid[0]+1);
 	return;
 }
@@ -47,25 +47,25 @@ elseif(isset($_GET['delete']))
 	echo "<h2>".$lang_admincp['Template Editor'].'</h2>';
 	$delete = preg_replace( "/[^0-9]/", "", $_GET['delete'] ); //only letters and numbers
 	if ($delete=='1') {echo $lang_admincp['Locked']; return;}
-	$db->query("DELETE FROM ".TBL_TEMPLATE." WHERE styleid='".$delete."'") or die($db->error('error_msg'));
+	$db->query("DELETE FROM ".TBL_TEMPLATE." WHERE styleid='".$delete."'") or die($db->getLastError());
 	//FINISH THIS, delete style folder
 	echo $lang_admincp['Style'].' '.$delete.' '.$lang_admincp['is deleted'].'.';
 	return;
 }
 /*save order if set*/
 if ($_GET['html_order']<>'')
-	$db->query("UPDATE ".TBL_TEMPLATE." SET template='".preg_replace( "/[^0-9]/", "", $_GET['html_order'] )."' WHERE title='html_order' AND styleid='".$config['engine_styleid']."'") or die($db->error('error_msg'));
+	$db->query("UPDATE ".TBL_TEMPLATE." SET template='".preg_replace( "/[^0-9]/", "", $_GET['html_order'] )."' WHERE title='html_order' AND styleid='".$config['engine_styleid']."'") or die($db->getLastError());
 /*save form*/
 $post_templatename = preg_replace( "/[^A-Za-z0-9_]/", "", $_POST['template'] ); //only letters and numbers
 if (isset($_POST['submit']))
 {
-	$db->query("UPDATE ".TBL_TEMPLATE." SET template='".$db->escape($_POST['code'])."', template_un='".$db->escape($_POST['backup'])."' WHERE title='".$post_templatename."' AND styleid='".$config['engine_styleid']."'") or die($db->error('error_msg'));
+	$db->query("UPDATE ".TBL_TEMPLATE." SET template='".$db->escape($_POST['code'])."', template_un='".$db->escape($_POST['backup'])."' WHERE title='".$post_templatename."' AND styleid='".$config['engine_styleid']."'") or die($db->getLastError());
 	echo $lang_admincp['Action report'].": <font color='green'>".$lang_admincp['Template is saved'].".</font>";
 }
 /*undo form*/
 if (isset($_POST['undo']))
 {
-	$db->query("UPDATE ".TBL_TEMPLATE." SET template=template_un WHERE title='".$post_templatename."' AND styleid='".$config['engine_styleid']."'") or die($db->error('error_msg'));
+	$db->query("UPDATE ".TBL_TEMPLATE." SET template=template_un WHERE title='".$post_templatename."' AND styleid='".$config['engine_styleid']."'") or die($db->getLastError());
 	echo $lang_admincp['Action report'].": <font color='green'>".$lang_admincp['Template is reversed'].".</font>";
 }
 
@@ -102,7 +102,7 @@ else if(!function_exists("fsockopen") && isset($_GET['getmorestyles']) )
 
 /*do query for template elements*/
 
-$sql1 = $db->query("SELECT * FROM ".TBL_TEMPLATE." WHERE (templatetype='template' or templatetype='other') AND styleid='".$config['engine_styleid']."'") or die($db->error('error_msg'));
+$sql1 = $db->query("SELECT * FROM ".TBL_TEMPLATE." WHERE (templatetype='template' or templatetype='other') AND styleid='".$config['engine_styleid']."'") or die($db->getLastError());
 if ($db->numRows()<=19)
 	{echo $lang_admincp['There is some template elements missing on current selected style, change to style 1.']; return;}
 
@@ -195,7 +195,7 @@ if ($tpl_info[0]=='head' && file_exists(PATHROOT.'engine/_style_res/'.$config['e
 else{
 	$i=0;if ( !$tpl['html_order'][0] or strlen($tpl['html_order'][0])<=6 ) {$tpl['html_order'][0]='4015263';
 		/*save order if set*/
-		$db->query("UPDATE ".TBL_TEMPLATE." SET template='".$tpl['html_order'][0]."' WHERE title='html_order' AND styleid='".$config['engine_styleid']."'") or die($db->error('error_msg'));
+		$db->query("UPDATE ".TBL_TEMPLATE." SET template='".$tpl['html_order'][0]."' WHERE title='html_order' AND styleid='".$config['engine_styleid']."'") or die($db->getLastError());
 	}
 
 
@@ -408,7 +408,7 @@ else{
 </table><br />
 
 <?php
-$stylelist=$sql1 = $db->query("SELECT styleid FROM ".TBL_TEMPLATE." GROUP BY styleid")or die($db->error('error_msg'));
+$stylelist=$sql1 = $db->query("SELECT styleid FROM ".TBL_TEMPLATE." GROUP BY styleid")or die($db->getLastError());
 echo "<blockquote>";
 while ($stylelist2=$db->getRow($stylelist))
 {

@@ -88,6 +88,7 @@ require_once (PATHROOT . 'engine/lang/' . strtolower($config['engine_lang']) . '
 
 // Include necessary libraries
 require_once (PATHROOT."engine/func/session.php");
+require_once (PATHROOT."engine/core/base.php");
 require_once (PATHROOT."engine/func/form.php");
 require_once (PATHROOT."engine/core/".strtolower($config['engine_core']).".php");
 require_once (PATHROOT."engine/func/required.php");

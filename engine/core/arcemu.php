@@ -20,7 +20,7 @@ if (!defined('AXE_db') && !defined('AXE'))
 define("TBL_ACCOUNT", $config['engine_logon_db'].".accounts");
 define("TBL_CHARACTERS", "characters");
 
-class User extends SessionUser
+class User extends SessionUser implements BaseUser
 {
 
 	/**
@@ -106,7 +106,7 @@ class User extends SessionUser
 			/* loop realms then loop characters */
 			$db_realmconnector=connect_realm($key);
 			$q="SELECT name,guid FROM ".$split1[0].".".TBL_CHARACTERS." WHERE acct =  '".$accountguid."'";
-			$a = $db_realmconnector->query($q) or die($db->error('error_msg'));
+			$a = $db_realmconnector->query($q) or die($db->getLastError());
 			while ($a2=$db_realmconnector->getRow($a)){
 				echo '<option value="'.$key.'-'.$a2[1].'">'.$split_realmname[$key].' &raquo; '.$a2[0].'</option>';
 			}
@@ -169,7 +169,7 @@ class User extends SessionUser
 			$q = "SELECT a.acct as guid,a.login as username,lastlogin,lastip,banned as banned,a.flags as expansion,vp,dp,question,answer,gmlevel,avatar FROM ".TBL_ACCOUNT." a,".TBL_USERS." b WHERE UPPER(a.login) = '".$db->escape(strtoupper($username))."' AND b.acc_login=a.login";
 
 
-		$result = $db->query($q) or die($db->error('error_msg'));
+		$result = $db->query($q) or die($db->getLastError());
 
 		/* Error occurred, return given name by default */
 		if(!$result || ($db->numRows() < 1)){

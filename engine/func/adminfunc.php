@@ -138,7 +138,7 @@ global $db,$user,$lang,$lang_admincp;
 echo "<h2>".$lang_admincp['User Manager'].'</h2>';
 if (isset($_POST['submit']))
 {
-$sql1 = $db->query($user->CoreSQL(0,$_POST['user']))or die($db->error('error_msg'));
+$sql1 = $db->query($user->CoreSQL(0,$_POST['user']))or die($db->getLastError());
 while ($sql2=$db->getRow($sql1))
 {
 echo '<a href="'.PATHROOT.'?page=profile&id='.$sql2['id'].'">'.$sql2['username'].'</a><br>';
@@ -211,10 +211,10 @@ $i++;
 $j=$i;
 if ( Form::$num_errors == 0 )
 {
-$db->query("DELETE FROM ".TBL_TEMPLATE." WHERE templatetype='css' AND styleid='".$config['engine_styleid']."'")or die($db->error('error_msg'));
+$db->query("DELETE FROM ".TBL_TEMPLATE." WHERE templatetype='css' AND styleid='".$config['engine_styleid']."'")or die($db->getLastError());
 $query_insert=rtrim($query_insert,', ');
 if ($query_insert=='') $query_insert="('','','','')";
-$db->query("INSERT INTO ".TBL_TEMPLATE." (styleid,title,template,templatetype) VALUES ".$query_insert )or die($db->error('error_msg'));
+$db->query("INSERT INTO ".TBL_TEMPLATE." (styleid,title,template,templatetype) VALUES ".$query_insert )or die($db->getLastError());
 
 echo $lang_admincp['Action report'].": <font color='green'>".$lang_admincp['New data inserted'].".</font>";
 unset($_SESSION['value_array']);
@@ -360,9 +360,9 @@ $i++;
 $j=$i;
 if ( Form::$num_errors == 0 )
 {
-$db->query("DELETE FROM ".TBL_CONFIG)or die($db->error('error_msg'));
+$db->query("DELETE FROM ".TBL_CONFIG)or die($db->getLastError());
 $query_insert=rtrim($query_insert,', ');
-$db->query("INSERT INTO ".TBL_CONFIG." (conf_name,conf_value,conf_descr,conf_stickied,conf_dropdown) VALUES ".$query_insert )or die($db->error('error_msg'));
+$db->query("INSERT INTO ".TBL_CONFIG." (conf_name,conf_value,conf_descr,conf_stickied,conf_dropdown) VALUES ".$query_insert )or die($db->getLastError());
 
 echo $lang_admincp['Action report'].": <font color='green'>".$lang_admincp['New data inserted'].".</font>";
 unset($_SESSION['value_array']);
@@ -505,9 +505,9 @@ $query_insert.="('".$db->escape($x)."','".$db->escape($_POST['linkurl'][$i])."',
 }
 $i++;
 }
-$db->query("DELETE FROM ".TBL_LINKS)or die($db->error('error_msg'));
+$db->query("DELETE FROM ".TBL_LINKS)or die($db->getLastError());
 $query_insert=rtrim($query_insert,', ');
-$db->query("INSERT INTO ".TBL_LINKS." (linktitle,linkurl,linkorder,linkdescr,linkgrup,linkprems) VALUES ".$query_insert )or die($db->error('error_msg'));
+$db->query("INSERT INTO ".TBL_LINKS." (linktitle,linkurl,linkorder,linkdescr,linkgrup,linkprems) VALUES ".$query_insert )or die($db->getLastError());
 
 echo $lang_admincp['Action report'].": <font color='green'>".$lang_admincp['New data inserted'];
 if (Html::cache_menulinks()) echo ' '.$lang_admincp['and cached'].'.'; else echo ', '.$lang_admincp['links not cached'].'.';
@@ -585,7 +585,7 @@ echo Html::lang_selection($config['engine_lang']);
 if (isset($_GET['submit2']))
 {
 $savelang = strtolower(preg_replace( "/[^A-Za-z0-9_-]/", "", $_GET['lang'] ));
-$db->query("UPDATE ".$config['engine_web_db'].".wwc2_config SET conf_value='".$db->escape($savelang)."' WHERE conf_name='engine_lang'")or die($db->error('error_msg'));
+$db->query("UPDATE ".$config['engine_web_db'].".wwc2_config SET conf_value='".$db->escape($savelang)."' WHERE conf_name='engine_lang'")or die($db->getLastError());
 echo ucwords($lang_admincp['is saved']).'.';
 return;
 }
@@ -725,26 +725,26 @@ echo "</h2>";
 if(isset($_GET['delete']))
 {
 $delete = preg_replace( "/[^0-9]/", "", $_GET['delete'] ); //only letters and numbers
-$db->query("DELETE FROM ".$config['engine_web_db'].".wwc2_news WHERE id='".$delete."'") or die($db->error('error_msg'));
+$db->query("DELETE FROM ".$config['engine_web_db'].".wwc2_news WHERE id='".$delete."'") or die($db->getLastError());
 //FINISH THIS, delete style folder
 echo 'ID '.$delete.' '.$lang_admincp['is deleted'].'.';
 return;
 }
 if (isset($_POST['submit']))
 {
-$db->query("INSERT INTO ".$config['engine_web_db'].".wwc2_news (title,content,stickied,timepost,hidden,author) VALUES ('".$db->escape(htmlspecialchars($_POST['title']))."','".$db->escape($_POST['content'])."','".$db->escape($_POST['stickied'])."','".@date("U")."','".$db->escape($_POST['hidden'])."','".$user->username."')")or die($db->error('error_msg'));
+$db->query("INSERT INTO ".$config['engine_web_db'].".wwc2_news (title,content,stickied,timepost,hidden,author) VALUES ('".$db->escape(htmlspecialchars($_POST['title']))."','".$db->escape($_POST['content'])."','".$db->escape($_POST['stickied'])."','".@date("U")."','".$db->escape($_POST['hidden'])."','".$user->username."')")or die($db->getLastError());
 echo ucwords($lang_admincp['is saved']).'.';
 return;
 }
 elseif (isset($_POST['edit']))
 {
 
-$db->query("UPDATE ".$config['engine_web_db'].".wwc2_news SET title='".$db->escape(htmlspecialchars($_POST['title']))."',content='".$db->escape($_POST['content'])."',stickied='".$db->escape($_POST['stickied'])."',hidden='".$db->escape($_POST['hidden'])."' WHERE id='".$_POST['id']."'")or die($db->error('error_msg'));
+$db->query("UPDATE ".$config['engine_web_db'].".wwc2_news SET title='".$db->escape(htmlspecialchars($_POST['title']))."',content='".$db->escape($_POST['content'])."',stickied='".$db->escape($_POST['stickied'])."',hidden='".$db->escape($_POST['hidden'])."' WHERE id='".$_POST['id']."'")or die($db->getLastError());
 echo ucwords($lang_admincp['is saved']).'.';
 return;
 }
 
-$sql3 = $db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news WHERE id='".$id."' LIMIT 1")or die($db->error('error_msg'));
+$sql3 = $db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news WHERE id='".$id."' LIMIT 1")or die($db->getLastError());
 $sql4 = $db->getRow($sql3);
 ?>
 <form action="./?f=announcements" method="post">
@@ -759,7 +759,7 @@ $sql4 = $db->getRow($sql3);
 </select> <?php if ($id<>'') echo '<input type="hidden" value="'.$id.'" name="id"><input type="submit" name="edit" value="'.$lang['OK'].'" />'; else echo '<input type="submit" name="submit" value="'.$lang['OK'].'" />'; ?>
 </form><blockquote>
 <?php
-$sql1 = $db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news ORDER BY stickied DESC,id DESC")or die($db->error('error_msg'));
+$sql1 = $db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news ORDER BY stickied DESC,id DESC")or die($db->getLastError());
 while ($sql2=$db->getRow($sql1))
 {
 if ($id==$sql2['id']){
@@ -796,7 +796,7 @@ echo '<h2>'.$lang_admincp['Vote Manager'].'</h2>';
 
 
 <?php
-$sql1 = $db->query("SELECT * FROM ".TBL_CONFIG." WHERE conf_name LIKE 'vote_link_%' ORDER BY conf_name ASC")or die($db->error('error_msg'));
+$sql1 = $db->query("SELECT * FROM ".TBL_CONFIG." WHERE conf_name LIKE 'vote_link_%' ORDER BY conf_name ASC")or die($db->getLastError());
 if ($db->numRows()=='0') echo '<tr>
 <td colspan="2"><a href="./?f=updateconfig">'.$lang_admincp['Configuration Variables'].'</a></td>
 

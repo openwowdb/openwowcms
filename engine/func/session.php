@@ -50,10 +50,8 @@ define("TBL_ACTIVE_GUESTS", $config['engine_web_db'].".wwc2_active_guests");
 define("TBL_BANNED_USERS", $config['engine_web_db'].".wwc2_banned_users");
 define("TBL_LINKS", $config['engine_web_db'].".wwc2_links");
 
-class SessionUser
-{
+class SessionUser {
 	var $username;     //Username given on sign-up
-	//var $userguid;     //User guid/id from accounts db
 	var $userid;       //Random value generated on current login
 	var $userlevel;    //The level to which the user pertains
 	var $time;         //Time user was last active (page loaded)
@@ -152,7 +150,6 @@ class SessionUser
 
 				return true;
 			}
-
 			/* User not logged in */
 			else{
 				return false;
