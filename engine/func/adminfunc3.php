@@ -163,7 +163,7 @@ if ($tpl_info[0]=='head' && file_exists(PATHROOT.'engine/_style_res/'.$config['e
 &lt;?php print_r( $user->userinfo ); <font color="orange">//<?php echo $lang_admincphelp[18]; ?></font> ?&gt;
 &lt;?php echo $user->userinfo['variable_name']; ?&gt;
 </pre></blockquote>
-<?php echo $lang_admincphelp[19]; ?>:<blockquote><pre>&lt;?php if (strtolower($user->userlevel)==strtolower($config['premission_admin'])) { ?&gt;<font color="blue"><?php echo $lang_admincphelp[20]; ?>.</font>&lt;?php } ?&gt;</pre></blockquote>
+<?php echo $lang_admincphelp[19]; ?>:<blockquote><pre>&lt;?php if ($user->isAdmin()) { ?&gt;<font color="blue"><?php echo $lang_admincphelp[20]; ?>.</font>&lt;?php } ?&gt;</pre></blockquote>
 
 <?php echo $lang_admincp['Menu Manager']; ?>:<blockquote><pre>&lt;?php echo menulinks("menu_group"," | "); ?&gt;</pre></blockquote>
 

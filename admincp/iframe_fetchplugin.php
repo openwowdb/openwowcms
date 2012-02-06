@@ -28,7 +28,7 @@ if(!$user->logged_in)
 	exit;
 }
 
-if (strtolower($user->userlevel) <> strtolower($config['premission_admin']))
+if (!$user->isAdmin())
 {
 	header('Location: ../index.php');
 	exit;

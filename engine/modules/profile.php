@@ -16,7 +16,7 @@ if (!class_exists("profile"))
 
 		function canupdateinfo($userid, &$userinfo) {
 			global $user, $config, $db, $lang;
-			if ($user->userinfo['guid'] != $userid && strtolower($user->userinfo['gmlevel']) != strtolower($config['premission_admin']))
+			if ($user->userinfo['guid'] != $userid && !$user->isAdmin())
 				return;
 			?>
 			<form action="index.php?page=profile&id=<?php echo $userid; ?>" method="post">
@@ -48,10 +48,10 @@ if (!class_exists("profile"))
 						?>
 					</select></td></tr>
 					<tr><td><?php echo $lang['Question']; ?>:</td><td><input type="text" name="question" style="width:95%" maxlength="100" value="<?php echo $userinfo['question']; ?>" /></td></tr>
-					<tr><td valign="top"><?php echo $lang['Answer'].' ('.$lang['hidden']; ?>):</td><td><input type="text" name="answer" style="width:95%" maxlength="100" value="<?php if (strtolower($user->userinfo['gmlevel'])==strtolower($config['premission_admin'])) echo htmlspecialchars($userinfo['answer']); ?>" /></td></tr>
+					<tr><td valign="top"><?php echo $lang['Answer'].' ('.$lang['hidden']; ?>):</td><td><input type="text" name="answer" style="width:95%" maxlength="100" value="<?php if ($user->isAdmin()) echo htmlspecialchars($userinfo['answer']); ?>" /></td></tr>
 					<tr><td valign="top"><?php echo $lang['Password'].' ('.$lang['hidden']; ?>):</td><td><input type="text" name="password" style="width:95%" maxlength="100" value="" /></td></tr>
 					<?php
-					if (strtolower($user->userinfo['gmlevel'])==strtolower($config['premission_admin']))
+					if ($user->isAdmin())
 					{
 						echo '<tr><td>';
 
@@ -113,7 +113,7 @@ if (!class_exists("profile"))
 			$userinfo = $user->getUserInfo($userid, true);
 			//end info
 
-			if ($user->userinfo['guid'] == $userid or strtolower($user->userinfo['gmlevel']) == strtolower($config['premission_admin']))
+			if ($user->userinfo['guid'] == $userid or $user->isAdmin())
 			{
 				$avatar = preg_replace( "/[^A-Za-z0-9-() ]/", "", $_POST['avatar']);
 				if ($avatar != $userinfo['avatar'])
@@ -133,7 +133,7 @@ if (!class_exists("profile"))
 			}
 
 			//vote and donor points,gm and ban, only admins can change
-			if (strtolower($user->userinfo['gmlevel']) != strtolower($config['premission_admin']))
+			if (!$user->isAdmin())
 				return;
 
 			$vp = preg_replace( "/[^0-9]/", "", trim($_POST['vp']));

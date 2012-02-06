@@ -60,7 +60,7 @@ if (!class_exists("shoutbox"))
 			if (isset($_POST['del']) && isset($_POST['shoutid']))
 			{
 				// GM required
-				if (strtolower($user->userinfo['gmlevel']) != strtolower($config['premission_admin']))
+				if (!$user->isAdmin())
 					return;
 				$db->query("DELETE FROM ".$config['engine_web_db'].".mod_shoutbox WHERE id = ".$db->escape($_POST['shoutid'])) or die($db->getLastError());
 				echo '$("#shoutmsg' . $_POST['shoutid'].'").remove()';
@@ -112,7 +112,7 @@ if (!class_exists("shoutbox"))
 			echo '<font color="#00FFFF">'.$arr['message'].'</font><br> <small class="comments_poster" id="time_'.$arr['id'].'_update">('. nicetime($arr['timepost']).')</small>';
 			echo '<var id="time_' . $arr['id'] . '" style="display:none;">'.$arr['timepost'].'</var>';
 			// GM required
-			if (strtolower($user->userinfo['gmlevel']) == strtolower($config['premission_admin']))
+			if ($user->isAdmin())
 				echo ' <a href="javascript:void(0);" onclick="shoutbox.delshout('.$arr['id'].');">'.$lang['Delete'].'</a>';
 			echo '</div>';
 		}

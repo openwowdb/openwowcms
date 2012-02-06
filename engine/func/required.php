@@ -22,7 +22,7 @@ class Html {
 		global $lang,$db,$config,$user,$error_reporting_cache;
 
 		// cache it to file and then just INCLUDE that file (this will allow php)
-		if ((!file_exists('./engine/_cache/cache_page.php') or !file_exists('./engine/_cache/cache_menulinks.php') or !file_exists('./engine/_cache/cache_vote_loggedin.php') or !file_exists('./engine/_cache/cache_vote_loggedout.php')) or (isset($_GET['cache']) && strtolower($user->userlevel) == strtolower($config['premission_admin'])))
+		if ((!file_exists('./engine/_cache/cache_page.php') or !file_exists('./engine/_cache/cache_menulinks.php') or !file_exists('./engine/_cache/cache_vote_loggedin.php') or !file_exists('./engine/_cache/cache_vote_loggedout.php')) or (isset($_GET['cache']) && $user->isAdmin()))
 		{
 			// CACHE PAGE START
 			error_reporting($error_reporting_cache);
@@ -252,7 +252,7 @@ class Html {
 			echo $lang['Caching done in']." ".round((microtime()-TIMESTART),3)."s!</small></font><br>";
 
 			if (!isset($_GET['noreload']))
-				echo '<meta http-equiv="refresh" content="0;url=index.php/?cache=true&noreload=1" />';
+				echo '<meta http-equiv="refresh" content="0;url=index.php?cache=true&noreload=1" />';
 
 			return;
 		}
@@ -368,12 +368,12 @@ class Html {
 			}
 			elseif($sql2['linkprems']=='4') //logged in - admin
 			{
-				$stringstart=' if(strtolower($user->userlevel)==strtolower($config[\'premission_admin\'])){'.Html::ln();
+				$stringstart=' if($user->isAdmin()){'.Html::ln();
 				$stringend=' } ';
 			}
 			elseif($sql2['linkprems']=='5') //logged in - gms and admins
 			{
-				$stringstart=' if(strtolower($user->userlevel)==strtolower($config[\'premission_admin\']) or strtolower($user->userlevel)==strtolower($config[\'premission_gm\'])){'.Html::ln();
+				$stringstart=' if($user->isAdmin() or $user->isGM()){'.Html::ln();
 				$stringend=' } ';
 			}
 			else
@@ -513,7 +513,7 @@ class Html {
 			$style=$style.' | ';
 		}
 
-		if ($config['footer_detail'] == '1' or ($config['footer_detail'] == '2' && $user->userlevel == $config['premission_admin']))
+		if ($config['footer_detail'] == '1' or ($config['footer_detail'] == '2' && $user->isAdmin()))
 		{
 			return $lang['Page generated'].': '.round((microtime()-TIMESTART),2).' | '.$lang['Queries executed'].': '.$db->num_queries.' | '.$lang['Copyright'].' &copy; 2010-2011 | '.$style.$lang['Powered by'].': <a href="index.php?page=credits" title="">WWCv2</a>  | <a href="tos.php">'.$lang['Terms of Use'].'</a>';
 		}
@@ -575,7 +575,7 @@ class Html {
 
 		if (!array_key_exists($checkkey, $config) && $checkkey != '')
 		{
-			if (strtolower($user->userlevel) == strtolower($config['premission_admin']))
+			if ($user->isAdmin())
 			{
 				$i=0;
 

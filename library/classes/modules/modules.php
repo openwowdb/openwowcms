@@ -56,7 +56,7 @@ class module_base {
 				return false;
 		}
 
-		if (strtolower($user->userlevel) != strtolower($config['premission_admin']))
+		if (!$user->isAdmin())
 		{
 			echo "<div style='padding:4px; background:white;color:black;text-align:center; border:solid 1px black'>Admin needs to install this module first. If you are admin, please login with your admin account and revisit this module page.</div>";
 			return false;

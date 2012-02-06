@@ -28,8 +28,7 @@ if ($_GET['newsid'])
 	{
 ?>
 <textarea name="comment<?php echo $newsid; ?>" id="comment<?php echo $newsid; ?>" style="width:95%"></textarea>
-<span class="news_comment_post"><a href="javascript:void();" onclick="$.post('./engine/dynamic/news_comments.php?newsid=<?php echo $newsid; ?>', {comment<?php echo $newsid; ?>:document.getElementById('comment<?php echo $newsid; ?>').value}, function(data) {ajax_loadContent('comments_first<?php echo $newsid.'_'.$start; ?>','./engine/dynamic/news_comments.php?newsid=<?php echo $newsid; ?>&latest=true&nobox&nomore&nocache=<?php echo rand(1,9999999); ?>','false')});return false;
-"><?php echo $lang['Post comment'] ?></a></span>
+<span class="news_comment_post"><a href="javascript:void();" onclick="$.post('./engine/dynamic/news_comments.php?newsid=<?php echo $newsid; ?>', {comment<?php echo $newsid; ?>:document.getElementById('comment<?php echo $newsid; ?>').value}, function(data) {ajax_loadContent('comments_first<?php echo $newsid.'_'.$start; ?>','./engine/dynamic/news_comments.php?newsid=<?php echo $newsid; ?>&latest=true&nobox&nomore&nocache=<?php echo rand(1,9999999); ?>','false')});return false;"><?php echo $lang['Post comment'] ?></a></span>
 <?php
 echo '<div id="comments_first'.$newsid.'_'.$start.'"></div>';
 }
@@ -55,9 +54,8 @@ elseif(isset($_GET['delete']))
 	//we have to get comment with his id and check poster.... oh god help us all...
 	$comments_sql=$db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_news_c WHERE id='".$newsid."' LIMIT 1") or die($db->getLastError());
 	$comments=$db->getRow($comments_sql);
-	if($user->logged_in && strtoupper($comments['poster']) == strtoupper($user->username) or (strtolower($user->userlevel)==strtolower($config['premission_admin']) or strtolower($user->userlevel)==strtolower($config['premission_gm']))){
+	if($user->logged_in && (strtoupper($comments['poster']) == strtoupper($user->username) or $user->isAdmin() or $user->isGM())) {
 		$db->query("DELETE FROM ".$config['engine_web_db'].".wwc2_news_c WHERE id='".$newsid."' LIMIT 1") or die($db->getLastError());
-
 	}
 	exit;
 }
@@ -77,7 +75,7 @@ if ($db->numRows()<>'0')
 		else
 			$avatarurl='./engine/res/avatars/'.$userinfo['avatar'].'.gif';
 		echo '<div id="singlecomment'.$comments['id'].'">';
-		if($user->logged_in && strtoupper($comments['poster']) == strtoupper($user->username) or (strtolower($user->userlevel)==strtolower($config['premission_admin']) or strtolower($user->userlevel)==strtolower($config['premission_gm'])))
+		if($user->logged_in && (strtoupper($comments['poster']) == strtoupper($user->username) or $user->isAdmin() or $user->isGM()))
 			echo '<span style="float:right"><a href="javascript:void();" onclick="ajax_loadContent(\'singlecomment'.$comments['id'].'\',\'./engine/dynamic/news_comments.php?newsid='.$comments['id'].'&start='.$start.'&nobox&nomore&delete\',\'false\');return false;">[x]</a></span>';
 
 		echo '<table width="100%" border="0" cellspacing="3px">

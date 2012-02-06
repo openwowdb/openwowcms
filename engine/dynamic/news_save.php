@@ -13,7 +13,7 @@ include (PATHROOT.'engine/init.php');
 include_once(PATHROOT."engine/func/parser.php");
 include_once(PATHROOT."engine/func/nicetime.php");
 /* EXIT if no premission */
-if (strtolower($user->userlevel)<>strtolower($config['premission_admin'])) exit;
+if (!$user->isAdmin()) exit;
 
 
 if ($_GET['id'] && trim ($_GET['id'])<>'')
@@ -44,5 +44,5 @@ if ($_GET['id'] && trim ($_GET['id'])<>'')
 	}
 	else
 	exit;
-	
+
 }

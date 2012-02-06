@@ -74,9 +74,9 @@ class SessionUser
 	}
 
 	/**
-	 * startSession - Performs all the actions necessary to 
+	 * startSession - Performs all the actions necessary to
 	 * initialize this session object. Tries to determine if the
-	 * the user has logged in already, and sets the variables 
+	 * the user has logged in already, and sets the variables
 	 * accordingly. Also takes advantage of this page load to
 	 * update the active visitors tables.
 	 */
@@ -99,11 +99,11 @@ class SessionUser
 		else{
 			$db->addActiveUser($this->username, $this->time);
 		}
-		
+
 		/* Remove inactive visitors from database */
 		$db->removeInactiveUsers();
 		$db->removeInactiveGuests();
-		
+
 		/* Set referrer page */
 		if(isset($_SESSION['url'])){
 			$this->referrer = $_SESSION['url'];
@@ -119,7 +119,7 @@ class SessionUser
 	 * checkLogin - Checks if the user has already previously
 	 * logged in, and a session with the user has already been
 	 * established. Also checks to see if user has been remembered.
-	 * If so, the database is queried to make sure of the user's 
+	 * If so, the database is queried to make sure of the user's
 	 * authenticity. Returns true if the user has logged in.
 	 **/
 	function checkLogin(){
@@ -129,11 +129,11 @@ class SessionUser
 			$this->username = $_SESSION['username'] = $_COOKIE['cookname'];
 			$this->userid   = $_SESSION['userid']   = $_COOKIE['cookid'];
 		}
-		
+
 		/* Username and userid have been set and not guest */
 		if(isset($_SESSION['username']) && isset($_SESSION['userid']) &&
 			$_SESSION['username'] != GUEST_NAME){
-				
+
 				/* Confirm that username and userid are valid */
 				if($this->confirmUserID($_SESSION['username'], $_SESSION['userid']) != 0){
 					/* Variables are incorrect, user not logged in */
@@ -142,14 +142,14 @@ class SessionUser
 					unset($_SESSION['userid']);
 					return false;
 				}
-				
+
 				/* User is logged in, set class variables */
 				$this->userinfo  = $this->getUserInfo($_SESSION['username']);
 				$this->username  = $this->userinfo['username'];
 				$this->userid    = $_SESSION['userid'];
 				//$this->userguid  = $this->userinfo['guid'];
 				$this->userlevel = $this->userinfo['gmlevel'];
-				
+
 				return true;
 			}
 
@@ -158,307 +158,315 @@ class SessionUser
 				return false;
 			}
 		}
-		/**
-		   * confirmUserID - Checks whether or not the given
-		   * username is in the database, if so it checks if the
-		   * given userid is the same userid in the database
-		   * for that user. If the user doesn't exist or if the
-		   * userids don't match up, it returns an error code
-		   * (1 or 2). On success it returns 0.
-		   */
-		function confirmUserID($username, $userid){
-			global $db;
-			/* Add slashes if necessary (for query) */
-			if(!get_magic_quotes_gpc()) {
-				$username = addslashes($username);
-			}
+	/**
+		 * confirmUserID - Checks whether or not the given
+		 * username is in the database, if so it checks if the
+		 * given userid is the same userid in the database
+		 * for that user. If the user doesn't exist or if the
+		 * userids don't match up, it returns an error code
+		 * (1 or 2). On success it returns 0.
+		 */
+	function confirmUserID($username, $userid){
+		global $db;
+		/* Add slashes if necessary (for query) */
+		if(!get_magic_quotes_gpc()) {
+			$username = addslashes($username);
+		}
 
-			/* Verify that user is in database */
-			$q = "SELECT userid FROM ".TBL_USERS." WHERE UPPER(acc_login) = '".strtoupper($username)."'";
-			$result = $db->query($q);
-			
-			if(!$result || ($db->numRows() < 1)){
-				return 1; //Indicates username failure
-			}
+		/* Verify that user is in database */
+		$q = "SELECT userid FROM ".TBL_USERS." WHERE UPPER(acc_login) = '".strtoupper($username)."'";
+		$result = $db->query($q);
 
-			/* Retrieve userid from result, strip slashes */
-			$dbarray = $db->getRow($result);
-			$dbarray[0] = stripslashes($dbarray[0]);
-			$userid = stripslashes($userid);
+		if(!$result || ($db->numRows() < 1)){
+			return 1; //Indicates username failure
+		}
 
-			/* Validate that userid is correct */
-			if($userid == $dbarray[0]){
-				return 0; //Success! Username and userid confirmed
+		/* Retrieve userid from result, strip slashes */
+		$dbarray = $db->getRow($result);
+		$dbarray[0] = stripslashes($dbarray[0]);
+		$userid = stripslashes($userid);
+
+		/* Validate that userid is correct */
+		if($userid == $dbarray[0]){
+			return 0; //Success! Username and userid confirmed
+		}
+		else{
+			return 2; //Indicates userid invalid
+		}
+	}
+	/**
+	 * login - The user has submitted his username and password
+	 * through the login form, this function checks the authenticity
+	 * of that information in the database and creates the session.
+	 * Effectively logging in the user if all goes well.
+	 */
+	function login($subuser, $subpass, $subremember){
+		global $db, $user, $lang;  //The database and form object
+
+		/* Username error checking */
+		$field = "user";  //Use field name for username
+		if(!$subuser || strlen($subuser = trim($subuser)) == 0){
+			Form::setError($field, "* ".$lang['Username']." ".$lang['not entered']);
+		}
+		else{
+			/* Check if username is not alphanumeric */
+			if(!ctype_alnum($subuser)){
+				Form::setError($field, "* ".$lang['Username']." ".$lang['not alphanumeric']);
 			}
-			else{
-				return 2; //Indicates userid invalid
+			/* Check if username is banned ingame */
+			else if($user->usernameBanned($subuser)){
+				Form::setError($field, "* ".$lang['Username'].' '.strtolower($lang['Banned']));
+			}
+			/* Check if username is banned website */
+			else if($db->usernameBanned($subuser)){
+				Form::setError($field, "* ".$lang['Username'].' '.strtolower($lang['Banned']));
 			}
 		}
+
+		/* Password error checking */
+		$field = "pass";  //Use field name for password
+		if(!$subpass){
+			Form::setError($field, "* ".$lang['Password']." ".$lang['not entered']);
+		}
+
+		/* Return if form errors exist */
+		if(Form::$num_errors > 0){
+			return false;
+		}
+
+		/* Checks that username is in database and password is correct */
+		$subuser = stripslashes($subuser);
+		$result = $user->confirmUserPass($subuser, $subpass);
+
+		/* Check error codes */
+		if($result == 1){
+			$field = "user";
+			Form::setError($field, "* ".$lang['Username']." not found");
+		}
+		else if($result == 2){
+			$field = "pass";
+			Form::setError($field, "* ".$lang['Invalid']." ".strtolower($lang['Password']));
+		}
+
+		/* Return if form errors exist */
+		if(Form::$num_errors > 0){
+			return false;
+		}
+		/* Insert data to wwc2_users_more if doesnt exists */
+		$db->addUser_more($subuser);
+
+		/* Username and password correct, register session variables */
+		$this->userinfo  = $user->getUserInfo($subuser);
+		$this->username  = $_SESSION['username'] =  $this->userinfo['username'];
+		//$this->userguid  = $_SESSION['userguid']   = $this->userinfo['guid'];
+		$this->userid    = $_SESSION['userid']   = $this->generateRandID();
+		$this->userlevel = $this->userinfo['gmlevel'];
+
+
+		/* Insert userid into database and update active users table */
+		$db->updateUserField($this->username, "userid", $this->userid);
+		$db->addActiveUser($this->username, $this->time);
+		$db->removeActiveGuest($_SERVER['REMOTE_ADDR']);
+
 		/**
-		 * login - The user has submitted his username and password
-		 * through the login form, this function checks the authenticity
-		 * of that information in the database and creates the session.
-		 * Effectively logging in the user if all goes well.
+		 * This is the cool part: the user has requested that we remember that
+		 * he's logged in, so we set two cookies. One to hold his username,
+		 * and one to hold his random value userid. It expires by the time
+		 * specified in constants. Now, next time he comes to our site, we will
+		 * log him in automatically, but only if he didn't log out before he left.
 		 */
-		function login($subuser, $subpass, $subremember){
-			global $db, $user, $lang;  //The database and form object
+		if($subremember){
+			setcookie("cookname", $this->username, time()+COOKIE_EXPIRE, COOKIE_PATH);
+			setcookie("cookid",   $this->userid,   time()+COOKIE_EXPIRE, COOKIE_PATH);
+		}
 
-			/* Username error checking */
-			$field = "user";  //Use field name for username
-			if(!$subuser || strlen($subuser = trim($subuser)) == 0){
-				Form::setError($field, "* ".$lang['Username']." ".$lang['not entered']);
-			}
-			else{
-				/* Check if username is not alphanumeric */
-				if(!ctype_alnum($subuser)){
-					Form::setError($field, "* ".$lang['Username']." ".$lang['not alphanumeric']);
-				}
-				/* Check if username is banned ingame */
-				else if($user->usernameBanned($subuser)){
-					Form::setError($field, "* ".$lang['Username'].' '.strtolower($lang['Banned']));
-				} 
-				/* Check if username is banned website */
-				else if($db->usernameBanned($subuser)){
-					Form::setError($field, "* ".$lang['Username'].' '.strtolower($lang['Banned']));
-				} 
-			}
-			
-			/* Password error checking */
-			$field = "pass";  //Use field name for password
-			if(!$subpass){
-				Form::setError($field, "* ".$lang['Password']." ".$lang['not entered']);
-			}
-			
-			/* Return if form errors exist */
-			if(Form::$num_errors > 0){
-				return false;
-			}
+		/* Login completed successfully */
+		return true;
+	}
 
-			/* Checks that username is in database and password is correct */
+	/**
+	 * logout - Gets called when the user wants to be logged out of the
+	 * website. It deletes any cookies that were stored on the users
+	 * computer as a result of him wanting to be remembered, and also
+	 * unsets session variables and demotes his user level to guest.
+	 */
+	function logout(){
+
+		global $db;  //The database connection
+		/**
+		 * Delete cookies - the time must be in the past,
+		 * so just negate what you added when creating the
+		 * cookie.
+		 */
+		if(isset($_COOKIE['cookname']) && isset($_COOKIE['cookid'])){
+			setcookie("cookname", "", time()-COOKIE_EXPIRE, COOKIE_PATH);
+			setcookie("cookid",   "", time()-COOKIE_EXPIRE, COOKIE_PATH);
+		}
+
+		/* Unset PHP session variables */
+		unset($_SESSION['username']);
+		unset($_SESSION['userid']);
+
+		/* Reflect fact that user has logged out */
+		$this->logged_in = false;
+
+		/**
+		 * Remove from active users table and add to
+		 * active guests tables.
+		 */
+		$db->removeActiveUser($this->username);
+		$db->addActiveGuest($_SERVER['REMOTE_ADDR'], $this->time);
+
+		/* Set user level to guest */
+		$this->username  = GUEST_NAME;
+		$this->userlevel = 0;
+	}
+
+	/**
+	 * register - Gets called when the user has just submitted the
+	 * registration form. Determines if there were any errors with
+	 * the entry fields, if so, it records the errors and returns
+	 * 1. If no errors were found, it registers the new user and
+	 * returns 0. Returns 2 if registration failed.
+	 */
+	function register($subuser, $subpass, $subemail){
+		global $db, $user,$lang;//, $mailer;  //The database, form and mailer object
+
+		/* Username error checking */
+		$field = "user_name";  //Use field name for username
+
+		if(!$subuser || strlen($subuser = trim($subuser)) == 0){
+			Form::setError($field, "* Username not entered");
+		}
+		else{
+			/* Spruce up username, check length */
 			$subuser = stripslashes($subuser);
-			$result = $user->confirmUserPass($subuser, $subpass);
-
-			/* Check error codes */
-			if($result == 1){
-				$field = "user";
-				Form::setError($field, "* ".$lang['Username']." not found");
+			if(strlen($subuser) < 5){
+				Form::setError($field, "* ".$lang['Username']." ".$lang['below 5 characters']."");
 			}
-			else if($result == 2){
-				$field = "pass";
-				Form::setError($field, "* ".$lang['Invalid']." ".strtolower($lang['Password']));
+			else if(strlen($subuser) > 30){
+				Form::setError($field, "* ".$lang['Username']." ".$lang['above 30 characters']."");
 			}
-			
-			/* Return if form errors exist */
-			if(Form::$num_errors > 0){
-				return false;
+			/* Check if username is not alphanumeric */
+			else  if(!ctype_alnum($subuser)){
+				Form::setError($field, "* ".$lang['Username']." ".$lang['not alphanumeric']."");
 			}
-			/* Insert data to wwc2_users_more if doesnt exists */
-			$db->addUser_more($subuser);
-			
-			/* Username and password correct, register session variables */
-			$this->userinfo  = $user->getUserInfo($subuser);
-			$this->username  = $_SESSION['username'] =  $this->userinfo['username'];
-			//$this->userguid  = $_SESSION['userguid']   = $this->userinfo['guid'];
-			$this->userid    = $_SESSION['userid']   = $this->generateRandID();
-			$this->userlevel = $this->userinfo['gmlevel'];
-			
+			/* Check if username is reserved */
+			else if(strcasecmp($subuser, GUEST_NAME) == 0){
+				Form::setError($field, "* ".$lang['Username']." ".$lang['reserved word']."");
+			}
+			/* Check if username is already in use */
+			else if($user->usernameTaken($subuser)){
+				Form::setError($field, "* ".$lang['Username']." ".$lang['already in use']."");
+			}
+			/* Check if username is banned */
+			else if($user->usernameBanned($subuser)){
+				Form::setError($field, "* ".$lang['Username']." ".strtolower($lang['Banned']));
+			}
+		}
 
-			/* Insert userid into database and update active users table */
-			$db->updateUserField($this->username, "userid", $this->userid);
-			$db->addActiveUser($this->username, $this->time);
-			$db->removeActiveGuest($_SERVER['REMOTE_ADDR']);
-
+		/* Password error checking */
+		$field = "pass_word";  //Use field name for password
+		if(!$subpass){
+			Form::setError($field, "* ".$lang['Password']." ".$lang['not entered']."");
+		}
+		else{
+			/* Spruce up password and check length*/
+			$subpass = stripslashes($subpass);
+			if(strlen($subpass) < 5){
+				Form::setError($field, "* ".$lang['Password']." ".$lang['below 5 characters']."");
+			}
+			/* Check if password is not alphanumeric */
+			else if(!ctype_alnum($subpass = trim($subpass))){
+				Form::setError($field, "* ".$lang['Password']." ".$lang['not alphanumeric']."");
+			}
 			/**
-			 * This is the cool part: the user has requested that we remember that
-			 * he's logged in, so we set two cookies. One to hold his username,
-			 * and one to hold his random value userid. It expires by the time
-			 * specified in constants. Now, next time he comes to our site, we will
-			 * log him in automatically, but only if he didn't log out before he left.
+			 * Note: I trimmed the password only after I checked the length
+			 * because if you fill the password field up with spaces
+			 * it looks like a lot more characters than 4, so it looks
+			 * kind of stupid to report "password too short".
 			 */
-			if($subremember){
-				setcookie("cookname", $this->username, time()+COOKIE_EXPIRE, COOKIE_PATH);
-				setcookie("cookid",   $this->userid,   time()+COOKIE_EXPIRE, COOKIE_PATH);
-			}
-			
-			/* Login completed successfully */
-			return true;
 		}
 
-		/**
-		 * logout - Gets called when the user wants to be logged out of the
-		 * website. It deletes any cookies that were stored on the users
-		 * computer as a result of him wanting to be remembered, and also
-		 * unsets session variables and demotes his user level to guest.
-		 */
-		function logout(){
-			
-			global $db;  //The database connection
-			/**
-			 * Delete cookies - the time must be in the past,
-			 * so just negate what you added when creating the
-			 * cookie.
-			 */
-			if(isset($_COOKIE['cookname']) && isset($_COOKIE['cookid'])){
-				setcookie("cookname", "", time()-COOKIE_EXPIRE, COOKIE_PATH);
-				setcookie("cookid",   "", time()-COOKIE_EXPIRE, COOKIE_PATH);
+		/* Email error checking */
+		$field = "email";  //Use field name for email
+		if(!$subemail || strlen($subemail = trim($subemail)) == 0){
+			Form::setError($field, "* Email ".$lang['not entered']);
+		}
+		else{
+			if(!preg_match('/^([a-z0-9])(([-a-z0-9._])*([a-z0-9]))*\@([a-z0-9])*(\.([a-z0-9])([-a-z0-9_-])+)*$/i', $subemail)){
+				Form::setError($field, "* Email ".strtolower($lang['Invalid']));
 			}
-
-			/* Unset PHP session variables */
-			unset($_SESSION['username']);
-			unset($_SESSION['userid']);
-
-			/* Reflect fact that user has logged out */
-			$this->logged_in = false;
-
-			/**
-			 * Remove from active users table and add to
-			 * active guests tables.
-			 */
-			$db->removeActiveUser($this->username);
-			$db->addActiveGuest($_SERVER['REMOTE_ADDR'], $this->time);
-
-			/* Set user level to guest */
-			$this->username  = GUEST_NAME;
-			$this->userlevel = 0;
+			$subemail = stripslashes($subemail);
 		}
 
-		/**
-		 * register - Gets called when the user has just submitted the
-		 * registration form. Determines if there were any errors with
-		 * the entry fields, if so, it records the errors and returns
-		 * 1. If no errors were found, it registers the new user and
-		 * returns 0. Returns 2 if registration failed.
-		 */
-		function register($subuser, $subpass, $subemail){
-			global $db, $user,$lang;//, $mailer;  //The database, form and mailer object
-
-			/* Username error checking */
-			$field = "user_name";  //Use field name for username
-
-			if(!$subuser || strlen($subuser = trim($subuser)) == 0){
-				Form::setError($field, "* Username not entered");
-			}
-			else{
-				/* Spruce up username, check length */
-				$subuser = stripslashes($subuser);
-				if(strlen($subuser) < 5){
-					Form::setError($field, "* ".$lang['Username']." ".$lang['below 5 characters']."");
-				}
-				else if(strlen($subuser) > 30){
-					Form::setError($field, "* ".$lang['Username']." ".$lang['above 30 characters']."");
-				}
-				/* Check if username is not alphanumeric */
-				else  if(!ctype_alnum($subuser)){
-					Form::setError($field, "* ".$lang['Username']." ".$lang['not alphanumeric']."");
-				}
-				/* Check if username is reserved */
-				else if(strcasecmp($subuser, GUEST_NAME) == 0){
-					Form::setError($field, "* ".$lang['Username']." ".$lang['reserved word']."");
-				}
-				/* Check if username is already in use */
-				else if($user->usernameTaken($subuser)){
-					Form::setError($field, "* ".$lang['Username']." ".$lang['already in use']."");
-				}
-				/* Check if username is banned */
-				else if($user->usernameBanned($subuser)){
-					Form::setError($field, "* ".$lang['Username']." ".strtolower($lang['Banned']));
-				}
-			}
-
-			/* Password error checking */
-			$field = "pass_word";  //Use field name for password
-			if(!$subpass){
-				Form::setError($field, "* ".$lang['Password']." ".$lang['not entered']."");
-			}
-			else{
-				/* Spruce up password and check length*/
-				$subpass = stripslashes($subpass);
-				if(strlen($subpass) < 5){
-					Form::setError($field, "* ".$lang['Password']." ".$lang['below 5 characters']."");
-				}
-				/* Check if password is not alphanumeric */
-				else if(!ctype_alnum($subpass = trim($subpass))){
-					Form::setError($field, "* ".$lang['Password']." ".$lang['not alphanumeric']."");
-				}
-				/**
-				 * Note: I trimmed the password only after I checked the length
-				 * because if you fill the password field up with spaces
-				 * it looks like a lot more characters than 4, so it looks
-				 * kind of stupid to report "password too short".
-				 */
-			}
-
-			/* Email error checking */
-			$field = "email";  //Use field name for email
-			if(!$subemail || strlen($subemail = trim($subemail)) == 0){
-				Form::setError($field, "* Email ".$lang['not entered']);
-			}
-			else{
-				if(!preg_match('/^([a-z0-9])(([-a-z0-9._])*([a-z0-9]))*\@([a-z0-9])*(\.([a-z0-9])([-a-z0-9_-])+)*$/i', $subemail)){
-					Form::setError($field, "* Email ".strtolower($lang['Invalid']));
-				}
-				$subemail = stripslashes($subemail);
-			}
-
-			/* Errors exist, have user correct them */
-			if(Form::$num_errors > 0){
-				return 1;  //Errors with form
-			}
-			/* No errors, add the new account to the */
-			else{
-				if($user->addNewUser($subuser, $subpass, $subemail)){
-					//if(EMAIL_WELCOME)
-					//$mailer->sendWelcome($subuser,$subemail,$subpass);
-					return 0;  //New user added succesfully
-				}else{
-					return 2;  //Registration attempt failed
-				}
+		/* Errors exist, have user correct them */
+		if(Form::$num_errors > 0){
+			return 1;  //Errors with form
+		}
+		/* No errors, add the new account to the */
+		else{
+			if($user->addNewUser($subuser, $subpass, $subemail)){
+				//if(EMAIL_WELCOME)
+				//$mailer->sendWelcome($subuser,$subemail,$subpass);
+				return 0;  //New user added succesfully
+			}else{
+				return 2;  //Registration attempt failed
 			}
 		}
+	}
 
-		function avatar($imagename)
-		{
-			if (!file_exists(PATHROOT.'/engine/res/avatars/'.$imagename.'.gif'))
-				return './engine/res/avatars/default.gif';
-			else
-				return './engine/res/avatars/'.$imagename.'.gif';
-		}
+	function avatar($imagename) {
+		if (!file_exists(PATHROOT.'/engine/res/avatars/'.$imagename.'.gif'))
+			return './engine/res/avatars/default.gif';
+		else
+			return './engine/res/avatars/'.$imagename.'.gif';
+	}
 
-		/**
-		 * isAdmin - Returns true if currently logged in user is
-		 * an administrator, false otherwise.
-		 */
-		function isAdmin(){
-			return ($this->userlevel == ADMIN_LEVEL ||
-				$this->username  == ADMIN_NAME);
-		}
+	/**
+	 * isAdmin - Returns true if currently logged in user is
+	 * an administrator, false otherwise.
+	 */
+	function isAdmin(){
+		global $config;
+		return (strtolower($this->userlevel) == strtolower($config['premission_admin']));
+	}
 
-		/**
-		* generateRandID - Generates a string made up of randomized
-		* letters (lower and upper case) and digits and returns
-		* the md5 hash of it to be used as a userid.
-		*/
-		function generateRandID(){
-			return md5($this->generateRandStr(16));
-		}
+	/**
+	 * isGM - Returns true if currently logged in user is
+	 * a Game Master, false otherwise.
+	 */
+	function isGM(){
+		global $config;
+		return (strtolower($this->userlevel) == strtolower($config['premission_gm']));
+	}
 
-		/**
-		 * generateRandStr - Generates a string made up of randomized
-		 * letters (lower and upper case) and digits, the length
-		 * is a specified parameter.
-		 */
-		function generateRandStr($length){
-			$randstr = "";
-			for($i=0; $i<$length; $i++){
-				$randnum = mt_rand(0,61);
-				if($randnum < 10){
-					$randstr .= chr($randnum+48);
-				}else if($randnum < 36){
-					$randstr .= chr($randnum+55);
-				}else{
-					$randstr .= chr($randnum+61);
-				}
+	/**
+	* generateRandID - Generates a string made up of randomized
+	* letters (lower and upper case) and digits and returns
+	* the md5 hash of it to be used as a userid.
+	*/
+	function generateRandID(){
+		return md5($this->generateRandStr(16));
+	}
+
+	/**
+	 * generateRandStr - Generates a string made up of randomized
+	 * letters (lower and upper case) and digits, the length
+	 * is a specified parameter.
+	 */
+	function generateRandStr($length){
+		$randstr = "";
+		for($i=0; $i<$length; $i++){
+			$randnum = mt_rand(0,61);
+			if($randnum < 10){
+				$randstr .= chr($randnum+48);
+			}else if($randnum < 36){
+				$randstr .= chr($randnum+55);
+			}else{
+				$randstr .= chr($randnum+61);
 			}
-			return $randstr;
 		}
-	};
+		return $randstr;
+	}
+};
