@@ -82,7 +82,6 @@ require (PATHROOT.'engine/lang/' . strtolower($lang) . '/installer.php');
 /**
 * Install
 *
-* @package Web-WoW
 * @author AXE (creator), maverfax (debugger)
 */
 class Install {

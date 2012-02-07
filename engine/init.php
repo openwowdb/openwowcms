@@ -10,10 +10,14 @@
 #   License          : GPLv3
 ##################################################################
 
-
 if (!defined('PATHROOT'))
 {
 	define('PATHROOT', './');
+}
+
+if (version_compare(PHP_VERSION, '5.0.0') < 0)
+{
+	die('This CMS is set to work only on PHP versions 5.0.0 and above, your currently running on version: ' . PHP_VERSION .' upgrade @ <a href="http://windows.php.net/download/">http://windows.php.net/download/</a>');
 }
 
 // Strip magic quotes from request data.
