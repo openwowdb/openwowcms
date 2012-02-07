@@ -99,7 +99,7 @@ class module_base {
 		echo '<div style="padding:4px;  background:white;color:black;text-align:center; border:solid 1px black">';
 		echo 'This module is now installed, please go to:<br>Administration Panel &gt; Configuration Variables<br />';
 		echo 'and setup variables for this module.</div>';
-		Html::recache_cachefile();
+		Html::cache_configfile();
 	}
 }
 

@@ -263,8 +263,7 @@ class Update {
 	content
 	[_fileend_]
 	*/
-	function Update_file($file,$stylepath=false)
-	{
+	function Update_file($file,$stylepath=false) {
 
 		global $config,$lang_admincp;
 		$code = 0;
@@ -353,8 +352,7 @@ class Update {
 	* 0 -> file content {admincp} is variable that needs to parsed
 	* 1 -> file version
 	*/
-	function getUpdatedFile($fileurl)//returns array
-	{
+	function getUpdatedFile($fileurl) {
 		global $db,$config;
 
 		$content=array();
@@ -432,8 +430,8 @@ class Update {
 		}
 
 	}
-	function rstrtrim($str, $remove=null)
-	{
+
+	function rstrtrim($str, $remove=null) {
 		$str    = (string)$str;
 		$remove = (string)$remove;
 
@@ -452,7 +450,7 @@ class Update {
 
 		return rtrim($str);
 
-	} //End of function rstrtrim($str, $remove=null)
+	}
 }
 $updateclass= new Update;
 
