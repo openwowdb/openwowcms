@@ -46,16 +46,13 @@ if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())
 
 if (file_exists(PATHROOT . 'config/config.php') && file_exists(PATHROOT . 'config/config_db.php'))
 {
+	include PATHROOT."library/library.php";
 	require_once (PATHROOT."config/config.php");
 	require_once (PATHROOT."config/config_db.php");
 
 	// Include mysql engine and start connection if configs are valid
 	if (defined('AXE_db') && defined('AXE'))
 	{
-		//require_once (PATHROOT . 'engine/db/mysql.php');
-		if (!class_exists("library"))
-			include PATHROOT."library/library.php";
-
 		library::create_dblink($db, "mysql");
 		$db->init($db_host, $db_user, $db_pass) or die('Unable to connect to MySQL server.<br>' . $db->getLastError());
 	}

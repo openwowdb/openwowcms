@@ -469,7 +469,7 @@ class Html {
 
 		if ($config['footer_detail'] == '1' or ($config['footer_detail'] == '2' && $user->isAdmin()))
 		{
-			return $lang['Page generated'].': '.round((microtime()-TIMESTART),2).' | '.$lang['Queries executed'].': '.$db->num_queries.' | '.$lang['Copyright'].' &copy; 2010-2011 | '.$style.$lang['Powered by'].': <a href="index.php?page=credits" title="">WWCv2</a>  | <a href="tos.php">'.$lang['Terms of Use'].'</a>';
+			return $lang['Page generated'].': '.round((microtime()-TIMESTART),2).' | '.$lang['Queries executed'].': '.database::$num_queries.' | '.$lang['Copyright'].' &copy; 2010-2011 | '.$style.$lang['Powered by'].': <a href="index.php?page=credits" title="">WWCv2</a>  | <a href="tos.php">'.$lang['Terms of Use'].'</a>';
 		}
 		else
 		{

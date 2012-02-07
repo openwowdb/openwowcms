@@ -7,18 +7,15 @@
  * @author:
 */
 
-abstract class database  {
-	public $prefix;
+abstract class database {
 	public $link_id;
 	public $query_result;
 	public $num_active_users;		//Number of active users viewing site
 	public $num_active_guests;		//Number of active guests viewing site
 	public $num_members;			//Number of signed-up users
 
-	public $saved_queries = array();
-	public $num_queries = 0;
-	public $string_queries = '';
-	public $ping = '';
+	static $num_queries = 0;
+	static $string_queries = '';
 
 	/**
 	 * init - Open database connection based on params

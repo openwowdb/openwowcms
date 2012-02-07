@@ -43,8 +43,8 @@ class database_mysql extends database {
 
 		if ($this->query_result)
 		{
-			++$this->num_queries;
-			$this->string_queries .= '<br>'.$sql;
+			self::$num_queries++;
+			self::$string_queries .= '<br>'.$sql;
 			return $this->query_result;
 		}
 		return false;

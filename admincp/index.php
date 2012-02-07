@@ -169,7 +169,7 @@ if(Form::$num_errors > 0){
 
 
 <?php
-echo '<small><center>'.$lang['Page generated'].': '.(microtime()-TIMESTART).' | '.$lang['Queries executed'].': '.$db->num_queries.'</center></small>';
+echo '<small><center>'.$lang['Page generated'].': '.(microtime()-TIMESTART).' | '.$lang['Queries executed'].': '.database::$num_queries.'</center></small>';
 if (($_GET['f']='stylemanager' or $_GET['f']='plugins') && (isset($_GET['template']) or (isset($_GET['x']) && !isset($_GET['noparse'])) )){
 ?>
 <script type="text/javascript">
