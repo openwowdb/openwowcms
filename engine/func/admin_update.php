@@ -23,12 +23,12 @@ if (!defined('AXE_db') && !defined('AXE'))
 class Update {
 
 	/**
-	* GetPatchInfo(){ - initiates in admin cp
+	* GetPatchInfo() - initiates in admin cp
 	* Prints whole Update text and iframe.
 	*/
 	function GetPatchInfo(){
-		global $lang_admincp,$config;
-		unset($_SESSION['update_files']);
+		global $lang_admincp, $config;
+		unset($_SESSION['update_shas']);
 		/**
 		* GET the latest patch information, also include the old patch, this file contains
 		* access limitator (for license), and all patch version file lists, it returns that file
@@ -36,33 +36,50 @@ class Update {
 		* fsockopen() method.
 		*/
 		$servername = preg_replace( "/[^a-zA-Z0-9]/", "", $config['title'] );
-		$file = $this->getUpdatedFile('projects/webwow_creator_v2/upgrade/update_core.php?license='.LICENSE.'&enginever='.VERSION.'&domain='.$_SERVER["SERVER_ADDR"].'&servername='.$servername.'&nocache='.rand(1,1000000000));
-		$file[0]=explode(Html::ln(),$file[0]);//FIX
-		$_SESSION['update_files']=$file[0];
+		$github = new github();
+		$commits = $github->get_commits();
+		//$file = $this->getUpdatedFile('projects/webwow_creator_v2/upgrade/update_core.php?license='.LICENSE.'&enginever='.VERSION.'&domain='.$_SERVER["SERVER_ADDR"].'&servername='.$servername.'&nocache='.rand(1,1000000000));
+		//$file[0]=explode(Html::ln(),$file[0]);//FIX
+		//$_SESSION['update_files']=$file[0];
 		echo '<h2>'.$lang_admincp['Update CMS'].'</h2> ';
 
-		if (!isset($_GET['start_cms'])){
+		/*if (!isset($_GET['start_cms'])){
 			if (file_exists(PATHROOT.$config['engine_acp_folder'].'/iframe_update2.php'))
 			{
 				echo '<div style="border:solid 1px orange;background-color:#f1c87b; padding:4px"><i>Updating updater itself (please wait a moment):</i><br><iframe src ="./iframe_update2.php" width="100%" height="50" frameborder="0" style="background: #f1c87b;"><p>Your browser does not support iframes.</p></iframe></div><br>';
 			}
-		}
+		}*/
 
-		if (VERSION>=$file[1])
-			{echo '<span style="font-weight:normal;color:green">CMS is up to date, you are using v'.$file[1].'.</span><br>';return;}
-		else
-			echo '<big><font color=green>'.$lang_admincp['Update is available'].' (<small>'.VERSION.'</small> to '.$file[1].')</font></big><br>';
-
-		echo $lang_admincp['File list in this update'].':<br>';
-		//make session so we can pass the filenames to iframe
-		foreach ($file[0] as $key => $value)
+		if (SHA_VERSION == $commits[0]->sha)
 		{
-			if ($value<>'')
-				echo "&nbsp;&nbsp;www/<span style='color:darkgray' id='filelist".$key."'>".$value.'</span><br>';
+			echo '<span style="font-weight:normal;color:green">CMS is up to date, you are using '.$github->create_link(SHA_VERSION).'.</span><br>';
+			return;
+		}
+		else
+			echo '<big><font color=green>'.$lang_admincp['Update is available'].' (<small>'.$github->create_link(SHA_VERSION).' to '.$github->create_link($commits[0]->sha).'</small>)</font></big><br>';
+
+		echo "<br><br><br>";
+		$files = array();
+		$_SESSION['update_shas'] = array();
+		foreach ($commits as $commit)
+		{
+			if ($commit->sha == SHA_VERSION) break;
+			$link = $github->create_link($commit->sha);
+			echo "&nbsp;&nbsp;<span style='color:darkgray' id='filelist".$commit->sha."'>".$link.'</span><br>';
+			echo "<pre class='code'>".$commit->commit->message."</pre><br>";
+			//array_push($_SESSION['update_shas'], $commit->sha);
+		}
+		$nextsha = 0;
+		$nextsha = $commits[0]->sha;
+		// No Updates
+		if (count($_SESSION['update_shas']) > 0)
+		{
+			$_SESSION['update_shas'] = array_reverse($_SESSION['update_shas']);
+			$nextsha = $_SESSION['update_shas'][0];
 		}
 
 		if (isset($_GET['start_cms'])){
-			echo '<iframe src ="./iframe_update.php?i=0&v='.$file[1].'" width="100%" height="150" frameborder="0" style="background: white"><p>Your browser does not support iframes.</p></iframe>';
+			echo '<iframe src ="./iframe_update.php?i=0&v='.$nextsha.'" width="100%" height="150" frameborder="0" style="background: white"><p>Your browser does not support iframes.</p></iframe>';
 		}
 		else
 		{
@@ -75,6 +92,7 @@ class Update {
 	* Prints whole Update text and iframe, prints form, with module selection, then sets $_SESSION[''] and transfers it to iframe.
 	*/
 	function GetModuleInfo(){
+		return;
 		global $lang_admincp,$lang_admincphelp;
 
 		unset($_SESSION['update_files']);
@@ -146,6 +164,7 @@ class Update {
 	* Prints all available styles links - drawn from webwow.
 	*/
 	function GetStylesInfo(){
+		return;
 
 		global $lang_admincp,$lang_admincphelp;
 		unset($_SESSION['update_files']);
@@ -168,7 +187,7 @@ class Update {
 	* $id -> webwow style id (ww_templateid) to indentify which style to download.
 	*/
 	function GetStyle($id,$confirm){ //$id is already filtered from other function
-
+return;
 		global $lang_admincp,$lang_admincphelp,$db,$config;
 		unset($_SESSION['update_files']);
 
@@ -361,6 +380,7 @@ class Update {
 	*/
 	function getUpdatedFile($fileurl) {
 		global $db,$config;
+		return;
 
 		$content=array();
 		$content[0]='';

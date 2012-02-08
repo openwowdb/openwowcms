@@ -16,6 +16,6 @@
 *
 ************************************************************************/
 define('VERSION','1.1.8');
-// mm/dd/yyyy
-define('LASTUPDATE','02/08/2012');
+define('LASTUPDATE','02/8/2012');
+define('SHA_VERSION', '4845b21243c4ba16f74af941689c9a82edc66fec');
 ?>

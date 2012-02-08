@@ -58,7 +58,10 @@ class adminfunc {
 	*/
 	function main(){
 		global $db,$lang_admincphelp, $lang_admincp;
-		$name=  $lang_admincp['License and Version'];
+		$name = $lang_admincp['License and Version'];
+		$github = new github();
+		error_reporting(-1);
+		$commit = $github->get_last_commit("Swiftsmoke", "openwowcms");
 		/* Print form */
 	?>
 	<h2><?php echo $name; ?></h2>
@@ -70,26 +73,30 @@ class adminfunc {
 				<table width="100%" border="0" >
 					<tr>
 						<td style="border:none"><font color="#009900"><strong><?php echo VERSION; ?></strong></font> (<?php echo $lang_admincp['last update']; ?>: <strong><?php echo LASTUPDATE; ?></strong> <font color="#808080"><?php echo $lang_admincp['m/d/y']; ?></font>) (<a href='?f=main&updatecms=true'><?php echo $lang_admincp['Update now']; ?></a>)</td>
-						<td width="300px" style="border:none"><iframe src="<?php echo 'http://'.WEBWOW.'/projects/webwow_creator_v2/upgrade/iframe_versioncheck.php?version='.VERSION.''; ?>" frameborder="0" height="15px" marginheight="0" marginwidth="0" style="width:100%; margin:0px; border-left:solid 1px gray"><?php echo $lang_admincp['Your browser does not support iframes.']; ?></iframe></td>
+						<td width="300px" style="border:none;border-left: solid 1px grey"><center><?php if (SHA_VERSION == $commit->sha) echo '<font color="green">CMS is up to date</font>'; else echo '<font color="red">CMS is out of date</font>';?></center></td>
 					</tr>
 				</table>
 			</td>
+		</tr>
+		<tr>
+			<td class="dark" style="text-align:right;">SHA Version</td>
+			<td><?php echo $github->create_link(SHA_VERSION);?></td>
 		</tr>
 		<tr>
 			<td class="dark" style="text-align:right;">PHP fsockopen():</td>
 			<td><?php if(function_exists("fsockopen")) echo $lang_admincp['Enabled']; else echo $lang_admincp['Disabled on this web server - Automated CMS update will not be possible.'];?></td>
 		</tr>
 		<tr>
+			<td class="dark" style="text-align:right;">PHP curl_init():</td>
+			<td><?php if(!function_exists("curl_init")) echo $lang_admincp['Enabled']; else echo 'Unavailable'; ?></td>
+		</tr>
+		<tr>
 			<td class="dark" style="text-align:right;">PHP info:</td>
 			<td><a href="./?f=phpinfoo"><?php echo $lang_admincp['View PHP info']; ?></a></td>
 		</tr>
-		<tr>
-			<td class="dark" style="text-align:right;"><?php echo $lang_admincp['License']; ?>:</td>
-			<td><?php echo LICENSE; ?></td>
-		</tr>
 	</table>
 	<?php
-		if(function_exists("fsockopen") && isset($_GET['updatecms']))
+		if((function_exists("fsockopen") || function_exists("curl_init")) && isset($_GET['updatecms']))
 		{
 			include_once(PATHROOT."engine/func/admin_update.php");
 			/*
