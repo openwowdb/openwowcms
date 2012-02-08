@@ -135,7 +135,7 @@ class filehandler {
 		rmdir($filename);
 	}
 
-	static function renameDir($old_filename, $new_filename, $directory = null) {
+	static function rename($old_filename, $new_filename, $directory = null) {
 		$old_filename = self::getFilename($old_filename, $directory);
 		$new_filename = self::getFilename($new_filename, $directory);
 		rename($old_filename, $new_filename);

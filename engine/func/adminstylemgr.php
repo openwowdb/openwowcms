@@ -1,6 +1,6 @@
 <?php
 /************************************************************************
-*													engine/func/adminfunc3.php
+*													engine/func/adminstylemgr.php
 *                            -------------------
 * 	 Copyright (C) 2011
 *

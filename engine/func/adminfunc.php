@@ -155,7 +155,7 @@ class adminfunc {
 	}
 
 	function stylemanager(){
-		include "../engine/func/adminfunc3.php";
+		include "../engine/func/adminstylemgr.php";
 	}
 
 	function cssmanager(){
@@ -449,7 +449,7 @@ class adminfunc {
 	}
 
 	function plugins() {
-		include "../engine/func/adminfunc2.php";
+		include "../engine/func/adminplugins.php";
 	}
 
 	/**
