@@ -380,10 +380,15 @@ class Html {
 		$sql1 = $db->query("SELECT * FROM ".TBL_CONFIG." WHERE conf_name LIKE 'vote_link_%' ORDER BY conf_name ASC")or die($db->getLastError());
 		while ($sql2=$db->getRow($sql1))
 		{
-			$id=preg_replace( "/vote_link_/", "", $sql2['conf_name'] );
-			$out1.='<span class="votelink" id="'.$sql2['conf_name'].'"><a href="'.$sql2['conf_value'].'" target="_blank" onclick="ajax_loadContent(\''.$sql2['conf_name'].'\',\'./engine/dynamic/vote_proccess.php?id='.$sql2['conf_name'].'\',\'<img src=./engine/_style_res/<?php echo $config[\'engine_styleid\'];?>/images/voteimg/'.$id.'.gif alt=[<?php echo $lang[\'Vote\'];?>]>\');"><img src="./engine/_style_res/<?php echo $config[\'engine_styleid\'];?>/images/voteimg/'.$id.'.gif" alt="[<?php echo $lang[\'Vote\'];?>]"></a></span>';
+			$id = preg_replace("/vote_link_/", "", $sql2['conf_name']);
+			$out1 .= '<?php global $user; if(!$user->hasVoted('.$id.')){?>';
+			$out1 .= '<span class="votelink" id="'.$sql2['conf_name'].'">
+			<a href="'.$sql2['conf_value'].'" target="_blank" onclick="ajax_loadContent(\''.$sql2['conf_name'].'\',\'./engine/dynamic/vote_proccess.php?id='.$sql2['conf_name'].'\',\'<img src=./engine/_style_res/<?php echo $config[\'engine_styleid\'];?>/images/voteimg/'.$id.'.gif alt=[<?php echo $lang[\'Vote\'];?>]>\');">
+				<img src="./engine/_style_res/<?php echo $config[\'engine_styleid\'];?>/images/voteimg/'.$id.'.gif" alt="[<?php echo $lang[\'Vote\'];?>]">
+			</a></span>';
+			$out1 .= "<?php } ?>";
 			//for guests:
-			$out2.='<span class="votelink"><a href="'.$sql2['conf_value'].'" target="_blank"><img src="./engine/_style_res/<?php echo $config[\'engine_styleid\'];?>/images/voteimg/'.$id.'.gif" alt="[<?php echo $lang[\'Vote\'];?>]"></a></span>';
+			$out2 .= '<span class="votelink"><a href="'.$sql2['conf_value'].'" target="_blank"><img src="./engine/_style_res/<?php echo $config[\'engine_styleid\'];?>/images/voteimg/'.$id.'.gif" alt="[<?php echo $lang[\'Vote\'];?>]"></a></span>';
 		}
 
 		/**

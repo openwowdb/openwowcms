@@ -474,4 +474,12 @@ class SessionUser {
 		}
 		return $randstr;
 	}
+
+	function hasVoted($id) {
+		global $db, $config;
+		$sql1 = $db->query("SELECT * FROM ".$config['engine_web_db'].".wwc2_vote_data WHERE siteid = '".$id."' AND timevoted >= '".@date("U")."' AND (userid = '".$this->userinfo['guid']."' OR voteip = '".$_SERVER['REMOTE_ADDR']."') LIMIT 1")or die($db->getLastError());
+		if ($db->numRows() == '1')
+			return true;
+		return false;
+	}
 };
