@@ -40,7 +40,6 @@ function __autoload($className) {
 *
 * Description for class library
 *
-* @author:
 */
 class library {
 	static $supportdbs = array();

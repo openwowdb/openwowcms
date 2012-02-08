@@ -40,6 +40,6 @@
 	/* Will not show NOTICE errors when caching, do not change. */
 	$error_reporting_cache='E_ALL';
 
-	require_once './engine/init.php';
+	include './engine/init.php';
 	Html::_construct();
 ?>

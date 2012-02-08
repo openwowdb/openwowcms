@@ -21,11 +21,11 @@
 # - initialization script
 ############################################################
 
-require("defines.php");
+include "defines.php";
 @set_time_limit(0);
 error_reporting(~E_NOTICE);
 /* Initilaze stuff */
-require(PATHROOT."engine/init.php");
+include PATHROOT."engine/init.php";
 
 /* If no premission redirect to main page */
 if(!$user->logged_in)
@@ -40,7 +40,7 @@ if (!$user->isAdmin())
 	exit;
 }
 /* Include admin functions */
-require_once(PATHROOT.'engine/func/admin_update.php');
+include PATHROOT.'engine/func/admin_update.php';
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

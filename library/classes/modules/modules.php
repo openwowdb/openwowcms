@@ -17,7 +17,6 @@
  *
  * Description for class module_base
  *
- * @author:
 */
 class module_base {
 	var $uniqueid;

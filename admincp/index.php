@@ -19,9 +19,9 @@
 # INCLUDES:
 # - initialization script
 error_reporting(~E_NOTICE);
-require("defines.php");
+include "defines.php";
 /* Initilaze stuff */
-require(PATHROOT."engine/init.php");
+include PATHROOT."engine/init.php";
 
 /* License */
 if (trim($config['license'])=='') define('LICENSE','FREE');

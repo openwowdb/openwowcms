@@ -2,7 +2,7 @@
 // variables passed to plugins -> $isplugin
 if (!class_exists("shoutbox"))
 {
-	require "./engine/modules/shoutbox.php";
+	include "./engine/modules/shoutbox.php";
 }
 else
 {

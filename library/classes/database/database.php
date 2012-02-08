@@ -18,7 +18,6 @@
  *
  * Description for abstract class database
  *
- * @author:
 */
 
 abstract class database {

@@ -15,23 +15,23 @@
 * 	 Updated: $Date 2012/02/08 14:00 $
 *
 ************************************************************************/
-require("defines.php");
+include "defines.php";
 @set_time_limit(0);
 /* Initilaze stuff */
-require(PATHROOT."engine/init.php");
+include PATHROOT."engine/init.php";
 
 /* If no premission redirect to main page */
 if(!$user->logged_in){
-header('Location: ../index.php');
-exit;
+	header('Location: ../index.php');
+	exit;
 }
 if (!$user->isAdmin()){
-header('Location: ../index.php');
-exit;
+	header('Location: ../index.php');
+	exit;
 }
 
 /* Include admin functions */
-require_once(PATHROOT.'engine/func/admin_update.php');
+include PATHROOT.'engine/func/admin_update.php';
 
 function redirect( $url ) {
 
