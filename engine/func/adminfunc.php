@@ -61,7 +61,7 @@ class adminfunc {
 		$name = $lang_admincp['License and Version'];
 		$github = new github();
 		error_reporting(-1);
-		$commit = $github->get_last_commit("Swiftsmoke", "openwowcms");
+		$commit = $github->get_last_commit();
 		/* Print form */
 	?>
 	<h2><?php echo $name; ?></h2>
@@ -88,7 +88,7 @@ class adminfunc {
 		</tr>
 		<tr>
 			<td class="dark" style="text-align:right;">PHP curl_init():</td>
-			<td><?php if(!function_exists("curl_init")) echo $lang_admincp['Enabled']; else echo 'Unavailable'; ?></td>
+			<td><?php if(function_exists("curl_init")) echo $lang_admincp['Enabled']; else echo 'Unavailable'; ?></td>
 		</tr>
 		<tr>
 			<td class="dark" style="text-align:right;">PHP info:</td>

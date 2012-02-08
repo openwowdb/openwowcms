@@ -1,8 +1,21 @@
 <?php
+
 class github {
 	var $gitapiurl = "https://api.github.com/";
 	var $username = "Swiftsmoke";
 	var $repo = "openwowcms";
+
+	function objectCheck($json, $array = false)
+	{
+		if (is_object($json) || is_array($json))
+			return $json;
+
+		$json = new stdClass;
+		$json->sha = SHA_VERSION;
+		if ($array)
+			return array($json);
+		return $json;
+	}
 
 	# StdObject(
 	#		url
@@ -16,15 +29,15 @@ class github {
 		$json = $this->commits_request();
 		$array = json_decode($json);
 
-		return $array[0];
+		return $this->objectCheck($array[0]);
 	}
 
 	function get_commits() {
-		return json_decode($this->commits_request());
+		return $this->objectCheck(json_decode($this->commits_request()), true);
 	}
 
 	function get_commit($sha) {
-		return json_decode($this->commit_request($sha));
+		return $this->objectCheck(json_decode($this->commit_request($sha)));
 	}
 
 	function create_link($sha) {
@@ -61,8 +74,11 @@ class github {
 	}
 
 	function filecontents($url) {
-		// Send as json
-		$jsonHeader = stream_context_create(array('http'=>array(
+		$w = stream_get_wrappers();
+		if (!extension_loaded('openssl') || !in_array('https', $w))
+			return null;
+
+		$jsonHeader = stream_context_create(array('https'=>array(
 				'header'=>"Content-type: application/json",
 				'method'=>'GET')));
 
