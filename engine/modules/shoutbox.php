@@ -1,4 +1,18 @@
 <?php
+/************************************************************************
+*													engine/modules/shoutbox.php
+*                            -------------------
+* 	 Copyright (C) 2011
+*
+* 	 This package is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+* 	 Updated: $Date 2012/02/08 14:00 $
+*
+************************************************************************/
+
 /**
 * This part of website is executed before any output is given
 * so every post data is processed here then using Header(Location:)

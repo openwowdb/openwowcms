@@ -1,7 +1,17 @@
 <?php
-if (!class_exists("ajaxkey"))
-	include PATHROOT."/library/classes/security/ajaxkey.php";
-
+/************************************************************************
+*											library/classes/modules/modules.php
+*                            -------------------
+* 	 Copyright (C) 2011
+*
+* 	 This package is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+* 	 Updated: $Date 2012/02/08 14:00 $
+*
+************************************************************************/
 /**
  * class module_base
  *

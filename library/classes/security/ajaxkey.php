@@ -1,4 +1,17 @@
 <?php
+/************************************************************************
+*											library/classes/security/ajaxkey.php
+*                            -------------------
+* 	 Copyright (C) 2011
+*
+* 	 This package is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+* 	 Updated: $Date 2012/02/08 14:00 $
+*
+************************************************************************/
 class ajaxkey {
 	public static function challenge($data) {
 		return hash_hmac('md5', $data, $_SERVER['SERVER_ADDR']);

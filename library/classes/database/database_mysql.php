@@ -1,8 +1,17 @@
 <?php
-// Prevent duplicate loading
-if (class_exists("database_mysql")) return;
-// Include required class database
-if (!class_exists("database")) include "database.php";
+/************************************************************************
+*									library/classes/database/database_mysql.php
+*                            -------------------
+* 	 Copyright (C) 2011
+*
+* 	 This package is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+* 	 Updated: $Date 2012/02/08 14:00 $
+*
+************************************************************************/
 
 /**
 * class database_mysql

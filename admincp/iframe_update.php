@@ -1,12 +1,20 @@
 <?php
-############################################################
-# This file is part of Web-WoW CMS V2 @ web-wow.net
-# Do not redistribute it without premission from AXE.
-# Copyright (c) AXE, zg_20102 at hotmail dot com
-#
-# INCLUDES:
-# - initialization script
-############################################################
+/************************************************************************
+*													admincp/iframe_update.php
+*                            -------------------
+* 	 Copyright (C) 2011
+*
+* 	 This package is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*  	 This package is based on the work of the web-wow.net and openwow.com
+* 	 team during 2007-2010.
+*
+* 	 Updated: $Date 2012/02/08 14:00 $
+*
+************************************************************************/
 require("defines.php");
 @set_time_limit(0);
 /* Initilaze stuff */
@@ -117,8 +125,7 @@ $percent=((($i)*100)/$num_totalfiles);
 <body>
 <?php echo $tbody2; ?><div style="position:absolute; width:90%; padding-top:2px; overflow:hidden; text-align:center; z-index:5; font-size:12px; line-height:12px"><?php echo ceil($percent); ?>%</div>
 <div style="border:solid 1px black"><div style=" background-color:#006633; background-image:url(res/buttonbg.gif); background-position:bottom; height:14px; width:<?php echo $percent; ?>%"></div></div>
-<?php echo $tobody;
-?>
+<?php echo $tobody; ?>
 
 </body>
 </html>

@@ -1,4 +1,18 @@
 <?php
+/************************************************************************
+*														 library/library.php
+*                            -------------------
+* 	 Copyright (C) 2011
+*
+* 	 This package is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+* 	 Updated: $Date 2012/02/08 14:00 $
+*
+************************************************************************/
+
 /**
 *   The autoload function is introduced in php v5, and is called whenever a new class is initiated.
 *
