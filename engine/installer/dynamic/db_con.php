@@ -17,14 +17,11 @@ if (!isset($_SESSION['wwcmsv2install']))
 	exit;
 }
 
-if (!class_exists("library"))
-	include "../../../library/library.php";
+define("PATHROOT", "../../../");
+include PATHROOT."library/library.php";
 
-if (library::supported_databases($_POST['dbtype']))
-{
-	library::create_dblink($websiteDB, $_POST['dbtype']);
-	$websiteDB->init($_POST['host'], $_POST['user'], $_POST['pass']) or die('<font color="red">'.library::_htmlspecialchars($_GET['f']).'</font> ' . $websiteDB->getLastError());
-	$websiteDB->close();
-	echo '<font color="green">'.library::_htmlspecialchars($_GET['s']).'</font><br><br><input name="next" type="submit" value="'.$_GET['l'].' (4/8)"></form>';
-}
+library::create_dblink($con, $_POST['dbtype']);
+$con->init($_POST['host'], $_POST['user'], $_POST['pass']) or die('<font color="red">'.library::_htmlspecialchars($_GET['f']).'</font> ' . $con->getLastError());
+$con->close();
+echo '<font color="green">'.library::_htmlspecialchars($_GET['s']).'</font><br><br><input name="next" type="submit" value="'.$_GET['l'].' (4/8)"></form>';
 ?>

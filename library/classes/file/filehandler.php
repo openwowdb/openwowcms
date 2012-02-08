@@ -10,6 +10,11 @@ class filehandler {
 
 	static function delete($filename, $directory = null) { unlink(self::getFilename($filename, $directory)); }
 
+	static function file($filename, $directory = null) {
+		$filename = self::getFilename($filename, $directory);
+		return @file($filename);
+	}
+
 	static function read($filename, $directory = null) {
 		$filename = self::getFilename($filename, $directory);
 

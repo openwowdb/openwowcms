@@ -25,10 +25,7 @@ if ($_POST['admin_username'] == '' or $_POST['admin_password'] == '')
 }
 
 define('PATHROOT', '../../../');
-if (!class_exists("library"))
-	include PATHROOT . "library/library.php";
-
-if (!library::supported_databases($_POST['dbtype'])) die('Unknown database type');
+include PATHROOT . "library/library.php";
 
 library::create_dblink($con, $_SESSION['wwcmsv2install']['db_type']);
 $con->init($_SESSION['wwcmsv2install']['db_host'], $_SESSION['wwcmsv2install']['db_user'], $_SESSION['wwcmsv2install']['db_pass']) or die('&nbsp;&nbsp;<font color="red">'.library::_htmlspecialchars($_GET['f']).'</font> ('.$con->getLastError().")");
@@ -58,7 +55,6 @@ if ($core == 'arcemu')
 		$con->query("SELECT * FROM ". $_SESSION['wwcmsv2install']['logon_db'] .".accounts WHERE login='".$_POST['admin_username']."' LIMIT 1") or die($con->getLastError());
 		$row = $con->getRow();
 		$con->query("INSERT INTO ". $_SESSION['wwcmsv2install']['web_db'] .".wwc2_users_more (acc_login,vp,userid,dp,gmlevel) VALUES ('".$row['login']."','0','".$row['acct']."','0','az')") or die($con->getLastError());
-
 	}
 }
 elseif($core == 'trinity' or $core == 'mangos')
@@ -87,7 +83,6 @@ elseif($core == 'trinity' or $core == 'mangos')
 		$con->query("SELECT * FROM ". $_SESSION['wwcmsv2install']['logon_db'] .".account WHERE username='".$_POST['admin_username']."' LIMIT 1") or die($con->getLastError());
 		$row = $con->getRow();
 		$con->query("INSERT INTO ". $_SESSION['wwcmsv2install']['web_db'] .".wwc2_users_more (acc_login,vp,userid,dp,gmlevel) VALUES ('".$row['username']."','0','".$row['id']."','0','4')") or die($con->getLastError());
-
 	}
 }
 else

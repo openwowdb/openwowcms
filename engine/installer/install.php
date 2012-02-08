@@ -10,7 +10,7 @@
 
 
 if (!defined('INSTALL_AXE')) die();
-error_reporting(0);
+error_reporting(-1);
 
 /*******************************************************************************
 *				PRELIMINARY LOADING
@@ -19,61 +19,25 @@ error_reporting(0);
 @session_start();
 
 // Include common functions
-require_once ("./engine/func/required.php");
-
-if (!class_exists("library"))
-	include PATHROOT."library/library.php";
-
-/**
-* Removes all characters that are not alphabetical nor numerical
-*
-* @param string
-* @return string
-*/
-function sanitize($string = '')
-{
-	return preg_replace('/[^a-zA-Z0-9]/', '', $string);
-}
+include PATHROOT."engine/func/required.php";
 
 /*******************************************************************************
 *				LOAD LANGUAGE
 *******************************************************************************/
 
-/**
-* Determines wether a language is valid or not
-*
-* @param string
-* @return boolean
-*/
-function is_valid_lang($language = '')
-{
-	if(!empty($language))
-	{
-		if(file_exists(PATHROOT.'engine/lang/' . $language . '/installer.php'))
-		{
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
 // By default, Web-WoW will run using English
 $lang = 'English';
 
 // Do we have a requested language through URL or POST?
-$requested_lang = sanitize(
+$requested_lang = Html::sanitize(
 	isset($_GET['lang']) ? $_GET['lang'] :
 	(isset($_POST['lang']) ? $_POST['lang'] : $lang)
 	);
 
-if (is_valid_lang($requested_lang))
-{
-	$lang = $requested_lang;
-}
+if (Html::is_valid_lang($requested_lang, "installer")) $lang = $requested_lang;
 
 // Load the language file
-require (PATHROOT.'engine/lang/' . strtolower($lang) . '/installer.php');
+include PATHROOT.'engine/lang/' . strtolower($lang) . '/installer.php';
 
 /*******************************************************************************
 *				INSTALLER
@@ -87,39 +51,13 @@ require (PATHROOT.'engine/lang/' . strtolower($lang) . '/installer.php');
 class Install {
 
 	/**
-	* Line - Returns the Line Ending Characters based on Operating System
-	*
-	* @access public
-	* @return string Line Ending Characters
-	*
-	*/
-	function ln()
-	{
-		$server = strtolower(
-			function_exists("php_uname") ? php_uname("s") :
-			(isset($_SERVER['OS']) ? $_SERVER['OS'] : "")
-			);
-
-		// Windows
-		if (strstr($server, 'windows')) return "\r\n";
-
-		// Mac
-		if(strstr($server, 'mac')) return "\r";
-
-		return "\n";
-	}
-
-	// --------------------------------------------------------------------
-
-	/**
 	* Go
 	*
 	* @return void
 	* @access public
 	*
 	*/
-	function Go()
-	{
+	function Go() {
 		global $lang, $installer_lang;
 
 		// Store data to session
@@ -129,7 +67,7 @@ class Install {
 		}
 
 		// linebreak
-		$ln = $this->ln();
+		$ln = Html::ln();
 
 		// other vars
 		$stop = false;
@@ -496,13 +434,9 @@ EOB;
 	* @param	string
 	* @return	void
 	*/
-	function writefile($string,$file)//prints
-	{
+	function writefile($string,$file) {
 		global $lang,$installer_lang;
-
-		$fh = fopen( $file, 'w');
-		fwrite($fh, $string);
-		($fh);
+		filehandler::write($file, $string);
 
 		echo $file . ' <font color=\'green\'><b>' . $installer_lang['written successfully']. '</b></font>';
 
@@ -511,11 +445,13 @@ EOB;
 		*but we will chmod file config_db.php becouse it no longer needs changing.
 		**/
 		if (preg_match("/config_db.php/",$file))
-			@chmod($file, 0644);
-
-		if (is_writable($file))
 		{
-			echo '<br>' . $installer_lang['We suggest that you CHMOD'] . ' <b>' . $file . '</b> ' . $installer_lang['to'] . ' 0664.';
+			filehandler::checkpermission($file, 0644);
+
+			if (is_writable($file))
+			{
+				echo '<br>' . $installer_lang['We suggest that you CHMOD'] . ' <b>' . $file . '</b> ' . $installer_lang['to'] . ' 0664.';
+			}
 		}
 	}
 
@@ -529,8 +465,7 @@ EOB;
 	* @param string
 	* @return boolean
 	*/
-	function checkTable(&$con, $table)
-	{
+	function checkTable(&$con, $table) {
 		$result = $con->query("SELECT * FROM $table");
 
 		// I could just cast this, but I feel as if this is safer approach
@@ -546,8 +481,7 @@ EOB;
 	* @param string
 	* @return boolean
 	*/
-	function checkForEmptyDB(&$con, $database)
-	{
+	function checkForEmptyDB(&$con, $database) {
 		$query = 'SELECT count(*) TABLES, table_schema ';
 		$query .= 'FROM information_schema.TABLES ';
 		$query .= 'WHERE table_schema= \'' . $database . '\' ';
@@ -573,8 +507,7 @@ EOB;
 	* @param string
 	* @return void
 	*/
-	function Input($name, $value=false,$text=false, $text2=false,$id=false, $more=false)
-	{
+	function Input($name, $value=false,$text=false, $text2=false,$id=false, $more=false) {
 		if (!$value or $value == '')
 		{
 			if(isset($_SESSION['wwcmsv2install'][$name]))
@@ -600,15 +533,14 @@ EOB;
 	* @param string
 	* @return boolean
 	*/
-	function Tree()
-	{
+	function Tree() {
 		global $installer_lang, $lang;
 
 		$current_step = '1';
 
 		if(isset($_GET['step']) && !empty($_GET['step']))
 		{
-			$current_step = sanitize($_GET['step']);
+			$current_step = Html::sanitize($_GET['step']);
 		}
 
 		$steps = array(
@@ -688,18 +620,18 @@ if (isset($_SESSION['wwcmsv2install']))
 			{
 				if ($key=='char_db')
 				{
-					echo 'realm_databases = '.$Install->ln();
+					echo 'realm_databases = '.Html::ln();
 					foreach ($_SESSION['wwcmsv2install']['char_db'] as $key2=>$sess_chardb)
 					{
 						if($sess_chardb=='')
 							unset($_SESSION['wwcmsv2install']['char_db'][$key2]);
 						else
-							echo ' '.$sess_chardb.$Install->ln();
+							echo ' '.$sess_chardb.Html::ln();
 						$noparsemore=true;
 					}
 				}
 				else
-					echo $key.' = '.htmlspecialchars(trim($storeddata)). $Install->ln(). '------------------'. $Install->ln();
+					echo $key.' = '.htmlspecialchars(trim($storeddata)). Html::ln(). '------------------'. Html::ln();
 			}
 		}
 
@@ -707,7 +639,7 @@ if (isset($_SESSION['wwcmsv2install']))
 }
 
 if (isset($_SESSION['wwcmsv2install']['web_db']) && trim($_SESSION['wwcmsv2install']['web_db'])<>'')
-	echo '------------------'. $Install->ln().'web_db = '.htmlspecialchars(trim($_SESSION['wwcmsv2install']['web_db']));
+	echo '------------------'. Html::ln().'web_db = '.htmlspecialchars(trim($_SESSION['wwcmsv2install']['web_db']));
 echo "</textarea>";
 ?>
 						</td>

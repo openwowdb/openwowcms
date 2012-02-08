@@ -19,56 +19,24 @@ if (!isset($_SESSION['wwcmsv2install']))
 	exit;
 }
 
-/**
-* Removes all characters that are not alphabetical nor numerical
-*
-* @param string
-* @return string
-*/
-function sanitize($string = '')
-{
-	return preg_replace('/[^a-zA-Z0-9]/', '', $string);
-}
-
-/**
-* Determines wether a language is valid or not
-*
-* @param string
-* @return boolean
-*/
-function is_valid_lang($language = '')
-{
-	if(!empty($language))
-	{
-		if(file_exists('./engine/lang/' . $language . '/installer.php'))
-		{
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
 define('PATHROOT', '../../../');
-if (!class_exists("library"))
-	include PATHROOT. "library/library.php";
+// Include common functions
+include PATHROOT."engine/func/required.php";
+include PATHROOT."library/library.php";
 
 // By default, Web-WoW will run using English
 $lang = 'English';
 
 // Do we have a requested language through URL or POST?
-$requested_lang = sanitize(
+$requested_lang = Html::sanitize(
 	isset($_SESSION['wwcmsv2install']['lang']) ? $_SESSION['wwcmsv2install']['lang'] :
 	(isset($_POST['lang']) ? $_POST['lang'] : $lang)
 	);
 
-if (is_valid_lang($requested_lang))
-{
-	$lang = $requested_lang;
-}
+if (Html::is_valid_lang($requested_lang, "installer")) $lang = $requested_lang;
 
 // Load the language file
-require (PATHROOT.'engine/lang/' . strtolower($lang) . '/installer.php');
+include PATHROOT.'engine/lang/' . strtolower($lang) . '/installer.php';
 
 // Process
 $wwcms = $_SESSION['wwcmsv2install'];
@@ -89,41 +57,38 @@ $errorCount = 0;
 * @param	string
 * @return	boolean
 */
-function mysql_import_file(&$con, $filename, &$errmsg)
-{
+function mysql_import_file(&$con, $filename) {
 	// Read the file
-	$lines = file($filename);
+	$lines = filehandler::file($filename, "engine/installer/sql");
 
 	if(!$lines)
 	{
 		$errmsg = "Could not open file $filename";
-		return FALSE;
+		return false;
 	}
 
-	$scriptfile = FALSE;
 	// Run each line as a query
 	foreach($lines as $query)
 	{
 		$query = trim($query);
 
+		// Empty Line
 		if($query == '')
-		{
 			continue;
-		}
 
-		if(!$con->query($query.';'))
-		{
-			$errmsg = "<strong>Query</strong> " . htmlspecialchars($query) . " <b>FAILED</b><br>REPORT: " . $con->getLastError() . "<br>";
-			return FALSE;
-		}
+		// Make sure query ends with a ;
+		if (!preg_match('/;$/', $query)) continue;
+
+		// Query Failed ?
+		if (!$con->query($query))
+			echo "<strong>Query</strong> " . htmlspecialchars($query) . " <b>FAILED</b><br>REPORT: " . $con->getLastError() . "<br><br>";
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Check all database connections!
-if (!isset($wwcms['db_test']) || $wwcms['db_test'] == false)
-{
+if (!isset($wwcms['db_test']) || $wwcms['db_test'] == false) {
 	echo "<fieldset><legend>Initial Step</legend>";
 	$char_counter = 0; $char_db = ''; $raorsoap_port = '';
 	if (isset($wwcms['char_db']))
@@ -191,8 +156,7 @@ if (!isset($wwcms['db_test']) || $wwcms['db_test'] == false)
 	return;
 }
 
-if ($step <= 5)
-{
+if ($step <= 5) {
 	library::create_dblink($con, $wwcms['db_type']);
 	if ($con->init($wwcms['db_host'], $wwcms['db_user'], $wwcms['db_pass']))
 	{
@@ -217,12 +181,12 @@ if ($step <= 5)
 			"`wwc2_active_users`"=>"CREATE TABLE `wwc2_active_users` (`username` varchar(30) NOT NULL, `timestamp` int(11) unsigned NOT NULL, PRIMARY KEY (`username`)) ENGINE=MyISAM DEFAULT CHARSET=latin1;",
 			"`wwc2_banned_users`"=>"CREATE TABLE `wwc2_banned_users` (`username` varchar(30) NOT NULL, `timestamp` int(11) unsigned NOT NULL, PRIMARY KEY (`username`)) ENGINE=MyISAM DEFAULT CHARSET=latin1;",
 			"`wwc2_config`"=>"CREATE TABLE `wwc2_config` (`conf_name` varchar(255) COLLATE latin1_general_ci NOT NULL DEFAULT '', `conf_value` text COLLATE latin1_general_ci, `conf_descr` text COLLATE latin1_general_ci, `conf_stickied` int(1) NOT NULL DEFAULT '0', `conf_dropdown` text COLLATE latin1_general_ci, PRIMARY KEY (`conf_name`)) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;",
-			"`wwc2_links`"=>"CREATE TABLE `wwc2_links` (`id` int(10) NOT NULL AUTO_INCREMENT, `linktitle` varchar(255) NOT NULL DEFAULT 'notitle', `linkurl` varchar(255) NOT NULL DEFAULT 'http://', `linkdescr` varchar(255) DEFAULT '', `linkgrup` varchar(100) NOT NULL DEFAULT '0', `linkorder` int(11) NOT NULL DEFAULT '0', `linkprems` int(10) NOT NULL DEFAULT '0',PRIMARY KEY (`id`)) ENGINE=MyISAM AUTO_INCREMENT=441 DEFAULT CHARSET=latin1;",
-			"`wwc2_news`"=>"CREATE TABLE `wwc2_news` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `title` varchar(255) COLLATE latin1_general_ci NOT NULL, `content` longtext COLLATE latin1_general_ci NOT NULL,`iconid` int(11) NOT NULL DEFAULT '0', `timepost` varchar(100) COLLATE latin1_general_ci NOT NULL, `stickied` int(1) NOT NULL DEFAULT '0' COMMENT '0 or 1',`hidden` int(1) NOT NULL DEFAULT '0' COMMENT '0 or 1', `author` varchar(50) COLLATE latin1_general_ci NOT NULL, PRIMARY KEY (`id`)) ENGINE=MyISAM AUTO_INCREMENT=88 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;",
-			"`wwc2_news_c`"=>"CREATE TABLE `wwc2_news_c` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `poster` varchar(255) COLLATE latin1_general_ci NOT NULL, `content` text COLLATE latin1_general_ci NOT NULL,`newsid` int(11) NOT NULL, `timepost` varchar(100) COLLATE latin1_general_ci NOT NULL, `datepost` varchar(100) COLLATE latin1_general_ci NOT NULL,PRIMARY KEY (`id`)) ENGINE=MyISAM AUTO_INCREMENT=145 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;",
+			"`wwc2_links`"=>"CREATE TABLE `wwc2_links` (`id` int(10) NOT NULL AUTO_INCREMENT, `linktitle` varchar(255) NOT NULL DEFAULT 'notitle', `linkurl` varchar(255) NOT NULL DEFAULT 'http://', `linkdescr` varchar(255) DEFAULT '', `linkgrup` varchar(100) NOT NULL DEFAULT '0', `linkorder` int(11) NOT NULL DEFAULT '0', `linkprems` int(10) NOT NULL DEFAULT '0',PRIMARY KEY (`id`)) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;",
+			"`wwc2_news`"=>"CREATE TABLE `wwc2_news` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `title` varchar(255) COLLATE latin1_general_ci NOT NULL, `content` longtext COLLATE latin1_general_ci NOT NULL,`iconid` int(11) NOT NULL DEFAULT '0', `timepost` varchar(100) COLLATE latin1_general_ci NOT NULL, `stickied` int(1) NOT NULL DEFAULT '0' COMMENT '0 or 1',`hidden` int(1) NOT NULL DEFAULT '0' COMMENT '0 or 1', `author` varchar(50) COLLATE latin1_general_ci NOT NULL, PRIMARY KEY (`id`)) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;",
+			"`wwc2_news_c`"=>"CREATE TABLE `wwc2_news_c` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `poster` varchar(255) COLLATE latin1_general_ci NOT NULL, `content` text COLLATE latin1_general_ci NOT NULL,`newsid` int(11) NOT NULL, `timepost` varchar(100) COLLATE latin1_general_ci NOT NULL, `datepost` varchar(100) COLLATE latin1_general_ci NOT NULL,PRIMARY KEY (`id`)) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;",
 			"`wwc2_template`"=>"CREATE TABLE `wwc2_template` (`templateid` int(10) unsigned NOT NULL auto_increment, `styleid` smallint(6) NOT NULL default '0', `title` varchar(100) NOT NULL default '',`template` mediumtext, `template_un` mediumtext, `templatetype` enum('template','css','other') NOT NULL default 'template', `dateline` int(10) unsigned NOT NULL default '0',`username` varchar(100) NOT NULL default '', `version` varchar(30) NOT NULL default '', PRIMARY KEY (`templateid`), KEY `title` (`title`,`styleid`,`templatetype`)) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;",
-			"`wwc2_users_more`"=>"CREATE TABLE `wwc2_users_more` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `acc_login` varchar(55) COLLATE latin1_general_ci NOT NULL, `vp` bigint(55) NOT NULL DEFAULT '0',`userid` varchar(32) COLLATE latin1_general_ci DEFAULT NULL, `question` varchar(100) COLLATE latin1_general_ci DEFAULT NULL, `answer` varchar(100) COLLATE latin1_general_ci NOT NULL DEFAULT '',`dp` bigint(55) NOT NULL DEFAULT '0', `gmlevel` varchar(11) COLLATE latin1_general_ci NOT NULL DEFAULT '', `avatar` varchar(100) COLLATE latin1_general_ci NOT NULL DEFAULT '',PRIMARY KEY (`id`,`acc_login`)) ENGINE=MyISAM AUTO_INCREMENT=112 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;",
-			"`wwc2_vote_data`"=>"CREATE TABLE `wwc2_vote_data` (`id` bigint(21) NOT NULL AUTO_INCREMENT, `userid` bigint(21) DEFAULT NULL, `siteid` bigint(21) NOT NULL,`timevoted` bigint(21) NOT NULL, `voteip` varchar(21) COLLATE latin1_general_ci DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=MyISAM AUTO_INCREMENT=170 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;"
+			"`wwc2_users_more`"=>"CREATE TABLE `wwc2_users_more` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `acc_login` varchar(55) COLLATE latin1_general_ci NOT NULL, `vp` bigint(55) NOT NULL DEFAULT '0',`userid` varchar(32) COLLATE latin1_general_ci DEFAULT NULL, `question` varchar(100) COLLATE latin1_general_ci DEFAULT NULL, `answer` varchar(100) COLLATE latin1_general_ci NOT NULL DEFAULT '',`dp` bigint(55) NOT NULL DEFAULT '0', `gmlevel` varchar(11) COLLATE latin1_general_ci NOT NULL DEFAULT '', `avatar` varchar(100) COLLATE latin1_general_ci NOT NULL DEFAULT '',PRIMARY KEY (`id`,`acc_login`)) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;",
+			"`wwc2_vote_data`"=>"CREATE TABLE `wwc2_vote_data` (`id` bigint(21) NOT NULL AUTO_INCREMENT, `userid` bigint(21) DEFAULT NULL, `siteid` bigint(21) NOT NULL,`timevoted` bigint(21) NOT NULL, `voteip` varchar(21) COLLATE latin1_general_ci DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;"
 			);
 
 		// Empty Database
@@ -325,13 +289,10 @@ Go to [b]administration panel[/b] to manage CMS.',0, '".@date("U")."',0, 0,'WebW
 		if ($step == 5)
 		{
 			echo "<fieldset><legend>Step 5 / 5</legend>";
-			mysql_import_file($con, '../sql/wwc2_template.sql', $errmsg);
-			echo $errmsg;
-			$errmsg='';
 			echo "<br>".$installer_lang['Inserting data to']." `wwc2_template`";
-			mysql_import_file($con, '../sql/wwc2_links.sql', $errmsg);
-			echo $errmsg;
+			mysql_import_file($con, 'wwc2_template.sql');
 			echo "<br>".$installer_lang['Inserting data to']." `wwc2_links`<br>";
+			mysql_import_file($con, 'wwc2_links.sql');
 			echo "</fieldset>";
 			echo "<br><font color=green>".$installer_lang['Tables are created successfully']."</font>";
 			echo '<br><br><input name="next" type="submit" value="'.$installer_lang['Next Step'].' (6/8)"></form>';
@@ -347,8 +308,7 @@ Go to [b]administration panel[/b] to manage CMS.',0, '".@date("U")."',0, 0,'WebW
 		return;
 	}
 }
-else
-{
+else {
 	exit; // Should never Happen
 }
 // Next Step

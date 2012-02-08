@@ -554,6 +554,33 @@ class Html {
 
 		return $money;
 	}
+
+	/**
+	* Determines wether a language is valid or not
+	*
+	* @param string
+	* @return boolean
+	*/
+	static function is_valid_lang($language = '', $location = '') {
+		if(!empty($language))
+		{
+			if(file_exists(PATHROOT.'engine/lang/' . $language . '/' . $location . '.php'))
+			{
+				return TRUE;
+			}
+		}
+		return FALSE;
+	}
+
+	/**
+	* Removes all characters that are not alphabetical nor numerical
+	*
+	* @param string
+	* @return string
+	*/
+	static function sanitize($string = '') {
+		return preg_replace('/[^a-zA-Z0-9]/', '', $string);
+	}
 }
 
 //PHP 4.2.x Compatibility function
