@@ -40,7 +40,7 @@ class Html {
 	static function recache_all() {
 		global $lang, $db, $config, $user, $error_reporting_cache;
 			// CACHE PAGE START
-			error_reporting($error_reporting_cache);
+			//error_reporting($error_reporting_cache);
 
 			// construct string (Html::$page_output), clear it with false first:
 			// include plugins:

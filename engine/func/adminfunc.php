@@ -60,7 +60,6 @@ class adminfunc {
 		global $db,$lang_admincphelp, $lang_admincp;
 		$name = $lang_admincp['License and Version'];
 		$github = new github();
-		error_reporting(-1);
 		$commit = $github->get_last_commit();
 		/* Print form */
 	?>
@@ -327,6 +326,7 @@ class adminfunc {
 		$name= $lang_admincp['Configuration Variables'];
 		$descr= $lang_admincphelp[26].".";
 		$note= "";
+		$j = 0;
 		if (isset ($_POST['submit']))
 		{
 			/* Apply filters */
@@ -385,7 +385,7 @@ class adminfunc {
 		/* end insert conf. variable */
 
 	?><br /><br /><form name="adminform" id="adminform" action="./?f=updateconfig" method="POST">
-		<table border="0" cellspacing="0" cellpadding="3"><tr><td><strong><?php echo $lang_admincp['Config Name']; ?></strong></td><td><strong><?php echo $lang_admincp['Config Value']; ?></strong></td><td></td></tr>
+		<table border="0" cellspacing="0" cellpadding="3"><tr><td><strong><?php echo $lang_admincphelp[7]; ?></strong></td><td><strong><?php echo $lang_admincphelp[2]; ?></strong></td><td></td></tr>
 			<?php
 				$sql1 = $db->query("SELECT * FROM ".TBL_CONFIG)or die($db->getLastError());
 				$i=0;
@@ -394,7 +394,7 @@ class adminfunc {
 				<tr><td  valign="top">
 						<?php
 							if ($sql2['conf_stickied']=='0'){
-								if ($_SESSION['value_array']['conf_name'][$i]<>'') $sql2['conf_name']=$_SESSION['value_array']['conf_name'][$i];
+								if (isset($_SESSION['value_array']['conf_name'][$i]) && $_SESSION['value_array']['conf_name'][$i]<>'') $sql2['conf_name']=$_SESSION['value_array']['conf_name'][$i];
 								echo '<input name="conf_name[]" onmouseout="$WowheadPower.hideTooltip();" onmousemove="$WowheadPower.moveTooltip(event)" onmouseover="$WowheadPower.showTooltip(event, \''.$sql2['conf_name'].'<br><small>'.$lang_admincphelp[1].'</small>\')" type="text" id="'.$sql2['conf_name'].'" value="'.$sql2['conf_name'].'" style="width:200px; color:darkblue" />';
 							}
 							else

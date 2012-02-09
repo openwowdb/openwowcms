@@ -34,12 +34,14 @@ class module_base {
 
 	function plugin() {
 		global $user;
+		if ($this->uniqueid == '') $this->uniqueid = get_class($this);
 		ajaxkey::createkey($user->userid, $this->sessionTimeout, $this->uniqueid);
 	}
 
 	function processAjaxRequest() {
 		global $user;
 		if (!isset($user)) return false;
+		if ($this->uniqueid == '') $this->uniqueid = get_class($this);
 		if (ajaxkey::verifykey($user->userid, $this->sessionTimeout, $this->uniqueid))
 			return true;
 		//Session has expired
@@ -68,7 +70,7 @@ class module_base {
 		if (!$user->isAdmin())
 		{
 			echo "<div style='padding:4px; background:white;color:black;text-align:center; border:solid 1px black'>Admin needs to install this module first. If you are admin, please login with your admin account and revisit this module page.</div>";
-			return false;
+			return true;
 		}
 
 		foreach ($this->configFields as $name => $valDesc)
@@ -109,6 +111,7 @@ class module_base {
 		echo 'This module is now installed, please go to:<br>Administration Panel &gt; Configuration Variables<br />';
 		echo 'and setup variables for this module.</div>';
 		Html::cache_configfile();
+		return true;
 	}
 }
 

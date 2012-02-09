@@ -23,6 +23,12 @@ if (version_compare(PHP_VERSION, '5.0.0') < 0)
 	die('This CMS is set to work only on PHP versions 5.0.0 and above, your currently running on version: ' . PHP_VERSION .' upgrade @ <a href="http://windows.php.net/download/">http://windows.php.net/download/</a>');
 }
 
+include PATHROOT."library/library.php";
+set_error_handler("errorhandler::error", -1);
+set_exception_handler('errorhandler::exception');
+register_shutdown_function('errorhandler::shutdown');
+
+
 // start the page generation timer
 define('TIMESTART', microtime());
 
@@ -62,7 +68,6 @@ if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc())
 
 if (file_exists(PATHROOT . 'config/config.php') && file_exists(PATHROOT . 'config/config_db.php'))
 {
-	include PATHROOT."library/library.php";
 	include PATHROOT."config/config.php";
 	include PATHROOT."config/config_db.php";
 
@@ -97,3 +102,4 @@ include PATHROOT."engine/func/required.php";
 //start user session, determine if it's logged in and set variables
 $user = new User;
 $user->Session();
+?>

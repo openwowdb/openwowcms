@@ -211,7 +211,6 @@ class User extends SessionUser implements BaseUser {
 		if(!get_magic_quotes_gpc()) {
 			$username = addslashes($username);
 		}
-		error_reporting(-1);
 
 		/* Verify that user is in database */
 		$q = "SELECT sha_pass_hash FROM ".TBL_ACCOUNT." WHERE username = '$username'";

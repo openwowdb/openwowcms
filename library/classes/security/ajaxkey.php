@@ -20,7 +20,7 @@ class ajaxkey {
 	public static function createkey($uid, $expire, $action = -1) {
 		$i = ceil(time() / $expire);
 		// set key
-		if (!is_array($_SESSION['ajaxkey'])) $_SESSION['ajaxkey'] = array();
+		if (!isset($_SESSION['ajaxkey']) || !is_array($_SESSION['ajaxkey'])) $_SESSION['ajaxkey'] = array();
 		$_SESSION['ajaxkey'][$action] = substr(ajaxkey::challenge($i . $action . $uid), -12, 10);
 	}
 

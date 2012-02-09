@@ -213,7 +213,6 @@ class User extends SessionUser implements BaseUser
 	function confirmUserPass($username, $password){//TODO
 		global $db;
 		/* Add slashes if necessary (for query) */
-		error_reporting(-1);
 		if(!get_magic_quotes_gpc()) {
 			$username = addslashes($username);
 		}
