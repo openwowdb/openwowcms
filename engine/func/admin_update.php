@@ -26,7 +26,7 @@ class Update {
 	* GetPatchInfo() - initiates in admin cp
 	* Prints whole Update text and iframe.
 	*/
-	function GetPatchInfo(){
+	function GetPatchInfo() {
 		global $lang_admincp, $config;
 		unset($_SESSION['update_shas']);
 		/**
@@ -65,9 +65,9 @@ class Update {
 		{
 			if ($commit->sha == SHA_VERSION) break;
 			$link = $github->create_link($commit->sha);
-			echo "&nbsp;&nbsp;<span style='color:darkgray' id='filelist".$commit->sha."'>".$link.'</span><br>';
-			echo "<pre class='code'>".$commit->commit->message."</pre><br>";
-			//array_push($_SESSION['update_shas'], $commit->sha);
+			echo "&nbsp;&nbsp;<div id='filelist".$commit->sha."'><span style='color:darkgray'>".$link.'</span><br>';
+			echo "<pre class='code'>".$commit->commit->message."</pre></div>";
+			array_push($_SESSION['update_shas'], $commit->sha);
 		}
 		$nextsha = 0;
 		$nextsha = $commits[0]->sha;
@@ -78,12 +78,20 @@ class Update {
 			$nextsha = $_SESSION['update_shas'][0];
 		}
 
-		if (isset($_GET['start_cms'])){
+		if (isset($_GET['start_cms'])) {
 			echo '<iframe src ="./iframe_update.php?i=0&v='.$nextsha.'" width="100%" height="150" frameborder="0" style="background: white"><p>Your browser does not support iframes.</p></iframe>';
 		}
 		else
 		{
-			echo '<br><span class="buttonlink"><a href="?f=main&updatecms=true&start_cms=true">'.$lang_admincp['Start Update Now'].'</a></span>';
+			echo '<div id="updatebox">&nbsp;</div>';
+			echo '<br><span class="buttonlink"><a href="javascript:void(0);" onclick="do_update(0);$(this).hide();">'.$lang_admincp['Start Update Now'].'</a></span>';
+			?>
+			<script type="text/javascript">
+				function do_update(i) {
+					$.get('iframe_update.php?i=' + i + '&v=<?php echo $nextsha; ?>', function(data) {$('#updatebox').html(data);if (i == 0)$('#updatebox').slideDown();});
+				}
+			</script>
+			<?php
 		}
 	}
 
@@ -91,7 +99,7 @@ class Update {
 	* GetModuleInfo() - initiates in admin cp
 	* Prints whole Update text and iframe, prints form, with module selection, then sets $_SESSION[''] and transfers it to iframe.
 	*/
-	function GetModuleInfo(){
+	function GetModuleInfo() {
 		return;
 		global $lang_admincp,$lang_admincphelp;
 
@@ -163,7 +171,7 @@ class Update {
 	* GetStylesInfo(){ - initiates in admin cp
 	* Prints all available styles links - drawn from webwow.
 	*/
-	function GetStylesInfo(){
+	function GetStylesInfo() {
 		return;
 
 		global $lang_admincp,$lang_admincphelp;
@@ -186,7 +194,7 @@ class Update {
 	* Prints whole Update text and iframe, prints form, with module selection, then sets $_SESSION[''] and transfers it to iframe.
 	* $id -> webwow style id (ww_templateid) to indentify which style to download.
 	*/
-	function GetStyle($id,$confirm){ //$id is already filtered from other function
+	function GetStyle($id,$confirm) { //$id is already filtered from other function
 return;
 		global $lang_admincp,$lang_admincphelp,$db,$config;
 		unset($_SESSION['update_files']);

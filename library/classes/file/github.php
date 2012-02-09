@@ -44,6 +44,16 @@ class github {
 		return "<a href='https://github.com/Swiftsmoke/openwowcms/commit/$sha' target='_blank'>".substr($sha, 0, 10)."</a>";
 	}
 
+	function get_file($sha, $filename) {
+		$url = "https://raw.github.com/{$this->username}/{$this->repo}/{$sha}/{$filename}";
+		$content = "";
+		if (function_exists("curl_init"))
+			$content = $this->curl($url);
+		else if (function_exists("file_get_contents"))
+			$content = $this->filecontents($url);
+		return filehandler::write($filename, $content);
+	}
+
 	function commit_request($sha) {
 		$url = $this->gitapiurl."repos/{$this->username}/{$this->repo}/commits/$sha";
 		if (function_exists("curl_init"))

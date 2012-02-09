@@ -53,10 +53,10 @@ $v = isset($_GET['v']) ? preg_replace("/[^0-9a-z.]/", "", $_GET['v']) : "";
 		-->
 	</style>
 	<?php
-		$num_totalfiles = isset($_SESSION['update_shas']) ? count($_SESSION['update_shas']) : 0;
+		$num_totalfiles = isset($_SESSION['update_shas']) ? sizeof($_SESSION['update_shas']) : 0;
 
 		/* Make loop here */
-		if (isset($_SESSION['update_shas'][$i]) && $_SESSION['update_shas'][$i] <> '') {
+		if ($num_totalfiles > 0 && isset($_SESSION['update_shas'][$i]) && $_SESSION['update_shas'][$i] <> '') {
 			/* file.php?test=true strip ?test=true
 			* also will strip style changer variable "?sinstallpath=8" (will not mix with others, so this is final format)
 			*/
@@ -66,30 +66,42 @@ $v = isset($_GET['v']) ? preg_replace("/[^0-9a-z.]/", "", $_GET['v']) : "";
 			$commit_data = $github->get_commit($sha);
 			$files = $commit_data->files;
 
+			$tobody = "";
+			$tbody2 = $sha;
+
 			foreach ($files as $file)
 			{
 				if ($file->status == "modified" or $file->status == "created")
 				{
 					// DO MOD/CREATE
+					if ($github->get_file($sha, $file->filename))
+					{
+						$tobody .= "Applied update to file " . $file->filename . "<br>";
+						continue;
+					}
+
+					$tbody2 .= "File: " . $file->filename;
+					$tobody .= "Writing failed there might be problem with update server try again later, maybe this file can't be created on this server, navigate to corresponding folder and create empty file with name stated below. File: ".$file->filename."<br>";
 				}
 				else if ($file->status == "removed" or $file->status == "deleted")
-					filehandler::delete($file->name);
+					filehandler::delete($file->filename);
 			}
-			exit;
-			if ($updateclass->Update_file($pure_filename[0],$pure_filename[12]) == '1') {
-				/* file is updated, print output: */
-				$tbody2 = $_SESSION['update_shas'][$i];
-				redirect('./iframe_update.php?v='.$v.'&i='.($i+1));
-				//echo 'iframe_update.php?i='.($i+1);
-				$tobody = '<span style="float:right"><a href="./iframe_update.php?v='.$v.'&i='.($i+1).'">File ( '.$_SESSION['update_files'][$i].' ) updated! Force next file...</a> </span>
-				<script type="text/javascript">
-					parent.document.getElementById("filelist'.$i.'").style.color="green"
-				</script>';
+			if ($tbody2 != $sha)
+			{
+				// Failed to update a file?
 			}
 			else
 			{
-				$tbody2 = $_SESSION['update_shas'][$i];
-				$tobody .= "Writting failed there might be problem with update server try again later, maybe this file can't be created on this server, navigate to corresponding folder and create empty file with name stated below.<br>File: ".$_SESSION['update_files'][$i];
+			/*if ($updateclass->Update_file($pure_filename[0],$pure_filename[12]) == '1') {
+				/* file is updated, print output: */
+				$tbody2 = $sha;
+				//redirect('./iframe_update.php?v='.$v.'&i='.($i+1));
+				//echo 'iframe_update.php?i='.($i+1);
+				$tobody .= '<span style="float:right"><a href="./iframe_update.php?v='.$v.'&i='.($i+1).'">SHA ( '.$sha.' ) updated! Force next update...</a> </span>
+				<script type="text/javascript">
+					$("#filelist'.$sha.'").slideUp("slow");
+					do_update('.($i+1).');
+				</script>';
 			}
 		}
 		else {
@@ -114,36 +126,26 @@ $v = isset($_GET['v']) ? preg_replace("/[^0-9a-z.]/", "", $_GET['v']) : "";
 				if (filehandler::write('version.php', $version_str, 'engine'))
 				{
 					$tbody2='&nbsp;';
-					$tobody= "<br>All files are updated.".
-					'<script type="text/javascript">
-						parent.document.getElementById("filelist'.($num_totalfiles-2).'").style.color="green"
-					</script>';
+					$tobody= "<br>All files are updated.";
 				}
 				else
 				{
 					$tbody2='&nbsp;';
-					$tobody= "<br>All files are updated, but <strong>engine/version.php</strong> is not, edit that file and type in:<br><pre>".htmlspecialchars($version_str)."</pre>".
-					'<script type="text/javascript">
-						parent.document.getElementById("filelist'.($num_totalfiles-2).'").style.color="green"
-					</script>';
+					$tobody= "<br>All files are updated, but <strong>engine/version.php</strong> is not, edit that file and type in:<br><pre>".htmlspecialchars($version_str)."</pre>";
 				}
 			}
 			else {
 				$tbody2 = '&nbsp;';
-				$tobody = "<br>All files are downloaded.".
-				'<script type="text/javascript">
-					parent.document.getElementById("filelist'.($num_totalfiles-2).'").style.color="green"
-				</script>';
+				$tobody = "<br>All files are downloaded.";
 			}
 
-			unset($_SESSION['update_files']);
+			unset($_SESSION['update_shas']);
 			$percent = 100;
 		}
 		if (!isset($percent) || !$percent) {
-			if ($i == '0' or $num_totalfiles == '0')
-				$percent = 1;
-			else
-				$percent = ((($i)*100)/$num_totalfiles);
+			if ($i == 0) $y = 1; // if 0 use base of 1 (0*100 = 0) ^_^
+			if ($num_totalfiles == '0') $percent = 1;
+			else $percent = ((($y)*100)/($num_totalfiles+1)); // +1 for version.php
 		}
 
 	?>
