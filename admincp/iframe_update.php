@@ -71,12 +71,12 @@ $v = isset($_GET['v']) ? preg_replace("/[^0-9a-z.]/", "", $_GET['v']) : "";
 
 			foreach ($files as $file)
 			{
-				if ($file->status == "modified" or $file->status == "created")
+				if ($file->status == "modified" or $file->status == "created" or $file->status == "added")
 				{
 					// DO MOD/CREATE
 					if ($github->get_file($sha, $file->filename))
 					{
-						$tobody .= "Applied update to file " . $file->filename . "<br>";
+						$tobody .= "Applied update for file " . $file->filename . "<br>";
 						continue;
 					}
 
@@ -100,7 +100,7 @@ $v = isset($_GET['v']) ? preg_replace("/[^0-9a-z.]/", "", $_GET['v']) : "";
 				$tobody .= '<span style="float:right"><a href="./iframe_update.php?v='.$v.'&i='.($i+1).'">SHA ( '.$sha.' ) updated! Force next update...</a> </span>
 				<script type="text/javascript">
 					$("#filelist'.$sha.'").slideUp("slow");
-					do_update('.($i+1).');
+					setTimeout("do_update('.($i+1).')", 5000);
 				</script>';
 			}
 		}
@@ -143,7 +143,8 @@ $v = isset($_GET['v']) ? preg_replace("/[^0-9a-z.]/", "", $_GET['v']) : "";
 			$percent = 100;
 		}
 		if (!isset($percent) || !$percent) {
-			if ($i == 0) $y = 1; // if 0 use base of 1 (0*100 = 0) ^_^
+			$y = $i;
+			$y++;
 			if ($num_totalfiles == '0') $percent = 1;
 			else $percent = ((($y)*100)/($num_totalfiles+1)); // +1 for version.php
 		}
