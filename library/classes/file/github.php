@@ -77,6 +77,7 @@ class github {
 		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
 
 		$content = curl_exec($curl);
 		curl_close($curl);

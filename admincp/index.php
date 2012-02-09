@@ -28,7 +28,7 @@ if (trim($config['license'])=='') define('LICENSE','FREE');
 else define('LICENSE',$config['license']);
 
 /* for large scripts */
-@set_time_limit(0);
+//@set_time_limit(0);
 
 /* If no premission redirect to main page */
 if(!$user->logged_in || !$user->isAdmin()){

@@ -18,7 +18,7 @@
 # INCLUDES:
 # - initialization script
 include "defines.php";
-@set_time_limit(0);
+//@set_time_limit(0);
 /* Initilaze stuff */
 include PATHROOT."engine/init.php";
 

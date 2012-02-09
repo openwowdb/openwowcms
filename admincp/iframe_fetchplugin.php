@@ -22,7 +22,7 @@
 ############################################################
 
 include "defines.php";
-@set_time_limit(0);
+//@set_time_limit(0);
 error_reporting(~E_NOTICE);
 /* Initilaze stuff */
 include PATHROOT."engine/init.php";

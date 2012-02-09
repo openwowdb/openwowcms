@@ -24,7 +24,7 @@ include_once(PATHROOT."engine/func/nicetime.php");
 if (!$user->isAdmin()) exit;
 
 
-if ($_GET['id'] && trim ($_GET['id'])<>'')
+if (isset($_GET['id']) && trim ($_GET['id'])<>'')
 {
 	$newsid = preg_replace( "/[^0-9]/", "", $_GET['id'] );
 	if (isset($_GET['save']))
@@ -51,4 +51,10 @@ if ($_GET['id'] && trim ($_GET['id'])<>'')
 		echo parse_message($sql2[0]);
 	}
 	exit;
+}
+else if(isset($_GET['new']))
+{
+	if (isset($_POST['title']) && isset($_POST['message']))
+		$db->query("INSERT INTO ".$config['engine_web_db'].".wwc2_news (title,content,timepost,author) VALUES ('".$db->escape(htmlspecialchars($_POST['title']))."','".$db->escape($_POST['message'])."','".@date("U")."','".$user->username."')")or die($db->getLastError());
+	return;
 }
