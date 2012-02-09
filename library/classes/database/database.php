@@ -1,6 +1,6 @@
 <?php
 /************************************************************************
-*											library/classes/database/database.php
+*                     library/classes/database/database.php
 *                            -------------------
 * 	 Copyright (C) 2011
 *
