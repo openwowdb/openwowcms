@@ -28,9 +28,16 @@ set_error_handler("errorhandler::error", -1);
 set_exception_handler('errorhandler::exception');
 register_shutdown_function('errorhandler::shutdown');
 
+function get_microtime() {
+	$mtime = microtime();
+	$mtime = explode(" ", $mtime);
+	$mtime = (double)($mtime[1]) + (double)($mtime[0]);
+	return $mtime;
+}
+
 
 // start the page generation timer
-define('TIMESTART', microtime());
+define('TIMESTART', get_microtime());
 
 // set the current unix timestamp
 define('TIMENOW', time());
