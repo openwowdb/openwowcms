@@ -32,24 +32,83 @@ while ($news = $db->getRow($news_sql))
 	$comments_count = $db->getRow($comments_count_sql);
 	//print news structure
 	echo '
-	<div class="newstitle" id="newstitle'.$news['id'].'">
-		<a href="javascript:void();" onclick="ajax_loadContent(\'comments'.$news['id'].'\',\'./engine/dynamic/news_comments.php?newsid='.$news['id'].'\',\'...\');return false;">'.$news['title'].'</a>
-	</div>
+	<div class="newstitle" id="newstitle'.$news['id'].'">'.$news['title'].'</div>
 	<div class="newscontent">';
 	$message = parse_message($news['content']);
 	echo ($user->isAdmin() ? '<span id="newscontent'.$news['id'].'" ondblclick="dy_edit_news(\''.$news['id'].'\');">'.$message.'</span>' : $message);
 	echo '</div>';
-	echo '<span class="newsbottom"><span>(<a href="javascript:void();" onclick="ajax_loadContent(\'comments'.$news['id'].'\',\'./engine/dynamic/news_comments.php?newsid='.$news['id'].'&nocache='.rand(1,999999).'\',\'...\');return false;">'.$comments_count[0].' '.$lang['comments'].'</a>)</span>'.$lang['Posted'].' '.nicetime($news['timepost']).'</span><div style="height:10px"></div>';
+	echo '<span class="newsbottom"><span>(<a href="javascript:void(0);" onclick="get_comments(\''.$news['id'].'\', \'0\');$(this).attr(\'onclick\', \'hide_comments('.$news['id'].');\');return false;">'.$comments_count[0].' '.$lang['comments'].'</a>)</span>'.$lang['Posted'].' '.nicetime($news['timepost']).'</span><div style="height:10px"></div>';
 
 	//for dynamic news content
-	echo '<div id="comments'.$news['id'].'" class="comments_box"></div>';
+	echo '<div id="comments_'.$news['id'].'" class="comments_box"></div><hr /><div style="clear:both;height:20px"></div>';
 	$lastid = $news['id'];
 }
+?>
+<script type="text/javascript" src="./engine/js/bbcode_buttons.js"></script>
+<script type="text/javascript">
+	function hide_comments(newsid) {
+		$('#comments_'+newsid).toggle("slow");
+	}
 
+	<?php if ($user->logged_in) { ?>
+	function remove_comment(newsid, commentid)
+	{
+		$.get('./engine/dynamic/news_comments.php', {newsid: commentid, 'delete': true},
+		function(data) {
+			var a = $('#comments_more_'+newsid+'>div>a');
+			var onclick = $(a).attr('onclick');
+			if (onclick)
+				$(a).attr('onclick', onclick.replace(/(,\d+)/i, "$1-1"));
+		});
+	}
+
+	function post_comment(newsid)
+	{
+		$.post('./engine/dynamic/news_comments.php?newsid=' + newsid,
+		{ comment: $('#comment' + newsid).val() },
+		function(data) {
+			$($(data).get()).each(
+				function(){
+					$(this).hide();
+					$(this).prependTo('#comments_'+newsid).delay(300).slideDown('slow');
+			});
+			$("#newcomment" + newsid).prependTo('#comments_'+newsid);
+			var a = $('#comments_more_'+newsid+'>div>a');
+			var onclick = $(a).attr('onclick');
+			if (onclick)
+				$(a).attr('onclick', onclick.replace(/(,\d+)/i, "$1+1"));
+		});
+	}
+	<?php } ?>
+
+	function get_comments(newsid, start)
+	{
+		<?php if ($user->logged_in) { ?>
+		// Create textarea
+		if (start == 0)
+		{
+			$('<div id="newcomment'+newsid+'"><textarea name="comment'+newsid+'" id="comment'+newsid+'" style="width:95%"></textarea>'+
+			'<span class="news_comment_post"><a href="javascript:void(0);" onclick="post_comment('+newsid+');"><?php echo $lang['Post comment'] ?></a></span></div>'
+			).appendTo('#comments_'+newsid);
+		}
+		<?php } ?>
+		$('#comments_more_'+newsid).remove();
+		$.get('./engine/dynamic/news_comments.php', {newsid: newsid, start: start},
+			function(data) {
+				$($(data).get()).each(
+				function()
+				{
+					$(this).hide();
+					$(this).appendTo('#comments_'+newsid).delay(300).slideDown('slow');
+				});
+				$('#comments_more_'+newsid).appendTo('#comments_'+newsid);
+			});
+	}
+</script>
+<?php
 if (!$user->isAdmin())
 	return;
 ?>
-<script type="text/javascript" src="./engine/js/bbcode_buttons.js"></script>
 <script type="text/javascript">
 function dy_edit_news(id)
 {
