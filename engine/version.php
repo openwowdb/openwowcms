@@ -15,7 +15,7 @@
 * 	 Updated: $Date 2012/02/08 14:00 $
 *
 ************************************************************************/
-define('VERSION','1.1.8');
-define('LASTUPDATE','02/9/2012');
-define('SHA_VERSION', '734b259d51dc87bd2a6d812e95539cba617daf78');
+define('VERSION','1.2.0');
+define('LASTUPDATE','02/10/2012');
+define('SHA_VERSION', '14309afacab0b49be82d77df0695c6af5362b505');
 ?>

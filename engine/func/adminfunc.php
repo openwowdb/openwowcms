@@ -71,23 +71,15 @@ class adminfunc {
 			<td>
 				<table width="100%" border="0" >
 					<tr>
-						<td style="border:none"><font color="#009900"><strong><?php echo VERSION; ?></strong></font> (<?php echo $lang_admincp['last update']; ?>: <strong><?php echo LASTUPDATE; ?></strong> <font color="#808080"><?php echo $lang_admincp['m/d/y']; ?></font>) (<a href='?f=main&updatecms=true'><?php echo $lang_admincp['Update now']; ?></a>)</td>
+						<td style="border:none"><strong><?php echo $github->create_link(SHA_VERSION, '#009900'); ?></strong> (<?php echo $lang_admincp['last update']; ?>: <strong><?php echo LASTUPDATE; ?></strong> <font color="#808080"><?php echo $lang_admincp['m/d/y']; ?></font>) (<a href='?f=main&updatecms=true'><?php echo $lang_admincp['Update now']; ?></a>)</td>
 						<td width="300px" style="border:none;border-left: solid 1px grey"><center><?php if (SHA_VERSION == $commit->sha) echo '<font color="green">CMS is up to date</font>'; else echo '<font color="red">CMS is out of date</font>';?></center></td>
 					</tr>
 				</table>
 			</td>
 		</tr>
 		<tr>
-			<td class="dark" style="text-align:right;">SHA Version</td>
-			<td><?php echo $github->create_link(SHA_VERSION);?></td>
-		</tr>
-		<tr>
-			<td class="dark" style="text-align:right;">PHP fsockopen():</td>
-			<td><?php if(function_exists("fsockopen")) echo $lang_admincp['Enabled']; else echo $lang_admincp['Disabled on this web server - Automated CMS update will not be possible.'];?></td>
-		</tr>
-		<tr>
-			<td class="dark" style="text-align:right;">PHP curl_init():</td>
-			<td><?php if(function_exists("curl_init")) echo $lang_admincp['Enabled']; else echo 'Unavailable'; ?></td>
+			<td class="dark" style="text-align:right;">GitHub Updates:</td>
+			<td><?php $w = stream_get_wrappers(); if((function_exists("fsockopen") && (extension_loaded('openssl') || in_array('https', $w)))|| function_exists("curl_init")) echo $lang_admincp['Enabled']; else echo $lang_admincp['Disabled on this web server - Automated CMS update will not be possible.'];?></td>
 		</tr>
 		<tr>
 			<td class="dark" style="text-align:right;">PHP info:</td>

@@ -125,7 +125,7 @@ class errorhandler extends filehandler {
 		static function major($message = '', $args = '') {
 				$ln = self::ln();
 				$debug  = @debug_backtrace();
-				$string .= "Date " . @date("d:m:Y") . " ";
+				$string = "Date " . @date("d:m:Y") . " ";
 				$string .= "Time " . @date("G:i") . $ln;
 				$string .= "========================" . $ln;
 				if (isset($message))

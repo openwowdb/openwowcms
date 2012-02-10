@@ -40,8 +40,8 @@ class github {
 		return $this->objectCheck(json_decode($this->commit_request($sha)));
 	}
 
-	function create_link($sha) {
-		return "<a href='https://github.com/Swiftsmoke/openwowcms/commit/$sha' target='_blank'>".substr($sha, 0, 10)."</a>";
+	function create_link($sha, $color = null) {
+		return "<a href='https://github.com/Swiftsmoke/openwowcms/commit/$sha' target='_blank'".($color == null ? "" : "style='color:$color'").">".substr($sha, 0, 10)."</a>";
 	}
 
 	function get_file($sha, $filename) {
