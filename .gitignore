@@ -2,4 +2,4 @@
 /engine/_cache/*.php
 /engine/_cache/cache_users/*.php
 /config/*.php
-/errorlogs/*
+/errorlogs/*.txt
