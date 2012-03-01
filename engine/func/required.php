@@ -400,7 +400,9 @@ class Html {
 		/**
 		* Initiate cache now:
 		*/
-		if (Html::cache($out1,PATHROOT.'engine/_cache/cache_vote_loggedin.php') && Html::cache($out2,PATHROOT.'engine/_cache/cache_vote_loggedout.php'))
+		if (Html::cache($out1,PATHROOT.'engine/_cache/cache_vote_loggedin.php'))  $fin=true;  else $fin=false;
+		if (Html::cache($out2,PATHROOT.'engine/_cache/cache_vote_loggedout.php')) $fout=true; else $fout=false;
+		if (($fin) && ($fout))
 			return true;
 		else
 			return false;
