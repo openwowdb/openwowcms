@@ -233,9 +233,9 @@ class Html {
 			// Cache vote links now
 			// engine/_cache/cache_vote_loggedin.php and engine/_cache/cache_vote_loggedout.php
 			if (!Html::cache_vote())
-				echo "<font color=red>cache_vote_loggedoin.php<br>cache_vote_loggedout.php</font><br>";
+				echo "<font color=red>cache_vote_loggedin.php<br>cache_vote_loggedout.php</font><br>";
 			else
-				echo "<font color=green>cache_vote_loggedoin.php<br>cache_vote_loggedout.php</font><br>";
+				echo "<font color=green>cache_vote_loggedin.php<br>cache_vote_loggedout.php</font><br>";
 
 			// End Caching
 			// Here we will once more reload page using meta reload, sometimes it needs
