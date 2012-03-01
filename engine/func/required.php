@@ -289,10 +289,13 @@ class Html {
 	}
 
 	static function cache($string, $file) {
+		$fh = @fopen( $file, "w" );
+		@fclose( $fh );
 		if ($string=='') $string='<?php'. Html::ln() . '/* This file is auto-generated because cache script was initiated */'. Html::ln().'/* and content was empty. ( '.$file.' ) */' . Html::ln(). '/* This file is part of Web-WoW CMS v2 all rights reserved. */' . Html::ln().'?>';
-		filehandler::checkpermission($file, 0666);
+		// Fix fhis later....
+		//filehandler::checkpermission($file, 0666);
 		filehandler::write($file, $string);
-		return filehandler::checkpermission($file, 0664);
+		return; // filehandler::checkpermission($file, 0664);
 	}
 
 	static function cache_menulinks() { #returns true on success else false
