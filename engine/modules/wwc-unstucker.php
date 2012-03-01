@@ -1,5 +1,5 @@
 <?php
-global $user,$db,$form,$lang,$config,$Html;
+global $user,$db,$lang,$config,$Html;
 
 /**
 * This part of website is executed before any output is given
@@ -60,7 +60,7 @@ Process();
 }
 
 /* Reinitilaze 'form' proccess with latest session data */
-$form->_Form();
+Form::_Form();
 return;
 
 }

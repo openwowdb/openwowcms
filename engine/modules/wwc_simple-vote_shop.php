@@ -1,5 +1,5 @@
 <?php
-global $user,$db,$form,$lang,$config,$Html;
+global $user,$db,$lang,$config,$Html;
 $limit=100;
 $dorv=0;
 $color_array = array (
@@ -215,7 +215,7 @@ DeleteItem();
 }
 
 /* Reinitilaze 'form' proccess with latest session data */
-$form->_Form();
+Form::_Form();
 return;
 
 }

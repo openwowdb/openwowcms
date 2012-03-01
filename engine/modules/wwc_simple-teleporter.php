@@ -17,7 +17,7 @@ if(!$user->logged_in){ if (!isset($proccess)) echo "<a href='./?page=loginout'>"
 **/
 if (!isset($proccess))
 {
-if($Html->moduleinstall('module_simple_teleporter_cost',
+if(module_base::DoInstall('module_simple_teleporter_cost',
 array(
 'module_simple_teleporter_cost',
 ),
@@ -45,7 +45,7 @@ if(isset($proccess) && $proccess == TRUE){
 * index.php page.
 */
 function Process(){
-global $user, $form, $config,$db,$lang;
+global $user, $config,$db,$lang;
 
 $location = preg_replace( "/[^0-9]/", "", $_POST['location'] );
 $charinfo = preg_replace( "/[^0-9-]/", "", $_POST['character'] );
@@ -209,7 +209,7 @@ Process();
 }
 
 /* Reinitilaze 'form' proccess with latest session data */
-$form->_Form();
+Form::_Form();
 return;
 
 }
