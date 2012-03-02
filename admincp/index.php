@@ -133,7 +133,7 @@ function addmorelink(id)
 			<b class="menu_round"><b class="menu_round_l3"></b><b class="menu_round_l2"></b><b class="menu_round_l1"></b></b>
 			<div id="menu_content"><div style="height:5px"></div>
 				<center>
-				<a href="javascript:void(0);" onclick="$.get('<?php echo PATHROOT; ?>index.php?cache=true&noreload=1', function(data) { $('#cache_recache').html(data); })" target="recache">[<?php echo $lang_admincp['Recache Website']; ?>]</a>
+				<a href="javascript:void(0);" onclick="$.get('<?php echo PATHROOT; ?>index.php?cache=true&noreload=1', function(data) { $('#cache_recache').html(data); })" >[<?php echo $lang_admincp['Recache Website']; ?>]</a>
 				</center><br />
 				<div id="cache_recache"></div>
 			</div>

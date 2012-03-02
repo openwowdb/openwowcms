@@ -294,8 +294,8 @@ class Html {
 		if ($string=='') $string='<?php'. Html::ln() . '/* This file is auto-generated because cache script was initiated */'. Html::ln().'/* and content was empty. ( '.$file.' ) */' . Html::ln(). '/* This file is part of Web-WoW CMS v2 all rights reserved. */' . Html::ln().'?>';
 		// Fix fhis later....
 		//filehandler::checkpermission($file, 0666);
-		filehandler::write($file, $string);
-		return; // filehandler::checkpermission($file, 0664);
+		return filehandler::write($file, $string);
+		//return filehandler::checkpermission($file, 0664);
 	}
 
 	static function cache_menulinks() { #returns true on success else false
