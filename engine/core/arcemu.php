@@ -171,10 +171,12 @@ class User extends SessionUser implements BaseUser
 		if ($userid)
 		{
 			$username = preg_replace( "/[^0-9]/", "", $username );//this is GUID
-			$q = "SELECT a.acct as guid,a.login as username,a.lastlogin,a.lastip,a.banned as banned,a.flags as expansion,vp,dp,question,answer,gmlevel,avatar FROM ".TBL_ACCOUNT." a,".TBL_USERS." b WHERE a.acct = '".$username."' AND b.acc_login=a.login";
+			$q = "SELECT a.acct as guid,a.login as username,a.lastlogin,a.lastip,a.banned as banned,a.flags as expansion,b.vp,b.dp,b.question,b.answer,b.gmlevel,b.avatar".
+				 " FROM ".TBL_ACCOUNT." a,".TBL_USERS." b WHERE a.acct = '".$username."' AND b.acc_login=a.login";
 		}
 		else
-			$q = "SELECT a.acct as guid,a.login as username,lastlogin,lastip,banned as banned,a.flags as expansion,vp,dp,question,answer,gmlevel,avatar FROM ".TBL_ACCOUNT." a,".TBL_USERS." b WHERE UPPER(a.login) = '".$db->escape(strtoupper($username))."' AND b.acc_login=a.login";
+			$q = "SELECT a.acct as guid,a.login as username,lastlogin,lastip,banned as banned,a.flags as expansion,b.vp,b.dp,b.question,b.answer,b.gmlevel,b.avatar".
+				 " FROM ".TBL_ACCOUNT." a,".TBL_USERS." b WHERE UPPER(a.login) = '".$db->escape(strtoupper($username))."' AND b.acc_login=a.login";
 
 
 		$result = $db->query($q) or die($db->getLastError());

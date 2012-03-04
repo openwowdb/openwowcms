@@ -175,10 +175,12 @@ SET  ".TBL_CHARACTERS.".position_X = character_homebind.position_x,
 		if ($userid)
 		{
 			$username = preg_replace( "/[^0-9]/", "", $username );
-			$q = "SELECT a.id as guid,a.username as username,joindate,last_ip,locked as banned,expansion,vp,dp,question,answer,b.gmlevel,avatar FROM ".TBL_ACCOUNT." a,".TBL_USERS." b WHERE a.id = '".$username."' AND UPPER(b.acc_login)=UPPER(a.username)";
+			$q = "SELECT a.id as guid,a.username as username,joindate,last_ip,locked as banned,expansion,b.vp,b.dp,b.question,b.answer,b.gmlevel,b.avatar".
+				 " FROM ".TBL_ACCOUNT." a,".TBL_USERS." b WHERE a.id = '".$username."' AND UPPER(b.acc_login)=UPPER(a.username)";
 		}
 		else
-			$q = "SELECT a.id as guid,a.username as username,joindate,last_ip,locked as banned,expansion,vp,dp,question,answer,b.gmlevel,avatar FROM ".TBL_ACCOUNT." a,".TBL_USERS." b WHERE UPPER(a.username) = '".$db->escape(strtoupper($username))."' AND b.acc_login=a.username";
+			$q = "SELECT a.id as guid,a.username as username,joindate,last_ip,locked as banned,expansion,b.vp,b.dp,b.question,b.answer,b.gmlevel,b.avatar".
+				 " FROM ".TBL_ACCOUNT." a,".TBL_USERS." b WHERE UPPER(a.username) = '".$db->escape(strtoupper($username))."' AND b.acc_login=a.username";
 
 
 		$result = $db->query($q) or die($db->getLastError());
