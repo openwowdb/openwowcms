@@ -30,7 +30,7 @@
     "Fail"=>"Neuspjeh",
     "Success"=>"Uspjeh",
     "Register"=>"Registracija",
-    "you\'ve already registered"=>"ve&#263; ste se registrirali",
+    "you've already registered"=>"ve&#263; ste se registrirali",
     "your information has been added"=>"Vaše informacije su dodane",
     "Thank you"=>"Hvala",
     "Error has occurred and your registration for the"=>"Greška se pojavila u registraciji, ",

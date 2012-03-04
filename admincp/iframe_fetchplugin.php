@@ -1,35 +1,48 @@
 <?php
-###################################################################
-# This file is a part of OpenWoW CMS by www.openwow.com
-#
-#                               index.php
-#                            -------------------
-#   Project Owner    : OpenWoW CMS (http://www.openwow.com)
-#   Copyright        : (c) www.openwow.com, 2010
-#   Credits          : Based on work done by AXE and Maverfax
-#   License          : GPLv3
-##################################################################
+/************************************************************************
+*												 admincp/iframe_fetchplugin.php
+*                            -------------------
+* 	 Copyright (C) 2011
+*
+* 	 This package is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*  	 This package is based on the work of the web-wow.net and openwow.com
+* 	 team during 2007-2010.
+*
+* 	 Updated: $Date 2012/02/08 14:00 $
+*
+************************************************************************/
 
 ############################################################
 # INCLUDES:
 # - initialization script
 ############################################################
 
-require("defines.php");
-@set_time_limit(0);
+include "defines.php";
+//@set_time_limit(0);
 error_reporting(~E_NOTICE);
 /* Initilaze stuff */
-require(PATHROOT."engine/init.php");
+include PATHROOT."engine/init.php";
 
 /* If no premission redirect to main page */
 if(!$user->logged_in)
-header('Location: ../index.php');
-if (strtolower($user->userlevel)<>strtolower($config['premission_admin']))
-header('Location: ../index.php');
-/* Include admin functions */
-require_once(PATHROOT.'engine/func/admin_update.php');
+{
+	header('Location: ../index.php');
+	exit;
+}
 
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+if (!$user->isAdmin())
+{
+	header('Location: ../index.php');
+	exit;
+}
+/* Include admin functions */
+include PATHROOT.'engine/func/admin_update.php';
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
@@ -56,28 +69,26 @@ a:active{ color:#FF9900 }
 <body>
 
 <?php
-if (isset($_GET['id'])){
-$id = preg_replace( "/[^A-Za-z0-9-_.]/", "", $_GET['id'] ); //only letters and numbers
-$id = '&id='.$id;
-
+if (isset($_GET['id'])) {
+	$id = preg_replace( "/[^A-Za-z0-9-_.]/", "", $_GET['id'] ); //only letters and numbers
+	$id = '&id='.$id;
 }
 else {echo '<div class="title">Plugin list</div>';$id='';}
-if (isset($_GET['files'])){
-$files = preg_replace( "/[^A-Za-z0-9-\/_.\[\]]/", "", $_GET['files'] ); //only letters and numbers
-$files = preg_replace( "/\./", "[dot]", $files  ); //only letters and numbers
-$files = '&files='.$files;
+if (isset($_GET['files'])) {
+	$files = preg_replace( "/[^A-Za-z0-9-\/_.\[\]]/", "", $_GET['files'] ); //only letters and numbers
+	$files = preg_replace( "/\./", "[dot]", $files  ); //only letters and numbers
+	$files = '&files='.$files;
 }
 else
-$files='';
+	$files='';
 ?>
 <table border="0" width="100%">
 <?php
-$pluginlist0=$updateclass->getUpdatedFile('projects/webwow_creator_v2/outputer_plugins.php?domain='.$_SERVER["SERVER_ADDR"].$id.$files);
-$pluginlist=explode("[|]",$pluginlist0[0]);
+$pluginlist0 = $updateclass->getUpdatedFile('projects/webwow_creator_v2/outputer_plugins.php?domain='.$_SERVER["SERVER_ADDR"].$id.$files);
+$pluginlist = explode("[|]",$pluginlist0[0]);
 foreach ($pluginlist as $pluginlist)
 {
-
-echo $pluginlist;//print fetched line(s)
+	echo $pluginlist;//print fetched line(s)
 }
 ?>
 </table>

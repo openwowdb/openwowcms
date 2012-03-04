@@ -1,12 +1,29 @@
 <?php
-/***************************************************************************
-*                               index.php
+/************************************************************************
+*																	tos.php
 *                            -------------------
-*   Project Owner    : OpenWoW CMS (www.openwow.com)
-*   Copyright        : (c) www.openwow.com, 2010
-*   Credits          : Based on work done by AXE and Maverfax
-*   License          : GPLv3
-*****************************************************************************/
+* 	 Copyright (C) 2011
+*
+*    This package is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*    This package is distributed in the hope that it will be useful,
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*    GNU General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with this program. If not, see <http://www.gnu.org/licenses/>.
+*
+*
+*  	 This package is based on the work of the web-wow.net and openwow.com
+* 	 team during 2007-2010.
+*
+* 	 Updated: $Date 2012/02/08 14:00 $
+*
+************************************************************************/
 
 /*
 * You can copy this ToS page, only if you don't remove small "WEBWOW"
@@ -39,7 +56,7 @@ input, textarea {
 	color: #ffac04; background-image:url(engine/tos/logo.gif); background-position:bottom right; background-repeat:no-repeat
 }
 a:active {
-  outline: none;
+	outline: none;
 }
 
 
@@ -49,7 +66,7 @@ a:active {
 <body><br /><br /><br />
 <div style="text-align:center" align="center">
 	<div style="border:solid 1px black; width:680px; background-color:#1B1B1B; margin:0 auto; padding:2px; background-image:url(engine/tos/boxbg4.jpg); background-position:top; background-repeat:repeat-x">
-		
+
 			<div style="border: solid 1px black; background-color:#272829; background-image:url(engine/tos/boxbg.jpg); background-repeat:no-repeat; background-position:bottom right">
 				<div style=" background-image:url(engine/tos/boxbg2.jpg); background-repeat:repeat-x; background-position:top">
 					<div style="background-image:url(engine/tos/boxbg3.jpg); background-position:bottom left; background-repeat:no-repeat;">
@@ -109,25 +126,25 @@ You explicitly agree, in using this web site or any service provided, that you s
 By providing any Content to our web site:
 
 (a) you agree to grant to us a worldwide, royalty-free, perpetual, non-exclusive right and license (including any moral rights or other necessary rights) to use, display, reproduce, modify, adapt, publish, distribute, perform, promote, archive, translate, and to create derivative works and compilations, in whole or in part. Such license will apply with respect to any form, media, technology known or later developed;
-(b) you warrant and represent that you have all legal, moral, and other rights that may be necessary to grant us with the license set forth in this Section 7; you acknowledge and agree that we shall have the right (but not obligation), in our sole discretion, to refuse to publish or to remove or block access to any Content you provide at any time and for any reason, with or without notice. 
+(b) you warrant and represent that you have all legal, moral, and other rights that may be necessary to grant us with the license set forth in this Section 7; you acknowledge and agree that we shall have the right (but not obligation), in our sole discretion, to refuse to publish or to remove or block access to any Content you provide at any time and for any reason, with or without notice.
 
 
 
 7. Third Party Services:
 ************************
-Goods and services of third parties may be advertised and/or made available on or through this web site. Representations made regarding products and services provided by third parties are governed by the policies and representations made by these third parties. We shall not be liable for or responsible in any manner for any of your dealings or interaction with third parties. 
+Goods and services of third parties may be advertised and/or made available on or through this web site. Representations made regarding products and services provided by third parties are governed by the policies and representations made by these third parties. We shall not be liable for or responsible in any manner for any of your dealings or interaction with third parties.
 
 
 
 8. Indemnification:
 *******************
-You agree to indemnify and hold us harmless, our subsidiaries, affiliates, related parties, officers, directors, employees, agents, independent contractors, advertisers, partners, and co-branders from any claim or demand, including reasonable attorney's fees, that may be made by any third party, that is due to or arising out of your conduct or connection with this web site or service, your provision of Content, your violation of this Terms of Use or any other violation of the rights of another person or party. 
+You agree to indemnify and hold us harmless, our subsidiaries, affiliates, related parties, officers, directors, employees, agents, independent contractors, advertisers, partners, and co-branders from any claim or demand, including reasonable attorney's fees, that may be made by any third party, that is due to or arising out of your conduct or connection with this web site or service, your provision of Content, your violation of this Terms of Use or any other violation of the rights of another person or party.
 
 
 
 9. DISCLAIMER OF WARRANTIES:
 ****************************
-YOU UNDERSTAND AND AGREE THAT YOUR USE OF THIS WEB SITE AND ANY SERVICES OR CONTENT PROVIDED (THE SERVICE) IS MADE AVAILABLE AND PROVIDED TO YOU AT YOUR OWN RISK. IT IS PROVIDED TO YOU AS IS AND WE EXPRESSLY DISCLAIM ALL WARRANTIES OF ANY KIND, IMPLIED OR EXPRESS, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. WE MAKE NO WARRANTY, IMPLIED OR EXPRESS, THAT ANY PART OF THE SERVICE WILL BE UNINTERRUPTED, ERROR-FREE, VIRUS-FREE, TIMELY, SECURE, ACCURATE, RELIABLE, OF ANY QUALITY, NOR THAT ANY CONTENT IS SAFE IN ANY MANNER FOR DOWNLOAD. YOU UNDERSTAND AND AGREE THAT NEITHER US NOR ANY PARTICIPANT IN THE SERVICE PROVIDES PROFESSIONAL ADVICE OF ANY KIND AND THAT USE OF SUCH ADVICE OR ANY OTHER INFORMATION IS SOLELY AT YOUR OWN RISK AND WITHOUT OUR LIABILITY OF ANY KIND. Some jurisdictions may not allow disclaimers of implied warranties and the above disclaimer may not apply to you only as it relates to implied warranties. 
+YOU UNDERSTAND AND AGREE THAT YOUR USE OF THIS WEB SITE AND ANY SERVICES OR CONTENT PROVIDED (THE SERVICE) IS MADE AVAILABLE AND PROVIDED TO YOU AT YOUR OWN RISK. IT IS PROVIDED TO YOU AS IS AND WE EXPRESSLY DISCLAIM ALL WARRANTIES OF ANY KIND, IMPLIED OR EXPRESS, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. WE MAKE NO WARRANTY, IMPLIED OR EXPRESS, THAT ANY PART OF THE SERVICE WILL BE UNINTERRUPTED, ERROR-FREE, VIRUS-FREE, TIMELY, SECURE, ACCURATE, RELIABLE, OF ANY QUALITY, NOR THAT ANY CONTENT IS SAFE IN ANY MANNER FOR DOWNLOAD. YOU UNDERSTAND AND AGREE THAT NEITHER US NOR ANY PARTICIPANT IN THE SERVICE PROVIDES PROFESSIONAL ADVICE OF ANY KIND AND THAT USE OF SUCH ADVICE OR ANY OTHER INFORMATION IS SOLELY AT YOUR OWN RISK AND WITHOUT OUR LIABILITY OF ANY KIND. Some jurisdictions may not allow disclaimers of implied warranties and the above disclaimer may not apply to you only as it relates to implied warranties.
 
 
 
@@ -139,7 +156,7 @@ YOU EXPRESSLY UNDERSTAND AND AGREE THAT WE SHALL NOT BE LIABLE FOR ANY DIRECT, I
 <a href="./index.php"><img src="engine/tos/agree.gif" border="none" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.google.com/"><img src="engine/tos/decline.gif" border="none" /></a><div style="height:23px"></div>
 					</div>
 				</div>
-			
+
 		</div>
 	</div>
 	<center></center>

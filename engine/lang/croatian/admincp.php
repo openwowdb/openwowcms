@@ -57,7 +57,7 @@ $lang_admincp = array(
   "Disabled on this web server - Automated CMS update will not be possible."=>"Nije omogu&#269;eno - Automatsko obnavljanje CMS-a nije mogu&#263;e.",
   "View PHP info"=>"Pogledaj informacije o PHP-u",
   "License"=>"Licenca",
-  "PHP fshockopen() is disabled, update is not possible using this method."=>"PHP fshockopen() nije omogu&#269;en, obnavljanje nije mogu&#263;e.",
+  "PHP fsockopen() is disabled, update is not possible using this method."=>"PHP fsockopen() nije omogu&#269;en, obnavljanje nije mogu&#263;e.",
   
   "Action report"=>"Izvješ&#263;e",
   "Template is saved"=>"Stil je spremljen",

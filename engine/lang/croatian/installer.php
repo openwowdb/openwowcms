@@ -1,4 +1,4 @@
-<?php
+﻿<?php
   
   $installer_lang = array(
     
@@ -47,9 +47,15 @@
   "Compatible Database is Autodetected"=>"Kompatibilna Baza Podataka je autodetektirana",
   "found"=>"pronadene",
   "If DB does not exists, it will be created"=>"Ako Baza Podataka ne postoji biti ce kreirana",
+"Click Here to Install Database" => "Click Here to Install Database",
+"Continue"=>"Continue",
+"Errors Found"=>"Errors Found",
+"Errors Ignored"=>"Errors Ignored",
+"Ignore Message"=>"Ignore Message",
   "Delete"=>"Brisem",
   "Create"=>"Kreiram",
   "Inserting data to"=>"Upisujem podatke u",
+"Inserting data failed"=>"Inserting data to %s failed",
   "You did not enter website database, please go step back."=>"Niste unijeli bazu podataka za web stranicu, molimo idite korak unazad.",
   "Tables are created successfully"=>"Podatci su uspjesno uneseni",
   "Failed to create tables"=>"Doslo je do greske u pisanju",
@@ -68,5 +74,4 @@
   "Admin Username"=>"Admin korisnicko ime",
   "Admin Password"=>"Admin lozinka",
   "Save"=>"Spremi",
-  
   );

@@ -1,14 +1,20 @@
 <?php
-
-###################################################################
-# This file is a part of OpenWoW CMS by www.openwow.com
-#
-#   Project Owner    : OpenWoW CMS (http://www.openwow.com)
-#   Copyright        : (c) www.openwow.com, 2010
-#   Credits          : Based on work done by AXE and Maverfax
-#   License          : GPLv3
-##################################################################
-
+/************************************************************************
+*													  engine/func/parser.php
+*                            -------------------
+* 	 Copyright (C) 2011
+*
+* 	 This package is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*  	 This package is based on the work of the web-wow.net and openwow.com
+* 	 team during 2007-2010.
+*
+* 	 Updated: $Date 2012/02/08 14:00 $
+*
+************************************************************************/
 
 
 // Make sure no one attempts to run this script "directly"
@@ -43,7 +49,7 @@ function preparse_bbcode($text, &$errors, $is_signature = false)
 				'#\s*\[/email\]#i',
 				'#\[img\]\s*(.*?)\s*\[/img\]#is',
 				'#\[colou?r=("|\'|)(.*?)\\1\](.*?)\[/colou?r\]#is');
-				
+
 
 	$b = array(	'[url=$2]',
 				'[url]',
