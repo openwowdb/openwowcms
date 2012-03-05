@@ -121,7 +121,7 @@ $v = isset($_GET['v']) ? preg_replace("/[^0-9a-z.]/", "", $_GET['v']) : "";
 				'************************************************************************/'.Html::ln().
 				'define(\'VERSION\',\''.VERSION.'\');'.Html::ln().
 				'define(\'LASTUPDATE\',\''.date("m/j/Y").'\');'.Html::ln().
-				'define(\'SHA_VERSION\', \''.$v.'\');'.Html::ln().
+				'define(\'SHA_VERSION\', \''.$_SESSION['update_shas'][count($_SESSION['update_shas'])-1].'\');'.Html::ln().
 				'?>';
 				if (filehandler::write('version.php', $version_str, 'engine'))
 				{
