@@ -1,7 +1,23 @@
-<?php 
-global $Html,$form,$lang_admincp,$lang,$config;
+<?php
+/************************************************************************
+*														engine/modules/credits.php
+*                            -------------------
+* 	 Copyright (C) 2011
+*
+* 	 This package is free software: you can redistribute it and/or modify
+*    it under the terms of the GNU General Public License as published by
+*    the Free Software Foundation, either version 3 of the License, or
+*    (at your option) any later version.
+*
+*  	 This package is based on the work of the web-wow.net and openwow.com
+* 	 team during 2007-2010.
+*
+* 	 Updated: $Date 2012/02/08 14:00 $
+*
+************************************************************************/
+global $lang_admincp,$config;
 
-if (!$lang_admincp) include_once(PATHROOT."engine/lang/".strtolower($config['engine_lang'])."/admincp.php");
+if (!isset($lang_admincp)) include_once(PATHROOT."engine/lang/".strtolower($config['engine_lang'])."/admincp.php");
 include_once(PATHROOT.$config['engine_acp_folder']."defines.php");
 /**
 * This part of website is executed before any output is given
@@ -9,48 +25,11 @@ include_once(PATHROOT.$config['engine_acp_folder']."defines.php");
 * we simply call normal site and display errors
 **/
 if(isset($proccess) && $proccess == TRUE){
-	/**
-    * Processes the user submitted login form, if errors
-    * are found, the user is redirected to correct the information,
-    * if not, the user is effectively logged in to the system.
-	* If user is logged in, he will be logged out and redirected to 
-	* index.php page.
-    */
-	function Process(){
-	   global $user, $form;
-	   
-	  /* Login attempt */
-      $retval = $user->login($_POST['user'], $_POST['pass'], isset($_POST['remember']));
-      /* Login failed */
-      if(!$retval){
-         $_SESSION['value_array'] = $_POST;
-         $_SESSION['error_array'] = $form->getErrorArray();
-      }
-	  else
-	  	header("Location: index.php");
-	 
-	 
-	}
-	
-	if (isset($_POST['sublogin'])){
-		/* Initialize process */
-		Process();
-	}
-	else
-	{
-		//add code if any
-	}
-	
-	/* Reinitilaze 'form' proccess with latest session data */
-	$form->_Form();
 	return;
-	
 }
-
-
 ?>
 <!-- This element is important, must be at beginning of module output, dont change it, except module name -->
 <div class="post_body_title"><?php echo $lang_admincp['Credits']; ?></div>
 <?php
-$Html->credits_cms(); 
+Html::credits_cms();
 ?>
