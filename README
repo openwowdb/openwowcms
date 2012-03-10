@@ -1,34 +1,32 @@
+=Support=
 
-
-
-=Requirements=
-
-Make sure you have your PHP interpreter built with the following modules before you proceed with the installation:
-
-1. Sockets
-2. Sessions
-3. mysql
-
+Available from the creators of this branch at https://github.com/Swiftsmoke/openwowcms/issues
 
 =Installation=
 
-Copy all files to the document root of your vhost and point your browser to the index without. Example: http://www.openwow.com/. Installation process will start instantly. 
-You will be guided through a a number of self-explanatory steps to finish the installation. Make sure you satisfy all what is required during the process. After the installation script is finished
-you will be forwarded to your fresh main page where you can start your customizations.
+Copy all files to the document root of your host and point your browser to the index.
+Example: http://www.openwow.com/.
 
-
+Installation process will start instantly.
+You will be guided through a a number of self-explanatory steps to finish the installation.
+Make sure you satisfy all what is required during the process.
+After the installation script is finished you will be forwarded to your fresh main page where you can start your customizations.
 
 =Development=
-If you want to join the development team please feel free to contact zebra@openwow.com for your commit acess to the repo.
+
+Documentation is available - http://swiftsmoke.github.com/openwowcms
+Source code - https://github.com/Swiftsmoke/openwowcms
+
+=Contact=
+dibble1989@hotmail.co.uk
 
 
-=TODO=
-This document needs more content especially about customization of your installation and installation troubleshooting information. Feel free to update it.
+=Origin $Revision: b67f686e94 $=
 
-
-=Contacts=
-Please visit http://www.openwow.com/?misc=openwowcms for support and feedback details.
+Source Code - https://github.com/openwowdb/openwowcms
+Contact - zebra@openwow.com / http://www.openwow.com/?misc=openwowcms
 
 (c) www.openwow.com, 2012
 
-Source code and documentation is distributed under terms of GPL v3. Detailes here: http://www.gnu.org/copyleft/gpl.html
+Source code and documentation is distributed under terms of GPL v3.
+Details here: http://www.gnu.org/copyleft/gpl.html
