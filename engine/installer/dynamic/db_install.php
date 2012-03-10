@@ -126,7 +126,7 @@ if (!isset($wwcms['db_test']) || $wwcms['db_test'] == false) {
 
 				/**
 				* Now construct realm databases string in format:
-				* "DB1|REALM_PORT|DB1_HOST|DB1_USER|DB1_PASS;DB2|REALM_PORT;DB3|REALM_PORT" etc...
+				* "CHAR_DB1|REALM_SQL_PORT|DB1_HOST|DB1_USER|DB1_PASS;CHAR_DB2|REALM_SQL_PORT;CHAR_DB3|REALM_SQL_PORT" etc...
 				* without quotes
 				*/
 				$char_db .= $sess_chardb.'|'.$wwcms['char_port'][$char_counter];
@@ -265,8 +265,8 @@ if ($step <= 5) {
 					($mangos_soap_userpass == null ? "" : ",('mangos_soap_userpass','$mangos_soap_userpass','MaNGOS: SOAP Username and Password (for sending ingame mail)<br><small>SOAP_username|SOAP_password</small>','1','')").
 					($trinity_soap_userpass == null ? "" : ",('trinity_soap_userpass','$trinity_soap_userpass','TrintyCore: SOAP Username and Password (for sending ingame mail)<br><small>SOAP_username|SOAP_password</small>','1','')").
 					($trinity_ra_userpass == null ? "" : ",('trinity_ra_userpass','$trinity_ra_userpass','TrintyCore: RA Username and Password (for sending ingame mail)<br><small>RA_username|RA_password</small>','1','')").
-					",('engine_char_dbs','".$wwcms['char_db_string']."','<br><small>DB1|REALM_PORT|DB1_HOST|DB1_USER|DB1_PASS;DB2|REALM_PORT</small>','1','')".
-					",('engine_realmnames','".htmlspecialchars($char_names)."','<br><small>realmname1|realmname2|realmname3</small>','1','')".
+					",('engine_char_dbs','".$wwcms['char_db_string']."','<br><small>CHAR_DB1|REALM_SQL_PORT|DB1_HOST|DB1_USER|DB1_PASS;CHAR_DB2|REALM_SQL_PORT</small>','1','')".
+					",('engine_realmnames','".htmlspecialchars($char_names)."','<br><small>RealmName1|realmname2|RealmName3</small>','1','')".
 					",('engine_acp_folder','admincp\/','foldername\/','1','')".
 					",('license','FREE','','1','')".
 					",('premission_admin','" . ($core == "ArcEmu" ? "az" : "4") . "','','1','')".

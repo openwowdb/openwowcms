@@ -109,7 +109,7 @@ SET  ".TBL_CHARACTERS.".position_X = character_homebind.position_x,
 		global $config,$db;
 		echo '<select name="character">';
 		$split_realmname=explode('|',$config['engine_realmnames']);//we have data in array
-		$split0=explode(';',$config['engine_char_dbs']); //DB1|REALM_PORT|DB1_HOST|DB1_USER|DB1_PASS or DB2|REALM_PORT
+		$split0=explode(';',$config['engine_char_dbs']); //CHAR_DB1|REALM_SQL_PORT|DB1_HOST|DB1_USER|DB1_PASS or CHAR_DB2|REALM_SQL_PORT
 		foreach ($split0 as $key=>$split00)
 		{
 			$split1=explode('|',$split00);//we have data in array
@@ -384,7 +384,7 @@ SET  ".TBL_CHARACTERS.".position_X = character_homebind.position_x,
 		/**
 		* REALM DETECTION:
 		*/
-		$split0=explode(';',$config['engine_char_dbs']); //DB1|REALM_PORT|DB1_HOST|DB1_USER|DB1_PASS or DB2|REALM_PORT
+		$split0=explode(';',$config['engine_char_dbs']);
 		$realm_array=explode('|',$split0[$realmid]);//we have data in array
 		if (!isset($realm_array[2]))
 			$realm_host=$db_host;

@@ -487,7 +487,7 @@ class adminfunc {
 			if (Html::cache_menulinks()) echo ' '.$lang_admincp['and cached'].'.'; else echo ', '.$lang_admincp['links not cached'].'.';
 			echo "</font>";
 		}
-		$sql1 = $db->query("SELECT * FROM ".TBL_LINKS." ORDER BY linkgrup ASC, linkorder ASC")or die($db->getLastError());
+		$sql1 = $db->query("SELECT * FROM ".TBL_LINKS." ORDER BY linkgrup ASC, linkorder ASC, linktitle")or die($db->getLastError());
 		$i='nothing';$color="#C9C9C9";
 		echo '<form action="./?f=links" method="post">';
 		while ($sql2=$db->getRow($sql1)){

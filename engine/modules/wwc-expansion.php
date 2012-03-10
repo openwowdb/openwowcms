@@ -13,20 +13,19 @@
 *
 ************************************************************************/
 
-/**
-* This part of website is executed before any output is given
-* so every post data is processed here then using Header(Location:)
-* we simply call normal site and display errors
-**/
+//* This part of website is executed before any output is given
+//* so every post data is processed here then using Header(Location:)
+//* we simply call normal site and display errors
+
 if (!defined('PATHROOT'))
 	define('PATHROOT', '../../');
 
 if (!class_exists("module_base"))
 	include PATHROOT."library/classes/modules/modules.php";
 
-if (!class_exists("wwc_expansion"))
-{
+if (!class_exists("wwc_expansion")) {
 	class wwc_expansion extends module_base {
+
 		function wwc_expansion($proccess) {
 			$this->proccess = $proccess;
 		}
@@ -41,11 +40,11 @@ if (!class_exists("wwc_expansion"))
 					if ($user->userinfo['expansion'] == $expansion) return;
 					$done = $db->query($user->CoreSQL(4, $user->userinfo['guid'], $user->return_expansion($expansion)));
 					if ($done)
-						$_SESSION['notice'] ="<center><a href='./?page=wwc-expansion'>".$lang['OK']."</a></center>";
+						$_SESSION['notice'] ="<center>".$lang['Success']."!<br><br><a href='./?page=wwc-expansion'>".$lang['OK']."</a></center>";
 					else
-						$_SESSION['notice'] ="<center>Failed!<br><br><a href='./?page=wwc-expansion'>".$lang['OK']."</a></center>";
+						$_SESSION['notice'] ="<center>".$lang['Fail']."!<br><br><a href='./?page=wwc-expansion'>".$lang['OK']."</a></center>";
 				}
-				return parent::process();
+				return parent::Process();
 			}
 
 			$this->GenerateForm();
@@ -65,7 +64,6 @@ if (!class_exists("wwc_expansion"))
 			if (isset($_SESSION['notice']) && $_SESSION['notice'] <> '') {
 				echo "<div class=\"post_body_title\">NOTICE!</div>".$_SESSION['notice'];
 				$_SESSION['notice'] = '';
-				unset($_SESSION['notice']);
 				return;
 			}
 			echo '<div class="post_body_title">Expansion</div>
@@ -82,5 +80,5 @@ if (!class_exists("wwc_expansion"))
 
 $wwc_expansion = new wwc_expansion(isset($proccess));
 // Accessed via ?page=wwc_expansion
-return $wwc_expansion->process();
+return $wwc_expansion->Process();
 ?>

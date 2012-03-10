@@ -111,4 +111,26 @@ class database_mysql extends database {
 		return mysql_error();
 	}
 }
+
+function connect_realm($id) {
+	//id -> from 0 to infinity
+	global $config, $db;
+	#check char db and assign connector or connect
+	#DB1|REALM_PORT|DB1_HOST|DB1_USER|DB1_PASS;DB2|REALM_PORT;etc...
+	$split0=explode(';',$config['engine_char_dbs']); //DB1|REALM_PORT|DB1_HOST|DB1_USER|DB1_PASS or DB2|REALM_PORT
+	$split1=explode('|',$split0[$id]);//we have data in array
+	if (isset($split1[2])) {
+		$IsOn = @fsockopen($split1['2'],$split1['1'], $ERROR_NO, $ERROR_STR,(float)0.5);
+		if($IsOn){
+			//Online
+			@fclose($IsOn);
+			library::create_dblink($db_realmconnector, 'mysql');
+			$db_realmconnector->init(trim($split1['2'].":".$split1['1']), trim($split1[3]), trim($split1[4]), $split1[0]);
+		}
+	} else {
+		$db_realmconnector = $db;
+		$db_realmconnector->select_db($split1['0']);
+	}
+	return $db_realmconnector;
+}
 ?>

@@ -1,6 +1,6 @@
 <?php
 /************************************************************************
-*														engine/core/trinity.php
+*                          engine/core/trinity.php
 *                            -------------------
 * 	 Copyright (C) 2011
 *
@@ -64,11 +64,13 @@ class User extends SessionUser implements BaseUser {
 			/**
 			* Unstuck character
 			**/
-			3 => "UPDATE ".$config_data[$id.'-2'][0].'.'.TBL_CHARACTERS." INNER JOIN ".$config_data[$id.'-2'][0].".character_homebind
- ON ".TBL_CHARACTERS.".guid = character_homebind.guid AND  ".TBL_CHARACTERS.".guid = '".$param1."'
- SET  ".TBL_CHARACTERS.".position_X = character_homebind.position_x,
- ".TBL_CHARACTERS.".position_Y = character_homebind.position_y,
- ".TBL_CHARACTERS.".position_z = character_homebind.position_z",
+			3 => "UPDATE ".$config_data[$id.'-2'][0].'.'.TBL_CHARACTERS." INNER JOIN ".$config_data[$id.'-2'][0].".character_homebind".
+				 " ON ".TBL_CHARACTERS.".guid = character_homebind.guid AND  ".TBL_CHARACTERS.".guid = '".$param1."'".
+				 " SET ".TBL_CHARACTERS.".position_X = character_homebind.position_x,".
+						 TBL_CHARACTERS.".position_Y = character_homebind.position_y,".
+						 TBL_CHARACTERS.".position_z = character_homebind.position_z,".
+						 TBL_CHARACTERS.".map = character_homebind.map,".
+						 TBL_CHARACTERS.".zone = character_homebind.zone",
 			/**
 			* Expansion change, 0 to 3
 			**/
@@ -102,23 +104,25 @@ class User extends SessionUser implements BaseUser {
 	/**
 	* print_Char_Dropdown
 	*/
-	function print_Char_Dropdown($accountguid) {
-		global $config,$db;
+	function print_Char_Dropdown($accountguid, $CurAct='') {
+		global $config;
 		echo '<select name="character">';
 		$split_realmname=explode('|',$config['engine_realmnames']);//we have data in array
-		$split0=explode(';',$config['engine_char_dbs']); //DB1|REALM_PORT|DB1_HOST|DB1_USER|DB1_PASS or DB2|REALM_PORT
-		foreach ($split0 as $key=>$split00)
-		{
+		$split0=explode(';',$config['engine_char_dbs']); //CHAR_DB1|REALM_SQL_PORT|DB1_HOST|DB1_USER|DB1_PASS or CHAR_DB2|REALM_SQL_PORT
+		foreach ($split0 as $key=>$split00) {
 			$split1=explode('|',$split00);//we have data in array
-
-
 			/* loop realms then loop characters */
-			$db_realmconnector=connect_realm($key);
-			$q="SELECT name,guid FROM ".$split1[0].".".TBL_CHARACTERS." WHERE account =  '".$accountguid."'";
-			$a = $db_realmconnector->query($q) or die($db->getLastError());
-			while ($a2=$db_realmconnector->getRow($a)){
-				echo '<option value="'.$key.'-'.$a2[1].'">'.$split_realmname[$key].' &raquo; '.$a2[0].'</option>';
-			}
+			$db_realmconnector = connect_realm($key);
+			if ($db_realmconnector) {
+				$q="SELECT name, guid FROM ".$split1[0].".".TBL_CHARACTERS." WHERE account =  '".$accountguid."'";
+				$a = $db_realmconnector->query($q);
+				if ($a) {
+					while ($a2=$db_realmconnector->getRow($a)){
+						if ($CurAct==$key.'-'.$a2[1]) $sel='" selected'; else $sel ='"';
+						echo '<option value="'.$key.'-'.$a2[1].$sel.'">'.$split_realmname[$key].' &raquo; '.$a2[0].'</option>';
+					}
+				} //else $_SESSION['notice'].= $q." - ".$db_realmconnector->getLastError()."<br>\n";
+			} 
 		}
 		echo '</select>';
 	}
@@ -371,7 +375,7 @@ class User extends SessionUser implements BaseUser {
 		/**
 		* REALM DETECTION:
 		*/
-		$split0=explode(';',$config['engine_char_dbs']); //DB1|REALM_PORT|DB1_HOST|DB1_USER|DB1_PASS or DB2|REALM_PORT
+		$split0=explode(';',$config['engine_char_dbs']);
 		$realm_array=explode('|',$split0[$realmid]);//we have data in array
 		if (!isset($realm_array[2]))
 			$realm_host=$db_host;
@@ -455,5 +459,3 @@ class User extends SessionUser implements BaseUser {
 			return  "<span class=\"colorbad\">Trinity server is offline, you must do this when server is online.</span>";
 	}
 }
-
-
