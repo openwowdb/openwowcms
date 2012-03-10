@@ -48,6 +48,7 @@ include PATHROOT.'engine/lang/' . strtolower($lang) . '/installer.php';
 /*******************************************************************************
 *				INSTALLER
 *******************************************************************************/
+restore_error_handler();
 
 /**
 * Install
@@ -112,7 +113,7 @@ class Install {
 			//
 			echo $installer_lang['Files and Directories'].':';
 
-			$directorys = array("./engine/_cache/");
+			$directorys = array('./errorlogs/','./engine/_cache/');
 			foreach ($directorys as $dir)
 			{
 				$chmod = substr(sprintf('%o', fileperms($dir)), -4);
@@ -661,5 +662,6 @@ $Install->Go();
 	</body>
 </html>
 <?php
+set_error_handler("errorhandler::error", -1);
 exit;
 ?>
