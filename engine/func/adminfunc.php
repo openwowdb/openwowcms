@@ -123,7 +123,7 @@ $updateclass->GetModuleInfo();
 }
 elseif (!function_exists("fsockopen"))
 {
-echo '<h2>'.$lang_admincp['Update now'].'</h2>'.$lang_admincp['PHP fshockopen() is disabled, update is not possible using this method.'].'';
+echo '<h2>'.$lang_admincp['Update now'].'</h2>'.$lang_admincp['PHP fsockopen() is disabled, update is not possible using this method.'].'';
 }
 else
 echo '<center><img src="./res/shema.jpg" /></center>';
